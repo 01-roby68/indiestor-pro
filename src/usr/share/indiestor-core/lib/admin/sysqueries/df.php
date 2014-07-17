@@ -23,7 +23,7 @@ class DFFileSystem
 	var $device=null;
 	var $type=null;
 	var $quotaYN=null;
-        var $aclYN=null;
+    var $aclYN=null;
 	var $storageGB=null;
 	var $usedGB=null;
 	var $availableGB=null;

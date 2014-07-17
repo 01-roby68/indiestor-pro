@@ -43,9 +43,9 @@ class UserReportRecord
 		{
 			$this->hasQuotaRecord=true;
 			$this->quotaTotalGB=$this->convertToGB($quotaRecord['quota']);
-			$this->quotaUsedGB=$this->convertToGB($quotaRecord['used']);
+			$this->quotaUsedGB=$this->convertToGB(trim($quotaRecord['used']));
 			if($this->quotaTotalGB!=0)
-				$this->quotaUsedPerc=floor($this->quotaUsedGB/$this->quotaTotalGB);
+				$this->quotaUsedPerc=floor($this->quotaUsedGB/$this->quotaTotalGB*100);
 			else
 				$this->quotaUsedPerc=0;
 		}
