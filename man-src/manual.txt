@@ -38,13 +38,14 @@ indiestor is an Open Source storage platform for Avid collboration. Management i
 
 We use incron and inotify to watch the file system for 'share triggers' (see below). There is very little for the editor to learn and nothing to install on each workstation.
 
-Be aware that indiestor does not attempt to emulate AECIFS or Avid style bin locking. As a home centric storage solution, indiestor provides each editor with their own network drive.
+Be aware that indiestor does not attempt to emulate Avid style bin locking. As a home centric storage solution, indiestor provides each editor with their own network drive.
 
 .B OS COMPATIBILITY:
 Debian Wheezy (Recommended),
 Debian Squeeze,
 Ubuntu Precise,
-Ubuntu Raring
+Ubuntu Raring,
+Raspberian
 
 .B SHARING PROJECTS:
 To share a project the leading editor must be: A) in a group with his/her co-editors B) connected to his/her own area.  By simply naming a new or existing project with the with appropriately the project will be shared.
@@ -66,22 +67,24 @@ trigger indiestor automatically creates and distributes
 .B .copy
 versions of the project. The .copy projects can be found in each group memebers “Avid Shared Projects” folder.
 
-Inside each node of the shared project you will find the 'sharing tree'. The sharing tree is a network of folders that allows bins to be offered read-only to other editors. An Unprotected folder is provided for conveniently passing bins between editors.
+Inside each node of the shared project you will find the 'sharing tree'. The sharing tree allows bins to be offered read-only to other editors. An Unprotected folder is provided for conveniently passing bins between editors.
 
 .B SHARING MXF MEDIA:
-Media sharing is enabled automatically as soon as media exists in /<user>/Avid MediaFiles/MXF. As an aside, it is quite possible to use indiestor as a cheap way of expanding the media storage capacity of an exsiting network.
+Media sharing is enabled automatically as soon as media exists in /<user>/Avid MediaFiles/MXF. As an aside, it is quite possible to use indiestor as a cheap way of expanding the media storage capacity of an exsiting storage network.
 
 .B ONE GROUP LIMITATION:
-At present users can only be a member of one group at a time. However, we aim to raise enough funding through sales of our GUI to implement multiple group membership and extended ZFS features.
-
-Our feature roadmap is available here: http://indiestor.com/indiestor-roadmap-2014-2015
+At present users can only be a member of one group at a time.
 
 .B UNSHARING:
 The leading editor (.avid owner) can unshare at any time by simply removing the share trigger. For example, by renaming the project folder “episode3.avid" to “episode”3 indiestor will automatically unshare the project. As part of this process work completed by each editor in /shared/<user> will be archived into the lead project.
 
-.B MORE DETAILS:
-For more details on the inner workings of indiestor, please view this document:
-http://indiestor.com/images/indiestor%20architecture%20notes.pdf
+
+.B FURTHER DEVELOPMENT
+We aim to raise funding for further development via sales of our web management interface.
+
+Our project roadmap is available here:
+http://indiestor.com/indiestor-roadmap-2014-2015
+
 .SH OPTIONS
 There are six main entities through which the command line operates:
 
