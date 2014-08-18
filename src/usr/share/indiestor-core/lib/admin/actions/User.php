@@ -367,7 +367,7 @@ class User extends EntityType
 		syscommand_smbpasswd_d($userName);
 	}
 
-	static function expel($commandAction)
+	static function pkill($commandAction)
 	{
 		$userName=ProgramActions::$entityName;
 		syscommand_pkill_u($userName);
