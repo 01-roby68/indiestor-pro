@@ -18,6 +18,6 @@ $ pkill -KILL -u carl
 
 function syscommand_pkill_u($userName)
 {
-	ShellCommand::exec("pkill -KILL -u $userName");
+	ShellCommand::exec("pkill -15 -u $userName");
 }
 
