@@ -132,6 +132,7 @@ class User extends EntityType
                 return sysquery_df_device_for_folder($homeFolder);
         }
 
+        static function validateRemoveZfsQuota($userName) { }
 
 	static function validateSetZfsQuota($userName)
 	{
