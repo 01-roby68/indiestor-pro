@@ -470,7 +470,7 @@ class User extends EntityType
                         $homeFolderWithoutLeadingSlash=substr($homeFolder,1);
                         ShellCommand::exec_fail_if_error("zfs set quota=none $homeFolderWithoutLeadingSlash");
                 }
-                else ActionEngine::error('AE_ERR_USER_QUOTA_ONLY_SUPPORTED_ZFS');
+                //ignore attempts to remove ZFS Quota on non-ZFS volumes
         }
 
 	static function show($commandAction)
