@@ -20,7 +20,7 @@ indiestor - an Open Source storage platform for Avid project and media sharing.
 
  --users [-show -json]
 
- --user [<arg> -add -delete -set-home <arg> -remove-home -set-group <arg> -unset-group -set-zfs-quota <arg> -remove-zfs-quota -set-passwd <arg> -lock -add-to-samba]
+ --user [<arg> -add -delete -set-home <arg> -remove-home -set-group <arg> -unset-group -set-zfs-quota <arg> -remove-zfs-quota -set-passwd <arg> -lock -pkill -add-to-samba]
 
  --user [<arg> -remove-from-indiestor]
 
@@ -225,6 +225,9 @@ sets the user's password to <arg>.
 locks the account for the user named. This prevents the user from logging in or connecting through samba. The samba flags will contain the "D" flag. The system locks the user by writing "!" in front of the password field of the user's record in the file
 .B /etc/shadow
 .You can unlock the account by setting the password again with the -set-passwd <arg> action.
+
+.B -pkill:
+Pkill will terminate all processes relating the selected user. This function is handy in cadses that Avid projects cannot be opened due to the warning:"resouce temporarily unavailable"
 
 .B -add-to-samba:
 Adds an existing user to samba. 
