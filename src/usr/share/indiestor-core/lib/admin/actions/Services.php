@@ -76,6 +76,15 @@ class Services extends EntityType
                 else return false;
         }
 
+        static function zfsServiceStatus($serviceName)
+        {
+                $zfsinstalled = shell_exec("dpkg-query -l | grep zfs-dkms | wc -l");
+                $zpoolhealth = shell_exec("zpool status -x");
+                if($zfsinstalled == 0) return "not installed";
+                elseif (preg_match("all pools are healthy",$zpoolhealth)) return true;
+                else return false;
+        }
+
         static function status()
         {
                 $status=array();
@@ -105,12 +114,13 @@ class Services extends EntityType
                         if($serviceStatus) $situation='running';
                         else $situation='not running';
                         echo "$service $situation\n";
-                }                                
+                }
         }
 
         static function showJSON()
         {
                 echo json_encode_legacy(self::status())."\n";
+
         }
 
         static function json($commandAction)
