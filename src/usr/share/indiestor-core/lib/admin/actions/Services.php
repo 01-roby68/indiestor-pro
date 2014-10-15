@@ -81,21 +81,25 @@ class Services extends EntityType
                 $zfsinstalled = shell_exec("dpkg-query -l | grep zfs-dkms | wc -l");
                 $zpoolhealth = shell_exec("zpool status -x");
                 if($zfsinstalled == 0) return "not installed";
-                elseif (preg_match("all pools are healthy",$zpoolhealth)) return true;
-                else return false;
+                elseif (preg_match("/healthy/",$zpoolhealth)) return "healthy";
+                else return "warning";
         }
 
         static function status()
         {
+                {
                 $status=array();
                 $status['samba']=self::upstartServiceStatus('samba');
                 $status['incron']=self::upstartServiceStatus('incron');
                 $status['netatalk']=self::netatalkServiceStatus('netatalk');
+                $status['zfs']=self::zfsServiceStatus('zfs');
                 $countPids=InotifyWait::statusWatchingAll();
                 if($countPids>0)
                         $status['watching']=true;
                 else    $status['watching']=false;
                 return $status;
+                }
+
         }
 
         static function show($commandAction)
@@ -111,16 +115,22 @@ class Services extends EntityType
                 $status=self::status();
                 foreach($status as $service=>$serviceStatus) 
                 {
-                        if($serviceStatus) $situation='running';
-                        else $situation='not running';
-                        echo "$service $situation\n";
+                        if ($service == "zfs")
+                        {
+                                echo "$service $serviceStatus\n";
+                        }
+                        elseif ($serviceStatus == 1)
+                        {
+                                echo "$service running\n";
+                        }
+                        else
+                                echo "$service not running";
                 }
         }
 
         static function showJSON()
         {
                 echo json_encode_legacy(self::status())."\n";
-
         }
 
         static function json($commandAction)
