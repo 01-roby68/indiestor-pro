@@ -45,6 +45,12 @@ class SharingOperations
 
 	static function createSymlink($linkName,$target,$userName)
 	{
+                if(file_exists($linkName)) {
+        		syslog_notice("WARNING. Target exists already. While symlinking link:'$linkName',target:'$target' ".
+                                        "Skipping.");
+                        return;
+                }
+
 		syslog_notice("symlinking link:'$linkName',target:'$target'");
 		$result=symlink($target,$linkName);
 		if($result==true) syslog_notice('symlink successfully created');
