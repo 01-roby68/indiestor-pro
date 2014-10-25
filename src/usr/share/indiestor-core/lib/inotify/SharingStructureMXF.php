@@ -31,7 +31,8 @@ class SharingStructureMXF
 	static function reshare($users)
 	{
 		if($users==null) $users=array();
-                self::ensureAMFPermsOwnership($users);
+//issue 3: indiestor-inotify performance
+//                self::ensureAMFPermsOwnership($users);
 		self::reshareAvid($users);
 		self::purgeAvid($users);
 	}
