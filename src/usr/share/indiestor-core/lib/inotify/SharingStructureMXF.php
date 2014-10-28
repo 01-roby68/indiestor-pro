@@ -28,11 +28,11 @@ class SharingStructureMXF
 		}
         }
 
-	static function reshare($users)
+	static function reshare($users,$ensureAMFPermsOwnership=false)
 	{
 		if($users==null) $users=array();
-//issue 3: indiestor-inotify performance
-//                self::ensureAMFPermsOwnership($users);
+                if($ensureAMFPermsOwnership)
+                        self::ensureAMFPermsOwnership($users);
 		self::reshareAvid($users);
 		self::purgeAvid($users);
 	}
