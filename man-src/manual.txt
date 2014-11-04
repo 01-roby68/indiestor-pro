@@ -1,9 +1,9 @@
 .\" Process this file with
 .\" groff -man -Tascii indiestor.1
 .\"
-.TH indiestor 1 "APRIL 2014" Linux "User Manuals"
+.TH indiestor 1 "NOVEMBER 2014" Linux "User Manuals"
 .SH NAME
-indiestor - an Open Source storage platform for Avid project and media sharing.
+indiestor - An Open Source storage platform for Avid project and media sharing.
 .SH SYNOPSIS
 
 .B indiestor
@@ -34,18 +34,17 @@ indiestor - an Open Source storage platform for Avid project and media sharing.
 
  --help
 .SH DESCRIPTION
-indiestor is an Open Source storage platform for Avid collboration. Management is performed using a free command line tool. This takes care of both users and groups, as well as the sharing of projects and media. A none-free Graphical User Interface is avaible from our site for a small fee.
+indiestor is an Open Source storage platform for Avid collboration. Management is performed using our free command line tool. This takes care user and group management, as well as the sharing of projects and media. A none-free Graphical User Interface is avaible from our site for a small fee.
 
-We use incron and inotify to watch the file system for 'share triggers' (see below). There is very little for the editor to learn and nothing to install on each workstation.
+Incron and inotify are used to watch the file system for 'share triggers' (see below). There is very little for the editor to learn and nothing to install on each workstation.
 
-Be aware that indiestor does not attempt to emulate Avid style bin locking. As a home centric storage solution, indiestor provides each editor with their own network drive.
+Be aware that indiestor does not attempt to emulate Avid sharing environment. Instead as a home centric storage solution, it provides each editor with his/her own network drive.
 
 .B OS COMPATIBILITY:
 Debian Wheezy (Recommended),
 Debian Squeeze,
 Ubuntu Precise,
 Ubuntu Raring,
-Raspberian
 
 .B SHARING PROJECTS:
 To share a project the leading editor must be: A) in a group with his/her co-editors B) connected to his/her own area.  By simply naming a new or existing project with the with appropriately the project will be shared.
@@ -83,7 +82,7 @@ The leading editor (.avid owner) can unshare at any time by simply removing the 
 We aim to raise funding for further development via sales of our web management interface.
 
 Our project roadmap is available here:
-http://indiestor.com/indiestor-roadmap-2014-2015
+http://indiestor.com/roadmap/
 
 .SH OPTIONS
 There are six main entities through which the command line operates:
@@ -272,7 +271,7 @@ Stops incron service
 .IP --services
 
 .B -show -json:
-JSON export of the servcice list (for easy plugin to GUI applications)
+JSON export of the servcice list (for easy plugin to GUI)
 
 .IP --help:
 Shows the command the synopsis.
@@ -287,7 +286,7 @@ For example:
 
 The command above adds “john” to the system, makes him a memeber of the group "grp1" and sets his password to "hello". By default, the system will create john's home folder in
 .B /home/john
-. You can override this default by using the -set-home <arg> option. If the target volume is a ZFS storage pool indiestor will create an individual ZFS dataset for the user. For now we only recommend using ZFS storage with windows clients.
+. You can override this default by using the -set-home <arg> option. If the target volume is a ZFS storage pool indiestor will create an individual ZFS dataset for the user.
 
 .SH FILES
 .I /etc/passwd
@@ -366,14 +365,7 @@ Hit enter and the console should respond with:
  "All drives will be viewed as media drives"
 
 .B FURTHER DIAGNOSTIC INFORMATION:
-Further diagnostic information can be found on our Technical FAQs page at: http://www.indiestor.com/documentation/getting-started/admin-faq
-
-.B SUPPORT:
-Please direct indiestor native support requests to our google group:
-https://groups.google.com/forum/#!forum/indiestor
-
-.B Indiestor GUI:
-You can purchase an elegant graphical user interface for managing indiestor native from our website. This is available for a small fee, which will help fund the further development of this project. GUI includes limited email support.
+Further diagnostic information can be found on our Technical FAQs page at: http://indiestor.com/faqs/
 
 .SH AUTHOR
 Alex Gardiner (alex@indiestor.com) & Erik Poupaert (erik@indiestor.com)
