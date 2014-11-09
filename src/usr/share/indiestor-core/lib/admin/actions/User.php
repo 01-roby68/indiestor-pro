@@ -261,12 +261,6 @@ class User extends EntityType
 			SharingStructureDefault::reshare($group->name,$members);
 			SharingStructureAvid::reshare($group->name,$members);
 			SharingStructureMXF::reshare($members);
-
-			if($fileSystem=='zfs')
-			{
-				ShellCommand::exec_fail_if_error("chown -R $userName.$userName $homeFolder");
-			}
-
 		}
 	}
 
