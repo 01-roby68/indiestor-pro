@@ -124,7 +124,7 @@ class Services extends EntityType
                                 echo "$service running\n";
                         }
                         else
-                                echo "$service not running";
+                                echo "$service not running\n";
                 }
         }
 
