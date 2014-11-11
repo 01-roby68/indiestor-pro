@@ -20,7 +20,7 @@ indiestor - An Open Source storage platform for Avid project and media sharing.
 
  --users [-show -json]
 
- --user [<arg> -add -delete -set-home <arg> -remove-home -set-group <arg> -unset-group -set-zfs-quota <arg> -remove-zfs-quota -set-passwd <arg> -lock -pkill -add-to-samba]
+ --user [<arg> -add -delete -set-home <arg> -remove-home -set-group <arg> -unset-group -set-passwd <arg> -lock -pkill -add-to-samba]
 
  --user [<arg> -remove-from-indiestor]
 
@@ -155,14 +155,11 @@ Y=yes, N=no
 .B 	group: 
 indiestor group for the user*
 
-.B 	ZFS quota: 
-ZFS quota in gigabytes
+.B 	avail.: 
+space available to user home
 
-.B 	used: 
-gigabytes used
-
-.B 	%used:
-percentage used
+.B used:
+space used by user home
 
 .B 	samba: 
 Y=has samba access, N=does not have samba access
@@ -211,11 +208,6 @@ sets the group for the user named to the indiestor group <arg>. This indiestor g
 .B -unset-group:
 removes the user named from his/her current indiestor group.
 
-.B -set-zfs-quota  <arg>:
-sets the zfs quota for the user named to <arg> gigabytes (if the home is ZFS based). Must be a valid number of gigabytes.
-
-.B -remove-zfs-quota:
-removes the ZFS quota for the user and makes his quota unlimited.
 
 .B -set-passwd <arg>:
 sets the user's password to <arg>.
@@ -270,8 +262,11 @@ Stops incron service
 
 .IP --services
 
+.B -show:
+Displays service summary
+
 .B -show -json:
-JSON export of the servcice list (for easy plugin to GUI)
+JSON export of service summary (for easy plugin to GUI)
 
 .IP --help:
 Shows the command the synopsis.
@@ -286,7 +281,7 @@ For example:
 
 The command above adds “john” to the system, makes him a memeber of the group "grp1" and sets his password to "hello". By default, the system will create john's home folder in
 .B /home/john
-. You can override this default by using the -set-home <arg> option. If the target volume is a ZFS storage pool indiestor will create an individual ZFS dataset for the user.
+. You can override this default by using the -set-home <arg> option. The argument should simply be the path required.
 
 .SH FILES
 .I /etc/passwd

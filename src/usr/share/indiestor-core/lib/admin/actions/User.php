@@ -30,8 +30,8 @@ class User extends EntityType
 		if(ProgramActions::actionExists('set-group')) self::validateSetGroup($userName);
 		if(ProgramActions::actionExists('unset-group')) self::validateUnsetGroup($userName);
 		if(ProgramActions::actionExists('lock')) self::validateLock($userName);
-		if(ProgramActions::actionExists('set-zfs-quota')) self::validateSetZfsQuota($userName);
-		if(ProgramActions::actionExists('remove-zfs-quota')) self::validateRemoveZfsQuota($userName);
+//		if(ProgramActions::actionExists('set-zfs-quota')) self::validateSetZfsQuota($userName);
+//		if(ProgramActions::actionExists('remove-zfs-quota')) self::validateRemoveZfsQuota($userName);
 		if(ProgramActions::actionExists('set-passwd')) self::validateSetPasswd($userName);
 		if(ProgramActions::actionExists('add-to-samba')) self::validateAddToSamba($userName);
 		if(ProgramActions::actionExists('remove-from-samba')) self::validateRemoveFromSamba($userName);
@@ -132,14 +132,14 @@ class User extends EntityType
                 return sysquery_df_device_for_folder($homeFolder);
         }
 
-        static function validateRemoveZfsQuota($userName) { }
+//        static function validateRemoveZfsQuota($userName) { }
 
-	static function validateSetZfsQuota($userName)
-	{
-		$commandAction=ProgramActions::findByName('set-zfs-quota');
-		$GB=$commandAction->actionArg;
-		self::checkForValidQuota($GB);
-	}
+// static function validateSetZfsQuota($userName)
+// {
+// 	$commandAction=ProgramActions::findByName('set-zfs-quota');
+// 	$GB=$commandAction->actionArg;
+// 	self::checkForValidQuota($GB);
+// }
 
 	static function cracklibActive()
 	{
@@ -199,23 +199,23 @@ class User extends EntityType
 			}
 
 			//handle ZFS volumes
-			if($homeFolder==null) $homeFolder="/home/$userName";
+			// if($homeFolder==null) $homeFolder="/home/$userName";
 
-			$fileSystem=sysquery_df_filesystem_for_folder(dirname($homeFolder));
-			if($fileSystem=='zfs')
-			{
-				syscommand_mkdir($homeFolder);
-				$homeFolderWithoutLeadingSlash=substr($homeFolder,1);
-				ShellCommand::exec_fail_if_error("zfs create $homeFolderWithoutLeadingSlash");
-			}
+			// $fileSystem=sysquery_df_filesystem_for_folder(dirname($homeFolder));
+			// if($fileSystem=='zfs')
+			// {
+			// 	syscommand_mkdir($homeFolder);
+			// 	$homeFolderWithoutLeadingSlash=substr($homeFolder,1);
+			// 	ShellCommand::exec_fail_if_error("zfs create $homeFolderWithoutLeadingSlash");
+			// }
 
 			//execute
 			syscommand_adduser($userName,$homeFolder);
 
-			if($fileSystem=='zfs')
-			{
-				ShellCommand::exec_fail_if_error("chown -R $userName.$userName $homeFolder");
-			}
+			// if($fileSystem=='zfs')
+			// {
+			// 	ShellCommand::exec_fail_if_error("chown -R $userName.$userName $homeFolder");
+			// }
 
 			EtcPasswd::reset();
 		}
@@ -233,14 +233,14 @@ class User extends EntityType
         {
 		$userName=ProgramActions::$entityName;
 		//handle ZFS volumes
-		$user=EtcPasswd::instance()->findUserByName($userName);
-		$homeFolder=$user->homeFolder;
-		if(ProgramActions::actionExists('remove-home') && 
-			sysquery_df_filesystem_for_folder(dirname($homeFolder))=='zfs')
-		{
-			$homeFolderWithoutLeadingSlash=substr($homeFolder,1);
-			ShellCommand::exec("zfs destroy $homeFolderWithoutLeadingSlash 2> /dev/null");
-		}
+		// $user=EtcPasswd::instance()->findUserByName($userName);
+		// $homeFolder=$user->homeFolder;
+		// if(ProgramActions::actionExists('remove-home') && 
+		// 	sysquery_df_filesystem_for_folder(dirname($homeFolder))=='zfs')
+		// {
+		// 	$homeFolderWithoutLeadingSlash=substr($homeFolder,1);
+		// 	ShellCommand::exec("zfs destroy $homeFolderWithoutLeadingSlash 2> /dev/null");
+		// }
 		syscommand_deluser($userName,ProgramActions::actionExists('remove-home'));
 		EtcPasswd::reset();
 		syscommand_pdbedit_delete($userName);
@@ -422,14 +422,14 @@ class User extends EntityType
 		$homeFolder=$commandAction->actionArg;
 
 		//handle ZFS volumes
-		$fileSystem=sysquery_df_filesystem_for_folder(dirname($homeFolder));
-		if($fileSystem=='zfs')
-		{
-			syscommand_mkdir($homeFolder);
-			$homeFolderWithoutLeadingSlash=substr($homeFolder,1);
-			ShellCommand::exec_fail_if_error("zfs create $homeFolderWithoutLeadingSlash");
-			ShellCommand::exec_fail_if_error("chown $userName.$userName $homeFolder");
-		}
+		// $fileSystem=sysquery_df_filesystem_for_folder(dirname($homeFolder));
+		// if($fileSystem=='zfs')
+		// {
+		// 	syscommand_mkdir($homeFolder);
+		// 	$homeFolderWithoutLeadingSlash=substr($homeFolder,1);
+		// 	ShellCommand::exec_fail_if_error("zfs create $homeFolderWithoutLeadingSlash");
+		// 	ShellCommand::exec_fail_if_error("chown $userName.$userName $homeFolder");
+		// }
 
 		if(!file_exists($homeFolder))
 		{
@@ -443,35 +443,35 @@ class User extends EntityType
 		EtcGroup::reset();
 	}
 
-	static function setZfsQuota($commandAction)
-	{
-		$userName=ProgramActions::$entityName;
-		$homeFolder=self::homeFolderForUser($userName);
-		//quota
-		$GB=$commandAction->actionArg;
-		//handle ZFS volumes
-		$fileSystem=sysquery_df_filesystem_for_folder(dirname($homeFolder));
-		if($fileSystem=='zfs')
-		{
-			$homeFolderWithoutLeadingSlash=substr($homeFolder,1);
-			ShellCommand::exec_fail_if_error("zfs set quota={$GB}G $homeFolderWithoutLeadingSlash");
-		}
-                else ActionEngine::error('AE_ERR_USER_QUOTA_ONLY_SUPPORTED_ZFS');
-	}
+	// static function setZfsQuota($commandAction)
+	// {
+	// 	$userName=ProgramActions::$entityName;
+	// 	$homeFolder=self::homeFolderForUser($userName);
+	// 	//quota
+	// 	$GB=$commandAction->actionArg;
+	// 	//handle ZFS volumes
+	// 	$fileSystem=sysquery_df_filesystem_for_folder(dirname($homeFolder));
+	// 	if($fileSystem=='zfs')
+	// 	{
+	// 		$homeFolderWithoutLeadingSlash=substr($homeFolder,1);
+	// 		ShellCommand::exec_fail_if_error("zfs set quota={$GB}G $homeFolderWithoutLeadingSlash");
+	// 	}
+ //                else ActionEngine::error('AE_ERR_USER_QUOTA_ONLY_SUPPORTED_ZFS');
+	// }
 
-        static function removeZfsQuota($commandAction)
-        {
-                $userName=ProgramActions::$entityName;
-                $homeFolder=self::homeFolderForUser($userName);
-                //handle ZFS volumes
-                $fileSystem=sysquery_df_filesystem_for_folder(dirname($homeFolder));
-                if($fileSystem=='zfs')
-                {
-                        $homeFolderWithoutLeadingSlash=substr($homeFolder,1);
-                        ShellCommand::exec_fail_if_error("zfs set quota=none $homeFolderWithoutLeadingSlash");
-                }
-                //ignore attempts to remove ZFS Quota on non-ZFS volumes
-        }
+ //        static function removeZfsQuota($commandAction)
+ //        {
+ //                $userName=ProgramActions::$entityName;
+ //                $homeFolder=self::homeFolderForUser($userName);
+ //                //handle ZFS volumes
+ //                $fileSystem=sysquery_df_filesystem_for_folder(dirname($homeFolder));
+ //                if($fileSystem=='zfs')
+ //                {
+ //                        $homeFolderWithoutLeadingSlash=substr($homeFolder,1);
+ //                        ShellCommand::exec_fail_if_error("zfs set quota=none $homeFolderWithoutLeadingSlash");
+ //                }
+ //                //ignore attempts to remove ZFS Quota on non-ZFS volumes
+ //        }
 
 	static function show($commandAction)
 	{
