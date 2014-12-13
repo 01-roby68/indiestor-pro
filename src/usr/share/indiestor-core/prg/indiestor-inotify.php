@@ -98,8 +98,12 @@ while(true)
 	}
 	if(count($groupFiles)==0) break;
 	$groupFile=$groupFiles[0];
-	$groupName=basename($groupFile);
-	unlink($groupFile);
+	$groupName=basename($groupFile);        
+
+	$ulresult=unlink($groupFile);
+        if($ulresult===FALSE)
+                syslog_notice("error unlinking group file $groupFile");
+
 	syslog_notice("processing group: $groupName");
 
 	//find group record by name
