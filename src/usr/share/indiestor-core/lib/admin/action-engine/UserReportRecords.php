@@ -40,19 +40,11 @@ class UserReportRecords
 			if($userReportRecord->groupName==null) $formattedUserRecord['groupName']='(none)';
 			else $formattedUserRecord['groupName']=$userReportRecord->groupName;
 
-			//quota
-			if($userReportRecord->hasQuotaRecord)
-			{
-				$formattedUserRecord['quotaTotalGB']=floor($userReportRecord->quotaTotalGB).'G';
-				$formattedUserRecord['quotaUsedGB']=number_format($userReportRecord->quotaUsedGB,1).'G';
-				$formattedUserRecord['quotaUsedPerc']=floor($userReportRecord->quotaUsedPerc).'%';
-			}
-			else
-			{
-				$formattedUserRecord['quotaTotalGB']='-';
-				$formattedUserRecord['quotaUsedGB']='-';
-				$formattedUserRecord['quotaUsedPerc']='-';
-			}
+			//Total Space Available to home directory
+			$formattedUserRecord['AvailSpace']=$userReportRecord->AvailSpace;
+
+			//Space Used by home directory
+			$formattedUserRecord['UsedSpace']=$userReportRecord->UsedSpace;
 
 			if(array_key_exists($userReportRecord->userName,$sambaUsers))
 			{                                
@@ -89,9 +81,9 @@ class UserReportRecords
 			return;
 		}
 
-        $format1="%-10s %-20s %-8s %-10s %-10s %-6s %-6s %-6s %-6s %-8s\n";
-        $format2="%-10s %-20s %-8s %-10s %-10s %-6s %-6s %-6s %-6s %-8s\n";
-		printf($format1,'user','home','locked','group','ZFS quota','used','%used','samba','flags','SMB conn.');
+        $format1="%-15s %-20s %-8s %-15s %-10s %-10s %-6s %-6s %-8s\n";
+        $format2="%-15s %-20s %-8s %-15s %-10s %-10s %-6s %-6s %-8s\n";
+		printf($format1,'user','home','locked','group','Avail.','Used','samba','flags','SMB conn.');
 		foreach($formattedUserRecords as $formattedUserRecord)
 		{
 			printf($format2,
@@ -99,9 +91,8 @@ class UserReportRecords
 				$formattedUserRecord['homeFolder'],
 				$formattedUserRecord['locked'],
 				$formattedUserRecord['groupName'],
-				$formattedUserRecord['quotaTotalGB'],
-				$formattedUserRecord['quotaUsedGB'],
-				$formattedUserRecord['quotaUsedPerc'],
+				$formattedUserRecord['AvailSpace'],
+				$formattedUserRecord['UsedSpace'],
 				$formattedUserRecord['samba'],
 				$formattedUserRecord['sambaFlags'],
 				$formattedUserRecord['sambaConnected']);  

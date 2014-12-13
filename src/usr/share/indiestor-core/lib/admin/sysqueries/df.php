@@ -125,20 +125,14 @@ rara 306K 10G
 
 */
 
-function sysquery_df_quota_for_folder($userName,$folder)
+// get size of FS containing home directory
+function sysquery_df_home_fs_total($userName,$folder)
 {
-	$fileSystemLine=ShellCommand::query_fail_if_error("df -h $folder | tail -n +2 | awk '{ print  $2,$3 }' ");	
-	$user=array();
-	$user['name']=$userName;
-	if(trim($fileSystemLine)!='')
-	{
-		$fields=explode(' ',$fileSystemLine);
-		if(count($fields)>=2)
-		{
-			$user['used']=$fields[1];
-			$user['quota']=$fields[0];
-		}
-	}
-	return $user;
+	return trim(ShellCommand::query_fail_if_error("df -h $folder | tail -n +2 | awk '{ print  $2 }' "));	
 }
 
+// get size of user home directory
+function sysquery_df_home_size($userName,$folder)
+{
+	return trim(ShellCommand::query_fail_if_error("du -h --max-depth=0 $folder | awk '{print $1}' "));	
+}
