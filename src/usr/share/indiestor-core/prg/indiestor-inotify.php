@@ -88,6 +88,8 @@ syslog_notice_start_running();
 
 while(true)
 {
+        clearstatcache();
+
 	syslog_notice("indiestor-inotify: starting loop");
 
 	$groupFiles=glob('/var/spool/indiestor/*');
