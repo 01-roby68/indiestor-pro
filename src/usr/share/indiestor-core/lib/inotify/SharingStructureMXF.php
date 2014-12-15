@@ -53,8 +53,7 @@ class SharingStructureMXF
 
                 //fix ownership for AMF subfolder
                 if(file_exists($amfFolder)) {
-        	    chown($amfFolder,$user->name);
-	        	chgrp($amfFolder,$user->name);
+                        SharingOperations::fixUserObjectOwnership($user->name,$amfFolder);
                 }
 
 		$folders=self::mxfSubFolders($mxfFolder);
