@@ -90,8 +90,6 @@ while(true)
 {
         clearstatcache();
 
-	syslog_notice("indiestor-inotify: starting loop");
-
 	$groupFiles=glob('/var/spool/indiestor/*');
 	//pick the first group available or terminate
 
