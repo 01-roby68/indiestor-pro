@@ -79,7 +79,7 @@ class Services extends EntityType
         static function zfsServiceStatus($serviceName)
         {
                 $zfsinstalled = shell_exec("dpkg-query -l | grep zfs-dkms | wc -l");
-                $zpoolhealth = shell_exec("zpool status -x 2>&1 >/dev/null");
+                $zpoolhealth = shell_exec("zpool status -x");
                 if($zfsinstalled == 0) return "Not Installed";
                 elseif (preg_match("/healthy/",$zpoolhealth)) return "Healthy";
                 else return "ERROR!";
