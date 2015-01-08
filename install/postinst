@@ -1,5 +1,5 @@
 #!/bin/sh
-# postinst script for indiestor
+# postinst script for indiestor-pro
 #
 # see: dh_installdeb(1)
 
@@ -17,9 +17,9 @@
 
 case "$1" in
     configure)
-	indiestorUsers=$(cat /etc/group | grep "indiestor-users")
-	if [ -z "$indiestorUsers" ]; then
-		groupadd "indiestor-users"
+	indiestorProUsers=$(cat /etc/group | grep "indiestor-pro-users")
+	if [ -z "$indiestorProUsers" ]; then
+		groupadd "indiestor-pro-users"
 	fi
 	indiewheel=$(cat /etc/group | grep indiewheel)
 	if [ -z "$indiewheel" ]; then
@@ -32,14 +32,14 @@ case "$1" in
 	/etc/init.d/incron restart
 	nmbd restart
 	smbd restart
-	indiestor --users -reshare
-	indiestor --users -regenerate-incrontab
-	indiestor --groups -start-watching
+	indiestor-pro --users -reshare
+	indiestor-pro --users -regenerate-incrontab
+	indiestor-pro --groups -start-watching
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
 	if [ "$release" = "wheezy" ] ; then
-		insserv indiestor-watch
+		insserv indiestor-pro-watch
 	else
-		update-rc.d indiestor-watch defaults
+		update-rc.d indiestor-pro-watch defaults
 	fi
     ;;
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 #------------------------------------------------------------
-# Indiestor program
+# Indiestor Pro program
 # Concept, requirements, specifications, and unit testing
 # By Alex Gardiner, alex@indiestor.com
 # Written by Erik Poupaert, erik@sankuru.biz
@@ -8,26 +8,20 @@
 # Licensed under the GPL
 #------------------------------------------------------------
 group=$1
-watchType=$2
 
 if [ "$group" = "" ] ; then
 	echo "group argument required" >&2 
 	exit 1
 fi
 
-if [ "$watchType" = "" ] ; then
-	echo "watchType argument required" >&2 
-	exit 1
-fi
+groupFile="/var/spool/indiestor-pro/$group"
 
-if [ "$watchType" = "main" ] ; then
-	events='attrib,move,move_self,create,delete,delete_self'
+if [ ! -f $groupFile ]; then
+	touch $groupFile
 else
-	events='modify'
+	if [  "$(pgrep -f '/usr/bin/php /usr/share/indiestor-pro-core/prg/indiestor-pro-inotify.php')" = "" ] ; then
+		rm -f $groupFile
+		/usr/bin/touch $groupFile
+	fi
 fi
-
-while indiestor --group $group -show-watches $watchType | \
-		inotifywait --exclude __${group}__${watchType}__ --fromfile - --event $events; do
-	indiestor-touch $group
-done
 

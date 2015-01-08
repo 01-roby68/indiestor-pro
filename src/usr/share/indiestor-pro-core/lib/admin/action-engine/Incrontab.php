@@ -15,7 +15,7 @@ class Incrontab
 {
 	static function generate()
 	{
-		syscommand_incrontab('/var/spool/indiestor IN_CREATE /usr/bin/indiestor-inotify');
+		syscommand_incrontab('/var/spool/indiestor-pro IN_CREATE /usr/bin/indiestor-pro-inotify');
 	}
 }
 

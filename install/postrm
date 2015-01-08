@@ -1,5 +1,5 @@
 #!/bin/sh
-# postrm script for indiestor
+# postrm script for indiestor-pro
 #
 # see: dh_installdeb(1)
 
@@ -21,9 +21,9 @@ case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
 	if [ "$release" = "wheezy" ] ; then
-		insserv --remove indiestor-watch
+		insserv --remove indiestor-pro-watch
 	else
-		update-rc.d -f indiestor-watch remove
+		update-rc.d -f indiestor-pro-watch remove
 	fi
     ;;
 

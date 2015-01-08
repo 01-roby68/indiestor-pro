@@ -24,8 +24,8 @@ requireLibFile('admin/action-engine/json_encode_legacy.php');
 class ActionEngine
 {
 	const indiestorGroupPrefix='is_';
-	const indiestorUserGroup='indiestor-users';
-	const indiestorSysUserName='indiestor';
+	const indiestorUserGroup='indiestor-pro-users';
+	const indiestorSysUserName='indiestor-pro';
 
 	static function error($messageCode,$parameters=array())
 	{

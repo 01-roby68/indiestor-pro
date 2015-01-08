@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 /*
-        Indiestor program
+        Indiestor Pro program
         Concept, requirements, specifications, and unit testing
         By Alex Gardiner, alex@indiestor.com
         Written by Erik Poupaert, erik@sankuru.biz
@@ -17,10 +17,10 @@ global $appPrefix;
 $appRoot=dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 if($appRoot=="/") $appPrefix=""; else $appPrefix=$appRoot;
 
-$LIB="$appPrefix/usr/share/indiestor-core/lib";
+$LIB="$appPrefix/usr/share/indiestor-pro-core/lib";
 $BIN="$appPrefix/usr/bin";
 
-if (dirname(__FILE__)=='/usr/share/indiestor-core/prg')
+if (dirname(__FILE__)=='/usr/share/indiestor-pro-core/prg')
 {
 	$INUSER='indienotify';
 }

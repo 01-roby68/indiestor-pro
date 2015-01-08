@@ -1,6 +1,6 @@
 #!/bin/sh
 #------------------------------------------------------------
-# Indiestor program
+# Indiestor Pro program
 # Concept, requirements, specifications, and unit testing
 # By Alex Gardiner, alex@indiestor.com
 # Written by Erik Poupaert, erik@sankuru.biz
@@ -9,4 +9,4 @@
 #------------------------------------------------------------
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 export PATH
-super indiestor "$@"
+super indiestor-pro "$@"

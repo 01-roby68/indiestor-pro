@@ -2,7 +2,7 @@
 <?php
 
 /*
-        Indiestor program
+        Indiestor Pro program
         Concept, requirements, specifications, and unit testing
         By Alex Gardiner, alex@indiestor.com
         Written by Erik Poupaert, erik@sankuru.biz
@@ -13,10 +13,10 @@
 //--------------------------
 //Check deployment location
 //--------------------------
-if (dirname(__FILE__)=='/usr/share/indiestor-core/prg')
+if (dirname(__FILE__)=='/usr/share/indiestor-pro-core/prg')
 {
 	$BIN='/usr/bin';
-	$LIB='/usr/share/indiestor-core/lib';
+	$LIB='/usr/share/indiestor-pro-core/lib';
 	$INUSER='indienotify';
 }
 else
@@ -90,12 +90,12 @@ while(true)
 {
         clearstatcache();
 
-	$groupFiles=glob('/var/spool/indiestor/*');
+	$groupFiles=glob('/var/spool/indiestor-pro/*');
 	//pick the first group available or terminate
 
 	if($groupFiles===FALSE)
 	{
-		syslog_notice("error reading files in /var/spool/indiestor");
+		syslog_notice("error reading files in /var/spool/indiestor-pro");
 		break;		
 	}
 	if(count($groupFiles)==0) break;

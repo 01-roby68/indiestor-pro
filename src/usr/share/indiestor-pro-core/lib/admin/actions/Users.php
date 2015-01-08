@@ -60,7 +60,7 @@ class Users extends EntityType
 
         static function reshare($commandAction)
         {
-		chownIndienotify('/var/spool/indiestor');
+		chownIndienotify('/var/spool/indiestor-pro');
 
                 $indiestorGroup=EtcGroup::instance()->indiestorGroup;
                 if($indiestorGroup==null) 

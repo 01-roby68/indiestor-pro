@@ -48,7 +48,7 @@ class InotifyWait
 
 	static function watchProcessesForWatchType($groupName,$watchType)
 	{
-		$pidsPrg=sysquery_pgrep("^/bin/sh /usr/bin/indiestor-watch-group $groupName $watchType");
+		$pidsPrg=sysquery_pgrep("^/bin/sh /usr/bin/indiestor-pro-watch-group $groupName $watchType");
 		$pidsInotifyWait=sysquery_pgrep("^inotifywait --exclude __{$groupName}__{$watchType}__ ");
 		return array_merge($pidsPrg,$pidsInotifyWait);
 	}
@@ -79,11 +79,11 @@ class InotifyWait
 
 		$foldersMain=InotifyWatchFolders::watchesMain($group);
 		if(count($foldersMain)>0)
-			self::execBackground("indiestor-watch-group $groupName main");
+			self::execBackground("indiestor-pro-watch-group $groupName main");
 
 		$foldersAVP=InotifyWatchFolders::watchesAVP($group);
 		if(count($foldersAVP)>0)
-			self::execBackground("indiestor-watch-group $groupName avp");
+			self::execBackground("indiestor-pro-watch-group $groupName avp");
 	}
 }
 

@@ -32,7 +32,7 @@
 #
 :define OfficeHours {8:00-17:30}/{mon,tue,wed,thu,fri}
 
-indiestor /usr/share/indiestor-core/prg/indiestor.php uid=root env=PATH :indiewheel
-indiestor-inotify /usr/share/indiestor-core/prg/indiestor-inotify.php uid=root env=PATH :indienotify
-indiestor-auth /usr/share/indiestor-gui-core/indiestor-auth uid=root env=PATH :indiewheel
+indiestor-pro /usr/share/indiestor-pro-core/prg/indiestor-pro.php uid=root env=PATH :indiewheel
+indiestor-pro-inotify /usr/share/indiestor-pro-core/prg/indiestor-pro-inotify.php uid=root env=PATH :indienotify
+indiestor-pro-auth /usr/share/indiestor-pro-gui-core/indiestor-pro-auth uid=root env=PATH :indiewheel
 
