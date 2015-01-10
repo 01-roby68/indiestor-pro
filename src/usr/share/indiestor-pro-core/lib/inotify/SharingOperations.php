@@ -135,14 +135,14 @@ class SharingOperations
 				syslog_notice("cannot chown '$fsObject' to '$userName'");
 		}
 
-		//group must be the indiestor group
+		//group must be the indiestor pro group
 
 		$currentGroup=SharingOperations::groupByGid($stat['gid']);
-		if(!empty($groupName) && !empty($currentGroup) && $currentGroup!='is_'.$groupName)
+		if(!empty($groupName) && !empty($currentGroup) && $currentGroup!='pro_'.$groupName)
 		{
-			$result=chgrp($fsObject,'is_'.$groupName);
+			$result=chgrp($fsObject,'pro_'.$groupName);
 			if(!$result)
-				syslog_notice("cannot chgrp '$fsObject' to 'is_$groupName'");
+				syslog_notice("cannot chgrp '$fsObject' to 'pro_$groupName'");
 		}
 	}
 

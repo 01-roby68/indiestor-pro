@@ -23,7 +23,7 @@ requireLibFile('admin/action-engine/json_encode_legacy.php');
 
 class ActionEngine
 {
-	const indiestorGroupPrefix='is_';
+	const indiestorGroupPrefix='pro_';
 	const indiestorUserGroup='indiestor-pro-users';
 	const indiestorSysUserName='indiestor-pro';
 
