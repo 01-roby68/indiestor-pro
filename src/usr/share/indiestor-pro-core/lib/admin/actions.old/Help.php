@@ -8,19 +8,14 @@
         Licensed under the GPL
 */
 
-class Users extends EntityType
+
+class Help extends EntityType
 {
-
-        static function json($commandAction)
+        static function default_action($commandAction)
         {
-                //handled by show command
-                return;
+		global $argv;
+		$argEngine=new ArgEngine($argv);
+		$argEngine->usage();
         }
-
-        static function show($commandAction)
-        {
-                //to be implemented
-       }
-
 }
 

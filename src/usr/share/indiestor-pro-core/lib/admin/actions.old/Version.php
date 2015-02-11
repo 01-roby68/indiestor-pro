@@ -8,19 +8,14 @@
         Licensed under the GPL
 */
 
-class Users extends EntityType
+
+class Version extends EntityType
 {
-
-        static function json($commandAction)
+        static function default_action($commandAction)
         {
-                //handled by show command
-                return;
+                $rootFolder=dirname(dirname(dirname(dirname(__FILE__))));
+                $version=trim(file_get_contents("$rootFolder/VERSION"));
+                echo "$version\n";
         }
-
-        static function show($commandAction)
-        {
-                //to be implemented
-       }
-
 }
 

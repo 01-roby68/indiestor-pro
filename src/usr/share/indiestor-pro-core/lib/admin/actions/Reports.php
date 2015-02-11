@@ -8,19 +8,17 @@
         Licensed under the GPL
 */
 
-class Users extends EntityType
+class Reports extends EntityType
 {
 
-        static function json($commandAction)
+        static function storageReport($commandAction)
         {
-                //handled by show command
-                return;
+                echo "to be implemented\n";
         }
 
-        static function show($commandAction)
+        static function dailyReport($commandAction)
         {
-                //to be implemented
-       }
-
+                echo "to be implemented\n";
+        }
 }
 

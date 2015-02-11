@@ -8,7 +8,7 @@
         Licensed under the GPL
 */
 
-class Users extends EntityType
+class AvidWorkspaces extends EntityType
 {
 
         static function json($commandAction)
@@ -19,7 +19,7 @@ class Users extends EntityType
 
         static function show($commandAction)
         {
-                //to be implemented
+                echo "to be implemented\n";
        }
 
 }
