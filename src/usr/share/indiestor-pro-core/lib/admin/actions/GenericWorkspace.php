@@ -8,7 +8,7 @@
         Licensed under the GPL
 */
 
-class AvidWorkspace extends EntityType
+class GenericWorkspace extends EntityType
 {
 
         static function add($commandAction)
