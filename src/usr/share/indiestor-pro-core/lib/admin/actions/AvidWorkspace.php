@@ -19,6 +19,11 @@ class AvidWorkspace extends EntityType
                 echo "to be implemented\n";
         }
 
+        static function setLocation($commandAction)
+        {
+                echo "to be implemented\n";
+        }
+
         static function addUser($commandAction)
         {
                 echo "to be implemented\n";

@@ -26,6 +26,11 @@ class GenericWorkspace extends EntityType
                 echo "to be implemented\n";
         }
 
+        static function setLocation($commandAction)
+        {
+                echo "to be implemented\n";
+        }
+
         static function removeWriteUser($commandAction)
         {
                 echo "to be implemented\n";
