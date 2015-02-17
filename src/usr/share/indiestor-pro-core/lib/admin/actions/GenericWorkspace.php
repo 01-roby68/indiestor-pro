@@ -16,6 +16,13 @@ class GenericWorkspace extends EntityType
                 $conf=new EtcWorkspaces('generic');
 		$workspace=ProgramActions::$entityName;
                 $path=$commandAction->actionArg;
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+                $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
+		if($fileSystem=='zfs')
+                        ShellCommand::exec_fail_if_error("zfs create $path");
+                else mkdir($path);
                 $conf->add($workspace,$path);
                 $conf->save();
         }
