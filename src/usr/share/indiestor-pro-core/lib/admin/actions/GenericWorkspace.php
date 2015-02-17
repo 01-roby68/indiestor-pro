@@ -13,7 +13,11 @@ class GenericWorkspace extends EntityType
 
         static function add($commandAction)
         {
-                echo "to be implemented\n";
+                $conf=new EtcWorkspaces('generic');
+		$workspace=ProgramActions::$entityName;
+                $path=$commandAction->actionArg;
+                $conf->add($workspace,$path);
+                $conf->save();
         }
 
         static function addWriteUser($commandAction)

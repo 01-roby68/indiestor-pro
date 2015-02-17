@@ -15,8 +15,9 @@ class AvidWorkspace extends EntityType
         {
                 $conf=new EtcWorkspaces('avid');
 		$workspace=ProgramActions::$entityName;
-                echo "workspace path: $workspace\n";
-                echo "to be implemented\n";
+                $path=$commandAction->actionArg;
+                $conf->add($workspace,$path);
+                $conf->save();
         }
 
         static function setLocation($commandAction)

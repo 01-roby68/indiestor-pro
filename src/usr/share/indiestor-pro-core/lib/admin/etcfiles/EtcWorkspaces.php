@@ -26,6 +26,12 @@ class EtcWorkspaces
 	}
 
 	//----------------------------------------------
+	// ADD
+	//----------------------------------------------
+        function add($workspace,$path) {
+                $this->workspaces[$workspace]=$path;
+        }
+	//----------------------------------------------
 	// PARSE
 	//----------------------------------------------
 
@@ -36,7 +42,10 @@ class EtcWorkspaces
 		{
 			if(strlen($line)>0)
 			{
-                                $this->workspaces[]=$line;
+                                $fields=explode(":",$line);
+                                $workspace=$fields[0];
+                                $path=$fields[1];
+                                $this->workspaces[$workspace]=$path;
 			}
 		}
                 
@@ -47,8 +56,12 @@ class EtcWorkspaces
 	//----------------------------------------------
         function save() 
         {
-                $lines=join("\n",$this->workspaces);
-                file_put_contents($this->confFilePath,$lines);
+                $lines=array();
+                foreach($this->workspaces as $key=>$value) {
+                        $lines[]="$key:$value";
+                }
+                $lines=join("\n",$lines);
+                file_put_contents($this->confFilePath,$lines."\n");
         }
 
 }
