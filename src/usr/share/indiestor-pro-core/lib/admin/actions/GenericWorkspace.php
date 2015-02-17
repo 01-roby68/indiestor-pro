@@ -27,6 +27,14 @@ class GenericWorkspace extends EntityType
                 $conf->save();
         }
 
+        static function delete($commandAction)
+        {
+                $conf=new EtcWorkspaces('generic');
+		$workspace=ProgramActions::$entityName;
+                $conf->remove($workspace);
+                $conf->save();
+        }
+
         static function addWriteUser($commandAction)
         {
                 echo "to be implemented\n";
@@ -58,11 +66,6 @@ class GenericWorkspace extends EntityType
         }
 
         static function removeZfsQuota($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function delete($commandAction)
         {
                 echo "to be implemented\n";
         }

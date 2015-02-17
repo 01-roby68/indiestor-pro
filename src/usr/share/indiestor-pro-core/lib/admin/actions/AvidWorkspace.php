@@ -27,6 +27,14 @@ class AvidWorkspace extends EntityType
                 $conf->save();
         }
 
+        static function delete($commandAction)
+        {
+                $conf=new EtcWorkspaces('avid');
+		$workspace=ProgramActions::$entityName;
+                $conf->remove($workspace);
+                $conf->save();
+        }
+
         static function setLocation($commandAction)
         {
                 echo "to be implemented\n";
@@ -48,11 +56,6 @@ class AvidWorkspace extends EntityType
         }
 
         static function removeZfsQuota($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function delete($commandAction)
         {
                 echo "to be implemented\n";
         }

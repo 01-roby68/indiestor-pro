@@ -31,6 +31,14 @@ class EtcWorkspaces
         function add($workspace,$path) {
                 $this->workspaces[$workspace]=$path;
         }
+
+	//----------------------------------------------
+	// REMOVE
+	//----------------------------------------------
+        function remove($workspace) {
+                unset($this->workspaces[$workspace]);
+        }
+
 	//----------------------------------------------
 	// PARSE
 	//----------------------------------------------
