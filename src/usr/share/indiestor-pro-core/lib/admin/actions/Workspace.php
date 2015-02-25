@@ -93,13 +93,6 @@ class Workspace extends EntityType
 		if($fileSystem=='zfs') {
                         ShellCommand::exec_fail_if_error("zfs destroy $path");
                 } else {
-
-                        //non-zfs folder must be absolute path
-                        if(substr($path,0,1)!=='/') {
-                                ActionEngine::error('ERR_NON_ZFS_FOLDER_MUST_BE_ABSOLUTE_PATH');
-                                return;
-                        }
-
                         ShellCommand::exec_fail_if_error("rm -rf $path"); 
                 }
                 
@@ -107,9 +100,63 @@ class Workspace extends EntityType
                 $conf->save();
         }
 
-        static function setLocation($commandAction)
+        static function setZfsQuota($commandAction)
         {
-                echo "to be implemented\n";
+                $conf=new EtcWorkspaces(static::WORKSPACETYPE);
+		$workspace=ProgramActions::$entityName;
+
+                if(!array_key_exists($workspace,$conf->workspaces)) {
+                        ActionEngine::error('ERR_WORKSPACE_DOES_NOT_EXISTS');
+                        return;
+                }
+
+                $quota=$commandAction->actionArg;
+
+                if(!preg_match("/^[1-9][0-9]*$/D", $quota)) {
+                        ActionEngine::error('ERR_QUOTA_MUST_BE_INTEGER');
+                        return;
+                }        
+
+                $path=$conf->workspaces[$workspace];
+
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+
+                $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
+
+		if($fileSystem=='zfs') {
+                        ShellCommand::exec_fail_if_error("zfs set quota={$quota}G $path");
+                } else {
+                        ActionEngine::error('ERR_QUOTA_ONLY_FOR_ZFS');
+                        return;
+                }
+        }
+
+        static function removeZfsQuota($commandAction)
+        {
+                $conf=new EtcWorkspaces(static::WORKSPACETYPE);
+		$workspace=ProgramActions::$entityName;
+
+                if(!array_key_exists($workspace,$conf->workspaces)) {
+                        ActionEngine::error('ERR_WORKSPACE_DOES_NOT_EXISTS');
+                        return;
+                }
+
+                $path=$conf->workspaces[$workspace];
+
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+
+                $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
+
+		if($fileSystem=='zfs') {
+                        ShellCommand::exec_fail_if_error("zfs set quota=none $path");
+                } else {
+                        ActionEngine::error('ERR_QUOTA_ONLY_FOR_ZFS');
+                        return;
+                }
         }
 
         static function addUser($commandAction)
@@ -118,16 +165,6 @@ class Workspace extends EntityType
         }
 
         static function removeUser($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function setZfsQuota($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function removeZfsQuota($commandAction)
         {
                 echo "to be implemented\n";
         }

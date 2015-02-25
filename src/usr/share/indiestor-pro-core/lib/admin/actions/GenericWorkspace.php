@@ -36,16 +36,6 @@ class GenericWorkspace extends Workspace
                 echo "to be implemented\n";
         }
 
-        static function setZfsQuota($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function removeZfsQuota($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
         static function reshare($commandAction)
         {
                 echo "to be implemented\n";
