@@ -84,7 +84,8 @@ class NoticeDefinitions
 		$noticeDefinition=$this->noticeDefinitions[$messageCode];
 		$errNum=$noticeDefinition->number;
 		$message=$this->resolveText($noticeDefinition->text,$parameters);
-		return array($errNum,"$errorLevel-$errNum-$messageCode ($errorStage) $message.\n");
+//		return array($errNum,"$errorLevel-$errNum-$messageCode ($errorStage) $message.\n");
+		return array($errNum,"$message.\n");
 	}
 
 	function resolveText($text,$parameters=array())

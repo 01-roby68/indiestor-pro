@@ -48,7 +48,7 @@ class ArgEngine
 	function argsUsageError($messageCode,$parameters=array())
 	{
 		$errNum=NoticeDefinitions::instance()->usageError($messageCode,$parameters);
-		$this->usage();
+		//$this->usage();
 		exit(1);
 	}
 
