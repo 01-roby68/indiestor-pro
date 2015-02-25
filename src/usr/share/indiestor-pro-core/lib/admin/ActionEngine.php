@@ -11,12 +11,10 @@
 requireLibFile('admin/actions/EntityType.php');
 requireLibFile('admin/args/ProgramActions.php');
 requireLibFile('admin/etcfiles/all.php');
-requireLibFile('admin/syscommands/all.php');
-requireLibFile('admin/sysqueries/all.php');
 requireLibFile('admin/action-engine/ActionNamingConvention.php');
 requireLibFile('admin/action-engine/UserReportRecord.php');
 requireLibFile('admin/action-engine/UserReportRecords.php');
-requireLibFile('admin/action-engine/Incrontab.php');
+//requireLibFile('admin/action-engine/Incrontab.php');
 requireLibFile('admin/action-engine/InotifyWatchFolders.php');
 requireLibFile('admin/action-engine/InotifyWait.php');
 requireLibFile('admin/action-engine/json_encode_legacy.php');

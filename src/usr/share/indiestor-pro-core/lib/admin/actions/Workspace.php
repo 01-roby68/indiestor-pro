@@ -8,6 +8,11 @@
         Licensed under the GPL
 */
 
+function sysquery_df_filesystem_for_folder($folder)
+{
+	return trim(ShellCommand::query_fail_if_error("df -T $folder | tail -n1 | awk '{print $2}'"));
+}
+
 class Workspace extends EntityType
 {
 
@@ -69,6 +74,12 @@ class Workspace extends EntityType
 
                         mkdir($path);
                 }
+
+                //create group
+                $groupName=static::WORKSPACETYPE.'_'.$workspace;
+        	ShellCommand::exec_fail_if_error("addgroup $groupName");
+
+                //save config file
                 $conf->add($workspace,$path);
                 $conf->save();
         }
@@ -95,7 +106,12 @@ class Workspace extends EntityType
                 } else {
                         ShellCommand::exec_fail_if_error("rm -rf $path"); 
                 }
-                
+
+                //create group
+                $groupName=static::WORKSPACETYPE.'_'.$workspace;
+        	ShellCommand::exec_fail_if_error("delgroup $groupName");
+
+                //save config file                
                 $conf->remove($workspace);
                 $conf->save();
         }
