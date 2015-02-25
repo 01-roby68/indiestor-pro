@@ -10,7 +10,7 @@
 
 require "Workspace.php";
 
-class GenericWorkspace extends EntityType
+class GenericWorkspace extends Workspace
 {
 
         const WORKSPACETYPE='generic';

@@ -47,6 +47,12 @@ class Workspace extends EntityType
                 }
                 else 
                 {
+                        //non-zfs folder must be absolute path
+                        if(substr($path,0,1)!=='/') {
+                                ActionEngine::error('ERR_NON_ZFS_FOLDER_MUST_BE_ABSOLUTE_PATH');
+                                return;
+                        }
+
                         //check if folder exists already
                         if(is_dir($path)) {
                                 ActionEngine::error('ERR_FOLDER_EXISTS_ALREADY');
@@ -87,6 +93,13 @@ class Workspace extends EntityType
 		if($fileSystem=='zfs') {
                         ShellCommand::exec_fail_if_error("zfs destroy $path");
                 } else {
+
+                        //non-zfs folder must be absolute path
+                        if(substr($path,0,1)!=='/') {
+                                ActionEngine::error('ERR_NON_ZFS_FOLDER_MUST_BE_ABSOLUTE_PATH');
+                                return;
+                        }
+
                         ShellCommand::exec_fail_if_error("rm -rf $path"); 
                 }
                 

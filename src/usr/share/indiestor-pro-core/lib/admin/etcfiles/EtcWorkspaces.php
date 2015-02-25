@@ -20,6 +20,7 @@ class EtcWorkspaces
 
 	function __construct($workspaceType)
 	{
+                $this->workspaces=[];
                 $this->confFilePath="/etc/indiestor-pro/$workspaceType-workspaces.conf";
 		$conf=file_get_contents($this->confFilePath);
 		$this->parse($conf);
