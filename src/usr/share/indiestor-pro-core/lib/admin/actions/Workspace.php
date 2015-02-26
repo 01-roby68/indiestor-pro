@@ -76,8 +76,7 @@ class Workspace extends EntityType
                 }
 
                 //create group
-                $groupName=static::WORKSPACETYPE.'_'.$workspace;
-        	ShellCommand::exec_fail_if_error("addgroup $groupName");
+                static::createGroup($workspace);
 
                 //save config file
                 $conf->add($workspace,$path);
@@ -107,9 +106,8 @@ class Workspace extends EntityType
                         ShellCommand::exec_fail_if_error("rm -rf $path"); 
                 }
 
-                //create group
-                $groupName=static::WORKSPACETYPE.'_'.$workspace;
-        	ShellCommand::exec_fail_if_error("delgroup $groupName");
+                //delete group
+                static::deleteGroup($workspace);
 
                 //save config file                
                 $conf->remove($workspace);
@@ -173,31 +171,6 @@ class Workspace extends EntityType
                         ActionEngine::error('ERR_QUOTA_ONLY_FOR_ZFS');
                         return;
                 }
-        }
-
-        static function addUser($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function removeUser($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function reshare($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function showMembers($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
-        static function json($commandAction)
-        {
-                echo "to be implemented\n";
         }
 
 }

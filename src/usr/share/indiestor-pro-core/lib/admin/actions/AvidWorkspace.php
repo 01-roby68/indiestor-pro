@@ -15,6 +15,18 @@ class AvidWorkspace extends Workspace
 
         const WORKSPACETYPE='avid';
 
+        static function createGroup($workspace)
+        {
+                $groupName='avid_'.$workspace;
+        	ShellCommand::exec_fail_if_error("addgroup $groupName");
+        }
+
+        static function deleteGroup($workspace)
+        {
+                $groupName='avid_'.$workspace;
+        	ShellCommand::exec_fail_if_error("delgroup $groupName");
+        }
+
         static function addUser($commandAction)
         {
                 echo "to be implemented\n";
@@ -25,10 +37,7 @@ class AvidWorkspace extends Workspace
                 echo "to be implemented\n";
         }
 
-        static function reshare($commandAction)
-        {
-                echo "to be implemented\n";
-        }
+//-----------------------
 
         static function showMembers($commandAction)
         {
@@ -39,6 +48,14 @@ class AvidWorkspace extends Workspace
         {
                 echo "to be implemented\n";
         }
+
+//-----------------------
+
+        static function reshare($commandAction)
+        {
+                echo "to be implemented\n";
+        }
+
 
 }
 

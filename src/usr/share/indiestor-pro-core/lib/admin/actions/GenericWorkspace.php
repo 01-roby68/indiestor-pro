@@ -15,6 +15,21 @@ class GenericWorkspace extends Workspace
 
         const WORKSPACETYPE='generic';
 
+        static function createGroup($workspace)
+        {
+                $groupName1='generic_rw_'.$workspace;
+                $groupName2='generic_ro_'.$workspace;
+        	ShellCommand::exec_fail_if_error("addgroup $groupName1");
+        	ShellCommand::exec_fail_if_error("addgroup $groupName2");
+        }
+
+        static function deleteGroup($workspace)
+        {
+                $groupName1='generic_rw_'.$workspace;
+                $groupName2='generic_ro_'.$workspace;
+        	ShellCommand::exec_fail_if_error("delgroup $groupName1");
+        	ShellCommand::exec_fail_if_error("delgroup $groupName2");
+        }
 
         static function addWriteUser($commandAction)
         {
