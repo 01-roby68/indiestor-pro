@@ -46,22 +46,6 @@ class ActionEngine
 		echo "$entityType/$actionDone executed.\n";
 	}
 
-	static function sysGroupName($indieStorGroupName)
-	{
-		return self::indiestorGroupPrefix.$indieStorGroupName;
-	}
-
-	static function isSysGroupIndiestorGroup($sysGroupName)
-	{
-		$lenISGPrefix=strlen(self::indiestorGroupPrefix);
-                if(strlen($sysGroupName)>= $lenISGPrefix) 
-			$prefix=substr($sysGroupName,0,$lenISGPrefix);
-		else return false;
-                if($prefix==self::indiestorGroupPrefix)
-			return true;
-		else return false;
-	}
-
 	static function isIndiestorSysUserName($userName)
 	{
 		return $userName==self::indiestorSysUserName;

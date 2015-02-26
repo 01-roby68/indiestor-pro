@@ -29,15 +29,79 @@ class AvidWorkspace extends Workspace
 
         static function addUser($commandAction)
         {
-                echo "to be implemented\n";
+		$workspace=ProgramActions::$entityName;
+                $userName=$commandAction->actionArg;
+                $groupName='avid_'.$workspace;
+
+                //check if user exists
+		$etcPasswd=EtcPasswd::instance();
+		$user=$etcPasswd->findUserByName($userName);
+		if($user===null) {
+                        ActionEngine::error('ERR_USER_DOES_NOT_EXIST');
+                        return;
+                }
+                
+                //the group must exist
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+                if($group===null) {
+                        ActionEngine::error('ERR_AVID_GROUP_MUST_EXIST');
+                        return;
+                }
+
+                //user must be part indiestor group
+		$indiestorGroup=$etcGroup->indiestorGroup;
+                if($indiestorGroup===null) {
+		        ActionEngine::error('ERR_INDIESTOR_GROUP_DOES_NOT_EXIST');
+                        return;
+                }
+
+		if($indiestorGroup->findMember($userName)===null) {
+			ActionEngine::error('ERR_USER_NOT_INDIESTOR_USER');
+                        return;
+                }                
+
+                //check if he not already member of this group
+		if($group->findMember($userName)!==null) {
+			ActionEngine::error('ERR_USER_ALREADY_MEMBER');
+                        return;
+                }
+
+                //add the user
+        	ShellCommand::exec_fail_if_error("adduser $userName $groupName");                
         }
 
         static function removeUser($commandAction)
         {
-                echo "to be implemented\n";
-        }
+		$workspace=ProgramActions::$entityName;
+                $userName=$commandAction->actionArg;
+                $groupName='avid_'.$workspace;
 
-//-----------------------
+                //check if user exists
+		$etcPasswd=EtcPasswd::instance();
+		$user=$etcPasswd->findUserByName($userName);
+		if($user===null) {
+                        ActionEngine::error('ERR_USER_DOES_NOT_EXIST');
+                        return;
+                }
+
+                //the group must exist
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+                if($group===null) {
+                        ActionEngine::error('ERR_AVID_GROUP_MUST_EXIST');
+                        return;
+                }
+
+                //check if he not already member of this group
+		if($group->findMember($userName)===null) {
+			ActionEngine::error('ERR_USER_NOT_MEMBER');
+                        return;
+                }
+
+                //remove the user
+        	ShellCommand::exec_fail_if_error("deluser $userName $groupName");                
+        }
 
         static function showMembers($commandAction)
         {

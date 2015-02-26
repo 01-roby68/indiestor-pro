@@ -9,6 +9,11 @@
         Licensed under the GPL
 */
 
+function startsWith($haystack, $needle) {
+    // search backwards starting from haystack length characters from the end
+    return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
+}
+
 class EtcOneGroup
 {
 	var $name=null;
@@ -103,11 +108,11 @@ class EtcGroup
 		$newGroups=array();
 		foreach($groups as $group)
 		{
-			if(ActionEngine::isSysGroupIndiestorGroup($group->name))
-		        {
-		                $group->name=ActionEngine::indiestorGroupName($group->name);
-				$newGroups[$group->name]=$group;
-		        }
+                        if(startsWith($group->name,'avid_') ||
+                                startsWith($group->name,'generic_rw_') ||
+                                startsWith($group->name,'generic_ro_') ||
+                                $group->name=='indiestor-pro-users')
+			   $newGroups[$group->name]=$group;
 		}
 		return $newGroups;
 	}
