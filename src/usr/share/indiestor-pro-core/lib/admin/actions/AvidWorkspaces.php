@@ -19,8 +19,21 @@ class AvidWorkspaces extends EntityType
 
         static function show($commandAction)
         {
-                echo "to be implemented\n";
-       }
-
+                $conf=new EtcWorkspaces('avid');
+                if(ProgramActions::actionExists('json')) {
+                        echo json_encode_legacy($conf->workspaces)."\n";
+                } else {
+                        if(count($conf->workspaces)===0) {
+                                echo "no avid workspaces.\n";
+                        } else {
+                                $format1="%-20s %-50s\n";
+                                $format2="%-20s %-50s\n";
+                                printf($format1,"workspace","path");
+                                foreach($conf->workspaces as $workspace=>$path) {
+                                        printf($format2,$workspace,$path);
+                                }
+                        }
+                }                        
+        }
 }
 
