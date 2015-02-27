@@ -11,11 +11,28 @@
 
 class Version extends EntityType
 {
-        static function default_action($commandAction)
+        static function json($commandAction)
+        {
+                //handled by show command
+                return;
+        }
+
+        static function getVersion()
         {
                 $rootFolder=dirname(dirname(dirname(dirname(__FILE__))));
                 $version=trim(file_get_contents("$rootFolder/VERSION"));
-                echo "$version\n";
+                return $version;
+        }
+
+        static function show($commandAction)
+        {
+                $version=self::getVersion();
+                if(ProgramActions::actionExists('json')) {
+                        $struct=['version'=>$version];
+                        echo json_encode_legacy($struct)."\n";
+                } else {
+                        echo "$version\n";
+                }                        
         }
 }
 
