@@ -81,6 +81,9 @@ class Workspace extends EntityType
                 //save config file
                 $conf->add($workspace,$path);
                 $conf->save();
+
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
         }
 
         static function delete($commandAction)
@@ -112,6 +115,9 @@ class Workspace extends EntityType
                 //save config file                
                 $conf->remove($workspace);
                 $conf->save();
+
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
         }
 
         static function setZfsQuota($commandAction)

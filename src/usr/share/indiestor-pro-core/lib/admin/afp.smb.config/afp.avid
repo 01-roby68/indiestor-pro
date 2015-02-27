@@ -1,0 +1,6 @@
+[{workspace}]
+path = {path}/$u
+follow symlinks = yes
+umask = 0022
+valid users = {group}
+

@@ -1,0 +1,11 @@
+[{workspace}]
+path = {path}/%u
+follow symlinks = yes
+umask = 0022
+valid users = {group}
+map read only = permissions
+inherit permissions = no
+create mask = 0644
+directory mask = 0755
+vfs objects = netatalk
+

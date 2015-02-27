@@ -229,6 +229,7 @@ class User extends EntityType
 
 	static function pkill($commandAction)
 	{
+		$userName=ProgramActions::$entityName;
 		$etcPasswd=EtcPasswd::instance();
 		if(!$etcPasswd->exists($userName)) {
                         ActionEngine::error('ERR_USER_DOES_NOT_EXIST');

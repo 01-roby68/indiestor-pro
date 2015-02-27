@@ -38,6 +38,9 @@ class GenericWorkspace extends Workspace
                 $groupName='generic_rw_'.$workspace;
                 $oppGroupName='generic_ro_'.$workspace;
                 self::addUser($userName,$groupName,$oppGroupName);
+
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
         }
 
         static function addReadOnlyUser($commandAction)
@@ -47,6 +50,9 @@ class GenericWorkspace extends Workspace
                 $groupName='generic_ro_'.$workspace;
                 $oppGroupName='generic_rw_'.$workspace;
                 self::addUser($userName,$groupName,$oppGroupName);
+
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
         }
 
 
@@ -104,6 +110,9 @@ class GenericWorkspace extends Workspace
 		$workspace=ProgramActions::$entityName;
                 $groupName='generic_rw_'.$workspace;
                 self::removeUser($userName,$groupName);
+
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
         }
 
         static function removeReadOnlyUser($commandAction)
@@ -112,6 +121,9 @@ class GenericWorkspace extends Workspace
 		$workspace=ProgramActions::$entityName;
                 $groupName='generic_ro_'.$workspace;
                 self::removeUser($userName,$groupName);
+
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
         }
 
         static function removeUser($userName,$groupName)
