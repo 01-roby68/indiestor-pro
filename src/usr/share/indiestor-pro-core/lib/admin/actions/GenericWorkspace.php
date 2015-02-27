@@ -155,16 +155,54 @@ class GenericWorkspace extends Workspace
         	ShellCommand::exec_fail_if_error("deluser $userName $groupName");                
         }
 
+        static function json($commandAction)
+        {
+                //handled by show command
+                return;
+        }
 
         static function showMembers($commandAction)
         {
-                echo "to be implemented\n";
+		$workspace=ProgramActions::$entityName;
+                $rwGroupName='generic_rw_'.$workspace;
+                $roGroupName='generic_ro_'.$workspace;
+
+                //the rw group must exist
+                $etcGroup=EtcGroup::instance();
+                $rwGroup=$etcGroup->findGroup($rwGroupName);                
+                if($rwGroup===null) {
+                        ActionEngine::error('ERR_GENERIC_GROUP_MUST_EXIST');
+                        return;
+                }
+
+                //the ro group must exist
+                $etcGroup=EtcGroup::instance();
+                $roGroup=$etcGroup->findGroup($roGroupName);                
+                if($roGroup===null) {
+                        ActionEngine::error('ERR_GENERIC_GROUP_MUST_EXIST');
+                        return;
+                }
+
+                //members
+                $rwMembers=$rwGroup->members;
+                $roMembers=$roGroup->members;
+                
+                //show members
+                if(ProgramActions::actionExists('json')) {
+                        $jsonStruct=['rw'=>$rwMembers,'ro'=>$roMembers];
+                        echo json_encode_legacy($jsonStruct)."\n";
+                } else {
+                        echo "--READ-WRITE--\n";
+                        if(count($rwMembers)===0) echo "no members\n";
+                        else echo join("\n",$rwMembers)."\n";
+                        echo "--READ-ONLY--\n";
+                        if(count($roMembers)===0) echo "no members\n";
+                        echo join("\n",$roMembers)."\n";
+                }
+
         }
 
-        static function json($commandAction)
-        {
-                echo "to be implemented\n";
-        }
+//-----------------------
 
         static function reshare($commandAction)
         {

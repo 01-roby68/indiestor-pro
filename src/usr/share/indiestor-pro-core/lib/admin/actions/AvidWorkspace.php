@@ -109,14 +109,35 @@ class AvidWorkspace extends Workspace
                 ActionEngine::generateAfpSmbConfig();
         }
 
-        static function showMembers($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
         static function json($commandAction)
         {
-                echo "to be implemented\n";
+                //handled by show command
+                return;
+        }
+
+        static function showMembers($commandAction)
+        {
+		$workspace=ProgramActions::$entityName;
+                $groupName='avid_'.$workspace;
+
+                //the group must exist
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+                if($group===null) {
+                        ActionEngine::error('ERR_AVID_GROUP_MUST_EXIST');
+                        return;
+                }
+
+                //members
+                $members=$group->members;
+                
+                //show members
+                if(ProgramActions::actionExists('json')) {
+                        echo json_encode_legacy($members)."\n";
+                } else {
+                        if(count($members)===0) echo "no members\n";
+                        else echo join("\n",$members)."\n";
+                }
         }
 
 //-----------------------
