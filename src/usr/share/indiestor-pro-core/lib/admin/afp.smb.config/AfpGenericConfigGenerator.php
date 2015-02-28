@@ -44,7 +44,7 @@ class AfpGenericConfigGenerator
                         $replacements[]=$pathAbs;
                         $replacements[]=$roList;
                         $replacements[]=$rwList;
-                        $replacements[]=$rwGroupName;
+                        $replacements[]='@'.$rwGroupName;
                         $detailedConfig=preg_replace($patterns,$replacements,$template);
                         $buffer.=$detailedConfig;
                 }

@@ -32,7 +32,7 @@ class SmbAvidConfigGenerator
                         $replacements=[];
                         $replacements[]=$workspace;
                         $replacements[]=$pathAbs;
-                        $replacements[]=$groupName;
+                        $replacements[]='@'.$groupName;
                         $detailedConfig=preg_replace($patterns,$replacements,$template);
                         $buffer.=$detailedConfig;
                 }
