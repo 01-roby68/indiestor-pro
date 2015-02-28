@@ -113,15 +113,15 @@ class ActionEngine
 
         static function generateSmbConfig()
         {
-                $buffer ="; ==========================\n";
-                $buffer.="; Avid workspaces\n";
-                $buffer.="; ==========================\n";
+                $buffer ="# ==========================\n";
+                $buffer.="# Avid workspaces\n";
+                $buffer.="# ==========================\n";
 
                 $buffer.= SmbAvidConfigGenerator::generate() . "\n";
 
-                $buffer.="; ==========================\n";
-                $buffer.="; Generic workspaces\n";
-                $buffer.="; ==========================\n";
+                $buffer.="# ==========================\n";
+                $buffer.="# Generic workspaces\n";
+                $buffer.="# ==========================\n";
 
                 $buffer.= SmbGenericConfigGenerator::generate() . "\n";        
 
