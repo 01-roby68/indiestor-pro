@@ -50,8 +50,7 @@ class EtcGroup
 
 	static function instance()
 	{
-		if(self::$instance==null) self::$instance=new EtcGroup();
-		return self::$instance;
+		return new EtcGroup();
 	}
 
 	//----------------------------------------------

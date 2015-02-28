@@ -28,6 +28,7 @@ class AfpGenericConfigGenerator
                         $etcGroup=EtcGroup::instance();
                         $rwGroup=$etcGroup->findGroup($rwGroupName);     
                         $rwList=join(',',$rwGroup->members);           
+
                         $roGroup=$etcGroup->findGroup($roGroupName); 
                         $roList=join(',',$roGroup->members);           
 
