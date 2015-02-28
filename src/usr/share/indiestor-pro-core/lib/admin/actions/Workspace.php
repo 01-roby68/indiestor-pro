@@ -57,7 +57,12 @@ class Workspace extends EntityType
                                 return;
                         }
 
-                        ShellCommand::exec_fail_if_error("zfs create $path"); //XXX trap errors
+                        ShellCommand::exec_fail_if_error("zfs create $path");
+
+                        //generic workspaces should be writeable
+                        if(static::WORKSPACETYPE==='generic')
+                                ShellCommand::exec_fail_if_error("chmod -R a+rwx $pathAbs");
+
                 }
                 else 
                 {
@@ -82,6 +87,11 @@ class Workspace extends EntityType
 
 
                         mkdir($path);
+
+                        //generic workspaces should be writeable
+                        if(static::WORKSPACETYPE==='generic')
+                                ShellCommand::exec_fail_if_error("chmod -R a+rwx $path");
+
                 }
 
                 //create group
