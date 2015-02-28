@@ -26,11 +26,16 @@ class AfpGenericConfigGenerator
                         else $pathAbs=$path;
 
                         $etcGroup=EtcGroup::instance();
-                        $rwGroup=$etcGroup->findGroup($rwGroupName);     
-                        $rwList=join(',',$rwGroup->members);           
+
+                        $rwGroup=$etcGroup->findGroup($rwGroupName);    
+                        if($rwGroup===null ) $rwList='';
+                        else if($rwGroup->members===null) $rwList='';
+                        else $rwList=join(',',$rwGroup->members);           
 
                         $roGroup=$etcGroup->findGroup($roGroupName); 
-                        $roList=join(',',$roGroup->members);           
+                        if($roGroup===null) $roList='';
+                        else if($roGroup->members===null) $roList='';
+                        else $roList=join(',',$roGroup->members);           
 
                         //replace data in template
                         $patterns=[];
