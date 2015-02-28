@@ -17,6 +17,7 @@ class Workspace extends EntityType
 {
 
         const WORKSPACETYPE='';
+        const OTHER_WORKSPACETYPE='';
 
         static function add($commandAction)
         {
@@ -25,6 +26,14 @@ class Workspace extends EntityType
 
                 //stop if workspace exists already
                 if(array_key_exists($workspace,$conf->workspaces)) {
+                        ActionEngine::error('ERR_WORKSPACE_EXISTS_ALREADY');
+                        return;
+                }
+
+                $otherConf=new EtcWorkspaces(static::OTHER_WORKSPACETYPE);
+
+                //stop if workspace exists already in other workspace type
+                if(array_key_exists($workspace,$otherConf->workspaces)) {
                         ActionEngine::error('ERR_WORKSPACE_EXISTS_ALREADY');
                         return;
                 }

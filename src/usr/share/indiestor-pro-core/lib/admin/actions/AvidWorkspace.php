@@ -14,6 +14,7 @@ class AvidWorkspace extends Workspace
 {
 
         const WORKSPACETYPE='avid';
+        const OTHER_WORKSPACETYPE='generic';
 
         static function createGroup($workspace)
         {
