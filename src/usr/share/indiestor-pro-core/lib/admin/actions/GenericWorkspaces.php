@@ -16,20 +16,70 @@ class GenericWorkspaces extends EntityType
                 return;
         }
 
+        static function genericWorkspaceData()
+        {
+                $conf=new EtcWorkspaces('generic');
+                $rows=[];
+                foreach($conf->workspaces as $workspace=>$path) {
+                        $row=[];
+                        $row['workspace']=$workspace;
+                        $row['path']=$path;
+
+                        //quota
+                        $row['zfs-quota']='';
+                        if(substr($path,0,1)!=='/') {
+                                $row['zfs-quota']=trim(ShellCommand::query("zfs get quota -H  -o value $path"));
+                        }
+
+                        //space used
+                        if(substr($path,0,1)!=='/')
+                                $pathAbs="/$path";
+                        else $pathAbs=$path;
+                        $row['space-used']=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
+
+                        //read/write group members
+                        $rwGroupName='generic_rw_'.$workspace;
+                        $roGroupName='generic_ro_'.$workspace;
+
+                        $etcGroup=EtcGroup::instance();
+                        $rwGroup=$etcGroup->findGroup($rwGroupName);                
+                        if($rwGroup!==null) {
+                                $row['write-members']=join(",",$rwGroup->members);
+                        } else {
+                                $row['write-members']='';
+                        }
+                        $roGroup=$etcGroup->findGroup($roGroupName);                
+                        if($roGroup!==null) {
+                                $row['read-members']=join(",",$roGroup->members);
+                        } else {
+                                $row['read-members']='';
+                        }
+
+                        //watching
+                        $row['watching']='';
+
+                        //add record
+                        $rows[]=$row;
+                }
+                return $rows;
+        }
+
+
         static function show($commandAction)
         {
                 $conf=new EtcWorkspaces('generic');
                 if(ProgramActions::actionExists('json')) {
-                        echo json_encode_legacy($conf->workspaces)."\n";
+                        echo json_encode_legacy(self::genericWorkspaceData())."\n";
                 } else {
                         if(count($conf->workspaces)===0) {
                                 echo "no generic workspaces.\n";
                         } else {
-                                $format1="%-20s %-50s\n";
-                                $format2="%-20s %-50s\n";
-                                printf($format1,"workspace","path");
-                                foreach($conf->workspaces as $workspace=>$path) {
-                                        printf($format2,$workspace,$path);
+                                $format1="%-20s %-30s %10s %10s %-30s %30s\n";
+                                $format2="%-20s %-30s %10s %10s %-30s %30s\n";
+                                printf($format1,'workspace','path','zfs-quota','space-used','write-members','read-members');
+                                foreach(self::genericWorkspaceData() as $row) {
+                                        printf($format2,$row['workspace'],$row['path'],$row['zfs-quota'],
+                                                $row['space-used'],$row['write-members'],$row['read-members']);
                                 }
                         }
                 }                        
