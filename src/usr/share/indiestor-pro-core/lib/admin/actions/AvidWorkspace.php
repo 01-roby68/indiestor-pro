@@ -24,7 +24,7 @@ class AvidWorkspace extends Workspace
         static function deleteGroup($workspace)
         {
                 $groupName='avid_'.$workspace;
-        	ShellCommand::exec_fail_if_error("delgroup $groupName");
+        	ShellCommand::exec("delgroup $groupName");
         }
 
         static function addUser($commandAction)
@@ -103,7 +103,7 @@ class AvidWorkspace extends Workspace
                 }
 
                 //remove the user
-        	ShellCommand::exec_fail_if_error("deluser $userName $groupName");                
+        	ShellCommand::exec("deluser $userName $groupName");                
 
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();

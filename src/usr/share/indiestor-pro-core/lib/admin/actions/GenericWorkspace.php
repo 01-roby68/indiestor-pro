@@ -27,8 +27,8 @@ class GenericWorkspace extends Workspace
         {
                 $groupName1='generic_rw_'.$workspace;
                 $groupName2='generic_ro_'.$workspace;
-        	ShellCommand::exec_fail_if_error("delgroup $groupName1");
-        	ShellCommand::exec_fail_if_error("delgroup $groupName2");
+        	ShellCommand::exec("delgroup $groupName1");
+        	ShellCommand::exec("delgroup $groupName2");
         }
 
         static function addWriteUser($commandAction)
@@ -152,7 +152,7 @@ class GenericWorkspace extends Workspace
                 }
 
                 //remove the user
-        	ShellCommand::exec_fail_if_error("deluser $userName $groupName");                
+        	ShellCommand::exec("deluser $userName $groupName");                
         }
 
         static function json($commandAction)
