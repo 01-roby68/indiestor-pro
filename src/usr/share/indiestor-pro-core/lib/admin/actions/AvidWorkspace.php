@@ -71,6 +71,22 @@ class AvidWorkspace extends Workspace
                 //add the user
         	ShellCommand::exec_fail_if_error("adduser $userName $groupName");                
 
+
+                //create user folder
+                $conf=new EtcWorkspaces('avid');
+                $path=$conf->workspaces[$workspace];
+
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+                
+                //set owner and group
+                if(!is_dir("$pathAbs/$userName")) {
+                        mkdir("$pathAbs/$userName",0755);
+                        chown("$pathAbs/$userName",$userName);
+                        chgrp("$pathAbs/$userName",$groupName);
+                }
+
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
         }
