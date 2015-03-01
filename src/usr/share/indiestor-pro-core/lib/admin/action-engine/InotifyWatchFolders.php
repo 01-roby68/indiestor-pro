@@ -12,25 +12,36 @@ requireLibFile('inotify/SharingFolders.php');
 
 class InotifyWatchFolders
 {
-	static function watchesMain($group)
+	static function watchesMain($workspace)
 	{
+
+                $groupName='avid_'.$workspace;
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+
 		$folders=array();
                 foreach($group->members as $member)
 		{
-			$user=EtcPasswd::instance()->findUserByName($member);
-			/* user could have been deleted */
-			if($user!=null)
-				$folders=array_merge($folders,self::watchesMainUser($group,$user));
+		        $folders=array_merge($folders,self::watchesMainUser($workspace,$member));
 		}
 		return $folders;
 	}
 
-        static function isLocatedInValidHomeFolderOfGroupMember($folder,$userName,$groupMembers)
+        static function isLocatedInValidHomeFolderOfGroupMember($folder,$workspace)
         {
-                foreach($groupMembers as $member)
+                $conf=new EtcWorkspaces('avid');
+                $path=$conf->workspaces[$workspace];
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+                $groupName='avid_'.$workspace;
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+
+                foreach($group->members as $member)
                 {
-			$etcMember=EtcPasswd::instance()->findUserByName($member);
-                        if(preg_match("|^{$etcMember->homeFolder}|",$folder))
+                        $memberPath=$workspace/$member->name;
+                        if(preg_match("|^{$memberPath}|",$folder))
                                 return true;
                 }
                 return false;
@@ -55,10 +66,16 @@ class InotifyWatchFolders
 		return $watchFolders;
 	}
 
-	static function watchesMainUser($group,$user)
+	static function watchesMainUser($workspace,$user)
 	{
+                $conf=new EtcWorkspaces('avid');
+                $path=$conf->workspaces[$workspace];
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+
 		$watchFolders=array();
-		$homeFolder=$user->homeFolder;
+		$homeFolder="$pathAbs/$user";
 		$watchFolders[]=$homeFolder;
 		$avidFolders=SharingFolders::userAvidProjects($homeFolder);
 		foreach($avidFolders as $avidFolder)
@@ -76,8 +93,7 @@ class InotifyWatchFolders
                                 {
                                         $target=readlink($folder);
 					if($target!==false && is_dir($target) && 
-                                             self::isLocatedInValidHomeFolderOfGroupMember(
-								$target,$user->name,$group->members))
+                                             self::isLocatedInValidHomeFolderOfGroupMember($target,$workspace))
                                         {
 						$watchFolders=array_merge($watchFolders,
 							self::generateTabWatchTree($target));
@@ -97,21 +113,32 @@ class InotifyWatchFolders
 		return $watchFolders;
 	}
 
-	static function watchesAVP($group)
+	static function watchesAVP($workspace)
 	{
+                $groupName='avid_'.$workspace;
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+
 		$folders=array();
                 foreach($group->members as $member)
 		{
-			$user=EtcPasswd::instance()->findUserByName($member);
-			$folders=array_merge($folders,self::watchesAVPUser($group,$user));
+			$folders=array_merge($folders,self::watchesAVPUser($workspace,$member));
 		}
 		return $folders;
 	}
 
-	static function watchesAVPUser($group,$user)
+	static function watchesAVPUser($workspace,$user)
 	{
+                $conf=new EtcWorkspaces('avid');
+                $path=$conf->workspaces[$workspace];
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+
 		$watchFolders=array();
-		$homeFolder=$user->homeFolder;
+		$homeFolder="$pathAbs/$user";
+
+		$watchFolders=array();
 		$avidFolders=SharingFolders::userAvidProjects($homeFolder);
 		foreach($avidFolders as $avidFolder)
                         if(!SharingFolders::folderHasValidAVPfile("$homeFolder/$avidFolder"))
@@ -119,4 +146,4 @@ class InotifyWatchFolders
 		return $watchFolders;
 	}
 }
-
+        

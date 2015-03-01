@@ -157,6 +157,39 @@ class AvidWorkspace extends Workspace
                 }
         }
 
+	static function showWatches($commandAction)
+	{
+		$workspace=ProgramActions::$entityName;
+
+                //must have at least 2 members
+                $groupName='avid_'.$workspace;
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+
+		if(count($group->members)<2) return;
+
+		$watchType=$commandAction->actionArg;
+
+		switch($watchType)
+		{
+			case 'main': self::showWatchesMain($workspace); break;
+			case 'avp': self::showWatchesAVP($workspace); break;
+			default: ActionEngine::error('ERR_WATCH_TYPE_DOES_NOT_EXISTS');
+		}
+	}
+
+	static function showWatchesMain($workspace)
+	{
+		foreach(InotifyWatchFolders::watchesMain($workspace) as $folder)
+			echo "$folder\n";
+	}
+
+	static function showWatchesAVP($workspace)
+	{
+		foreach(InotifyWatchFolders::watchesAVP($workspace) as $folder)
+			echo "$folder\n";
+	}
+
 //-----------------------
 
         static function reshare($commandAction)
