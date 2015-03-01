@@ -49,7 +49,7 @@ class SmbGenericConfigGenerator
                         $replacements[]=$pathAbs;
                         $replacements[]=$roList;
                         $replacements[]=$rwList;
-                        $replacements[]='@'.$rwGroupName;
+                        $replacements[]='@'.$rwGroupName. ", ".'@'.$roGroupName;
                         $detailedConfig=preg_replace($patterns,$replacements,$template);
                         $buffer.=$detailedConfig;
                 }
