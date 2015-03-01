@@ -7,21 +7,21 @@
 # Commissioned at peopleperhour.com 
 # Licensed under the GPL
 #------------------------------------------------------------
-group=$1
+avid_workspace=$1
 
-if [ "$group" = "" ] ; then
-	echo "group argument required" >&2 
+if [ "$avid_workspace" = "" ] ; then
+	echo "avid workspace argument required" >&2 
 	exit 1
 fi
 
-groupFile="/var/spool/indiestor-pro/$group"
+avid_workspace_file="/var/spool/indiestor-pro/$avid_workspace_file"
 
-if [ ! -f $groupFile ]; then
-	touch $groupFile
+if [ ! -f $avid_workspace_file ]; then
+	touch $avid_workspace_file
 else
 	if [  "$(pgrep -f '/usr/bin/php /usr/share/indiestor-pro-core/prg/indiestor-pro-inotify.php')" = "" ] ; then
-		rm -f $groupFile
-		/usr/bin/touch $groupFile
+		rm -f $avid_workspace_file
+		/usr/bin/touch $avid_workspace_file
 	fi
 fi
 

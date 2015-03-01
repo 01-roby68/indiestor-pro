@@ -7,11 +7,11 @@
 # Commissioned at peopleperhour.com 
 # Licensed under the GPL
 #------------------------------------------------------------
-group=$1
+avid_workspace=$1
 watchType=$2
 
-if [ "$group" = "" ] ; then
-	echo "group argument required" >&2 
+if [ "$avid_workspace" = "" ] ; then
+	echo "avid workspace argument required" >&2 
 	exit 1
 fi
 
@@ -26,8 +26,8 @@ else
 	events='modify'
 fi
 
-while indiestor-pro --group $group -show-watches $watchType | \
-		inotifywait --exclude __${group}__${watchType}__ --fromfile - --event $events; do
-	indiestor-pro-touch $group
+while indiestor-pro --avid-workspace $avid_workspace -show-watches $watchType | \
+		inotifywait --exclude __${avid_workspace}__${watchType}__ --fromfile - --event $events; do
+	indiestor-pro-touch $avid_workspace
 done
 
