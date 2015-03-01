@@ -12,8 +12,6 @@ requireLibFile('admin/actions/EntityType.php');
 requireLibFile('admin/args/ProgramActions.php');
 requireLibFile('admin/etcfiles/all.php');
 requireLibFile('admin/action-engine/ActionNamingConvention.php');
-requireLibFile('admin/action-engine/UserReportRecord.php');
-requireLibFile('admin/action-engine/UserReportRecords.php');
 //requireLibFile('admin/action-engine/Incrontab.php');
 requireLibFile('admin/action-engine/InotifyWatchFolders.php');
 requireLibFile('admin/action-engine/InotifyWait.php');
