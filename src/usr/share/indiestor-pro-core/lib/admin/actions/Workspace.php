@@ -123,9 +123,9 @@ class Workspace extends EntityType
                 $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
 
 		if($fileSystem=='zfs') {
-                        ShellCommand::exec_fail_if_error("zfs destroy $path");
+                        ShellCommand::exec("zfs destroy $path");
                 } else {
-                        ShellCommand::exec_fail_if_error("rm -rf $path"); 
+                        ShellCommand::exec("rm -rf $path"); 
                 }
 
                 //delete group
