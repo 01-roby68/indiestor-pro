@@ -89,41 +89,42 @@ while(true)
 {
         clearstatcache();
 
-	$groupFiles=glob('/var/spool/indiestor-pro/*');
+	$avidWorkspaceFiles=glob('/var/spool/indiestor-pro/*');
 	//pick the first group available or terminate
 
-	if($groupFiles===FALSE)
+	if($avidWorkspaceFiles===FALSE)
 	{
 		syslog_notice("error reading files in /var/spool/indiestor-pro");
 		break;		
 	}
-	if(count($groupFiles)==0) break;
-	$groupFile=$groupFiles[0];
-	$groupName=basename($groupFile);        
+	if(count($avidWorkspaceFiles)==0) break;
+	$avidWorkspaceFile=$avidWorkspaceFiles[0];
+	$workspace=basename($avidWorkspaceFile);        
 
-	$ulresult=unlink($groupFile);
+	$ulresult=unlink($avidWorkspaceFile);
         if($ulresult===FALSE)
-                syslog_notice("error unlinking group file $groupFile");
+                syslog_notice("error unlinking group file $avidWorkspaceFile");
 
-	syslog_notice("processing group: $groupName");
+	syslog_notice("processing workspace: $workspace");
 
-	//find group record by name
-	$group=EtcGroup::instance()->findGroup($groupName);
+	//find group
+        $groupName='avid_'.$workspace;
+	$group=EtcGroup::instance()->findGroup($workspace);
 	if($group==null)
 	{
-		syslog_notice("cannot find group '$groupName'; skipping");
+		syslog_notice("cannot find group for workspace '$workspace'; skipping");
 		continue;
 	}
 
 	//retrieve all group members
-	$members=EtcPasswd::instance()->findUsersForEtcGroup($group);
+	$members=$group->members;
 
 	//reshare
-	SharingStructureAvid::reshare($groupName,$members);
+	SharingStructureAvid::reshare($workspace,$members);
 	SharingStructureMXF::reshare($members);
 
 	//restart watching
-	InotifyWait::startWatching($groupName);
+	InotifyWait::startWatching($workspace);
 }
 
 //notify end run

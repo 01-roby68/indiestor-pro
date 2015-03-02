@@ -20,16 +20,25 @@ class SharingStructureAvid
 
         static $repurgeRequired=false;
 
-	static function reshare($groupName,$users)
+	static function reshare($workspace,$users)
 	{
+                $conf=new EtcWorkspaces('avid');
+                $path=$conf->workspaces[$workspace];
+      
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+
+                $group='avid_'.$workspace;
+
 		if($users==null) $users=array();
-		syslog_notice("resharing group '$groupName' for avid folders");
+		syslog_notice("resharing workspace '$workspace' for avid folders");
 		self::verifyProjects($groupName,$users);
                 self::$repurgeRequired=true;
                 while(self::$repurgeRequired)
                 {
                         self::$repurgeRequired=false;
-        		self::purgeProjectLinks($users);
+        		self::purgeProjectLinks($pathAbs,$users);
                 }
 	}
 
@@ -39,31 +48,30 @@ class SharingStructureAvid
                 self::$repurgeRequired=true;
         }
 
-	static function verifyProjects($groupName,$users)
+	static function verifyProjects($workspace,$patAbs,$group,$users)
 	{
 		foreach($users as $user)
 		{
-			$projects=sharingFolders::userAvidProjects($user->homeFolder);
+			$projects=sharingFolders::userAvidProjects("$pathAbs/$user");
 			foreach($projects as $project)
 			{
-                		$projectFolder=$user->homeFolder."/".$project;
+                		$projectFolder="$pathAbs/$user/$project";
                                 $shared="$projectFolder/Shared";
                                 #if the folder has been shared already, we reshare, even if there is no valid AVP file
                                 if(SharingFolders::folderHasValidAVPfile($projectFolder) || file_exists($shared))
                                 {
-				        self::verifyProject($groupName,$user,$project,$users);
-				        self::verifyProjectSharing($groupName,$user,$project,$users);
-				        self::verifyProjectArchive($user,$project);
+				        self::verifyProject($pathAbs,$user,$project,$users,$group);
+				        self::verifyProjectSharing($pathAbs,$user,$project,$users,$group);
+				        self::verifyProjectArchive($pathAbs,$user,$project);
                                 }
 			}
 		}
 	}
 
-	static function verifyProjectArchive($user,$project)
+	static function verifyProjectArchive($pathAbs,$user,$project)
 	{
 		#remove archive, if needed
-		$homeFolder=$user->homeFolder;
-		$projectFolder=$homeFolder."/".$project;
+		$projectFolder="$pathAbs/$user/$project";
 		$archived="$projectFolder/Archived";
 		if(is_dir($archived)) 
 		{
@@ -73,37 +81,33 @@ class SharingStructureAvid
 		}
 	}
 
-	static function verifyProject($groupName,$user,$project,$users)
+	static function verifyProject($pathAbs,$user,$project,$users,$group)
 	{
 		//verify ownership/groupship on .avid folder
-		$userName=$user->name;
-		$homeFolder=$user->homeFolder;
-		$projectFolder=$homeFolder."/".$project;
+		$projectFolder="$pathAbs/$user/$project";
                 if(file_exists($projectFolder))
-        		chmodBase($projectFolder,0755,$userName,$userName);
+        		chmodBase($projectFolder,0755,$user,$user);
 
-		self::verifyProjectFiles($user,$project);
-		self::verifyProjectSharedFolder($groupName,$user,$project,$users);
+		self::verifyProjectFiles($pathAbs,$user,$project);
+		self::verifyProjectSharedFolder($pathAbs,$user,$project,$users,$group);
 	}
 
-	static function verifyProjectSharedFolder($groupName,$user,$project,$users)
+	static function verifyProjectSharedFolder($pathAbs,$user,$project,$users,$group)
 	{
-		$userName=$user->name;
-		$homeFolder=$user->homeFolder;
-		$projectFolder=$homeFolder."/".$project;
+		$projectFolder="$pathAbs/$user/$project";
 		$shared="$projectFolder/Shared";
 
 		if(!is_dir($shared) && !file_exists($shared)) mkdir($shared);
 		SharingOperations::fixFsObjectPermissions($shared,"755");
 
 		#the owner's own shared subfolder
-		$sharedSubOwner="$shared/$userName";
+		$sharedSubOwner="$shared/$user";
 
 		#owner's archive, if it exists
 		$archived="$projectFolder/Archived";
 
                 #the owner's own archive folder
-		$archivedOwner="$archived/$userName";
+		$archivedOwner="$archived/$user";
 		if(!is_dir($sharedSubOwner)) 
 		{
 			if(is_dir($archivedOwner))
@@ -111,13 +115,13 @@ class SharingStructureAvid
 			else
 				if(!file_exists($sharedSubOwner)) mkdir($sharedSubOwner);
 		}
-		SharingOperations::fixProjectFsObjectOwnership($groupName,$userName,$sharedSubOwner);
+		SharingOperations::fixProjectFsObjectOwnership($group,$user,$sharedSubOwner);
 		SharingOperations::fixFsObjectPermissions($sharedSubOwner,"755");
 
-                if(!empty($groupName))
-                        chmodRecursive($sharedSubOwner, 0644,0755,$userName,'is_'.$groupName);
+                if(!empty($group))
+                        chmodRecursive($sharedSubOwner, 0644,0755,$user,$group);
                 else
-                        chmodRecursive($sharedSubOwner, 0644,0755,$userName,$userName);
+                        chmodRecursive($sharedSubOwner, 0644,0755,$user,$user);
 
 
 	        #the unprotected shared subfolder
@@ -136,10 +140,10 @@ class SharingStructureAvid
                                 }
 	        }
 
-                if(!empty($groupName))
-                        chmodRecursive($sharedUnprotected, 0664,0775,$userName,'is_'.$groupName);
+                if(!empty($group))
+                        chmodRecursive($sharedUnprotected, 0664,0775,$user,$group);
                 else
-                        chmodRecursive($sharedUnprotected, 0664,0775,$userName,$userName);
+                        chmodRecursive($sharedUnprotected, 0664,0775,$user,$user);
 
 		#avid copy 
 		$projectCopy=self::folderAvidToCopy($project);
@@ -150,46 +154,46 @@ class SharingStructureAvid
 			if($sharingUser->name!=$userName)
 			{
 				$linkName="$shared/{$sharingUser->name}";
-				$target="{$sharingUser->homeFolder}/Avid Shared Projects".
+				$target="$pathAbs/{$sharingUser->name}/Avid Shared Projects".
                                         "/$projectCopy/Shared/{$sharingUser->name}";
-				SharingOperations::verifySymLink($linkName,$target,$userName);		
+				SharingOperations::verifySymLink($linkName,$target,$user);		
 			}
 		}
 	}
 
-	static function verifyProjectFiles($user,$project)
+	static function verifyProjectFiles($pathAbs,$user,$project)
 	{
 		$userName=$user->name;
 		$homeFolder=$user->homeFolder;
-		if ($handle = opendir("$homeFolder/$project"))
+		if ($handle = opendir("$pathAbs/$user/$project"))
 		{
 			while(false !== ($entry = readdir($handle)))
 			{
-				if(is_file("$homeFolder/$project/$entry"))
+				if(is_file("$pathAbs/$user/$project/$entry"))
 				{
 					if(SharingFolders::endsWith($entry,'.avp'))
-						SharingOperations::renameAvpProjectFile($userName,$homeFolder,$project,$entry);
+						SharingOperations::renameAvpProjectFile($user,"$pathAbs/$user",$project,$entry);
 					if(SharingFolders::endsWith($entry,'.avs'))
-						SharingOperations::renameAvsProjectFile($userName,$homeFolder,$project,$entry);
+						SharingOperations::renameAvsProjectFile($user,"$pathAbs/$user",$project,$entry);
 					if(SharingFolders::endsWith($entry,'.xml'))
-						SharingOperations::renameXmlProjectFile($userName,$homeFolder,$project,$entry);
+						SharingOperations::renameXmlProjectFile($user,"$pathAbs/$user",$project,$entry);
 				}
 			}
 			closedir($handle);
 		}
 		else
 		{
-			syslog_notice("Cannot open folder '$homeFolder/$project' for renaming .avp, .avs and .xml files");
+			syslog_notice("Cannot open folder '$pathAbs/$user/$project' for renaming .avp, .avs and .xml files");
 		}
 	}
 
-	static function verifyProjectSharing($groupName,$owner,$project,$users)
+	static function verifyProjectSharing($pathAbs,$owner,$project,$users,$group)
 	{
 		foreach($users as $user)
 		{
-			if($user->name!=$owner->name)
+			if($user!=$owner)
 			{
-				self::verifyProjectSharingMember($groupName,$owner,$user,$project,$users);
+				self::verifyProjectSharingMember($pathAbs,$group,$owner,$user,$project,$users);
 			}
 		}
 	}
@@ -200,13 +204,13 @@ class SharingStructureAvid
 		return "$prefix.copy";
 	}
 
-	static function verifyProjectSharingMember($groupName,$owner,$user,$project,$users)
+	static function verifyProjectSharingMember($pathAbs,$group,$owner,$user,$project,$users)
 	{
                 #if the user has no home directory, bail out (this could be an error when deleting the user)
-                if(!is_dir($user->homeFolder)) return;
+                if(!is_dir("$pathAbs/$user")) return;
 
 		#the user's Avid Shared Projects folder
-		$aspFolder="{$user->homeFolder}/Avid Shared Projects";
+		$aspFolder="$pathAbs/$user/Avid Shared Projects";
 		if(!is_dir($aspFolder)) mkdir($aspFolder);
 		SharingOperations::fixUserObjectOwnership('root',$aspFolder);
 		SharingOperations::fixFsObjectPermissions($aspFolder,"755");
@@ -215,61 +219,61 @@ class SharingStructureAvid
 		$projectCopy=self::folderAvidToCopy($project);
 		$prjCopyFolder="$aspFolder/$projectCopy";
 		if(!is_dir($prjCopyFolder)) mkdir($prjCopyFolder);
-		SharingOperations::fixProjectFsObjectOwnership($groupName,$user->name,$prjCopyFolder);
+		SharingOperations::fixProjectFsObjectOwnership($group,$user,$prjCopyFolder);
 		SharingOperations::fixFsObjectPermissions($prjCopyFolder,"750");
 
 		#copy avp, .avs and .xml files
-		self::copyAvidProjectFiles("{$owner->homeFolder}/$project",$prjCopyFolder,$user->name);
+		self::copyAvidProjectFiles("$pathAbs/$owner/$project",$prjCopyFolder,$user);
 
 		#the user's shared folder
 		$shared="$prjCopyFolder/Shared";
 		if(!is_dir($shared)) mkdir($shared);
-		SharingOperations::fixProjectFsObjectOwnership($groupName,$user->name,$shared);
+		SharingOperations::fixProjectFsObjectOwnership($group,$user,$shared);
 		SharingOperations::fixFsObjectPermissions($shared,"755");
 
                 if(!empty($groupName))
-                        chmodRecursive($shared, 0644,0755,$user->name,'is_'.$groupName);
+                        chmodRecursive($shared, 0644,0755,$user,$group);
                 else
-                        chmodRecursive($shared, 0644,0755,$user->name,$user->name);
+                        chmodRecursive($shared, 0644,0755,$user,$user);
 
 
 		#the link from the project owner
-		$sharedSubOwner="$shared/{$owner->name}";
-		$target="{$owner->homeFolder}/$project/Shared/{$owner->name}";
-		SharingOperations::verifySymLink($sharedSubOwner,$target,$user->name);		
+		$sharedSubOwner="$shared/$owner";
+		$target="$pathAbs/$owner/$project/Shared/$owner";
+		SharingOperations::verifySymLink($sharedSubOwner,$target,$user);		
 
 		#the link from unprotected
 		$sharedUnprotected="$shared/Unprotected";
-		$target="{$owner->homeFolder}/$project/Shared/Unprotected";
-		SharingOperations::verifySymLink($sharedUnprotected,$target,$user->name);		
+		$target="$pathAbs/$owner/$project/Shared/Unprotected";
+		SharingOperations::verifySymLink($sharedUnprotected,$target,$user);		
 
 		#the user's own shared subfolder
-		$sharedSubUser="$shared/{$user->name}";
+		$sharedSubUser="$shared/$user";
 		if(!is_dir($sharedSubUser))
 		{
-			$archived="{$owner->homeFolder}/$project/Archived";
-			$archivedUser="$archived/{$user->name}";
+			$archived="$pathAbs/$owner/$project/Archived";
+			$archivedUser="$archived/$user";
 			if(!is_dir($archivedUser))
 				mkdir($sharedSubUser);
 			else
 			{
 				renameUsingShell($archivedUser,$sharedSubUser);
-				shellSilent("chown -R {$user->name}.is_$groupName '$sharedSubUser'");
+				shellSilent("chown -R $user.$group '$sharedSubUser'");
 			}
 		}
 
-		SharingOperations::fixProjectFsObjectOwnership($groupName,$user->name,$sharedSubUser);
+		SharingOperations::fixProjectFsObjectOwnership($group,$user,$sharedSubUser);
 		SharingOperations::fixFsObjectPermissions($sharedSubUser,"755");
 
 		#all other users (not the member himself, nor the owner)
 		foreach($users as $sharingMember)
 		{
-			if($sharingMember->name!=$owner->name && $sharingMember->name!=$user->name)
+			if($sharingMember!=$owner && $sharingMember!=$user)
 			{
-				$linkName="$shared/{$sharingMember->name}";
-				$target="{$sharingMember->homeFolder}/Avid Shared Projects/".
-                                        "$projectCopy/Shared/{$sharingMember->name}";
-				SharingOperations::verifySymLink($linkName,$target,$user->name);		
+				$linkName="$shared/$sharingMember";
+				$target="$pathAbs/$sharingMember/Avid Shared Projects/".
+                                        "$projectCopy/Shared/$sharingMember";
+				SharingOperations::verifySymLink($linkName,$target,$user);		
 			}
 		}		
 	}
@@ -309,13 +313,13 @@ class SharingStructureAvid
 		}
 	}
 
-	static function purgeProjectLinks($users)
+	static function purgeProjectLinks($pathAbs,$users)
 	{
 		foreach($users as $user)
 		{
-			self::purgeOldProjectsForUser($user);
-			self::purgeInvalidSymlinksInProjects($user,$users);
-			self::purgeInvalidSymlinksInAVSFolder($user,$users);
+			self::purgeOldProjectsForUser($pathAbs,$user);
+			self::purgeInvalidSymlinksInProjects($pathAbs,$user,$users);
+			self::purgeInvalidSymlinksInAVSFolder($pathAbs,$user,$users);
 		}
 	}
 
@@ -347,12 +351,12 @@ class SharingStructureAvid
 		else return null;
 	}
 
-	static function purgeInvalidSymlinksInProjects($user,$users)
+	static function purgeInvalidSymlinksInProjects($pathAbs,$user,$users)
 	{
-		$projects=sharingFolders::userAvidProjects($user->homeFolder);
+		$projects=sharingFolders::userAvidProjects("$pathAbs/$user");
 		foreach($projects as $project)
 		{
-			$sharedSubFolderRoot="{$user->homeFolder}/$project/Shared";
+			$sharedSubFolderRoot="$pathAbs/$user/$project/Shared";
 			if(!file_exists($sharedSubFolderRoot)) continue;
 			$sharedSubFolders=SharingFolders::userSubFolders($sharedSubFolderRoot);
 			foreach($sharedSubFolders as $sharedSubFolder)
@@ -371,17 +375,19 @@ class SharingStructureAvid
 				        }
 				        //the link must point to member project folder
 				        $targetHomeFolder=self::homeFolderSegmentForLinkTarget($target);
-				        if(!SharingFolders::isGroupMemberHomeFolder($users,$targetHomeFolder))
+				        if(!SharingFolders::isGroupMemberHomeFolder($pathAbs,$users,$targetHomeFolder))
 				        {
 					        if(file_exists($memberFolder)) unlink($memberFolder);
 					        syslog_notice("Removed '$memberFolder'; in target '$target' ".
 						        "the home folder '$targetHomeFolder'".
-                                                        " is not the home folder for a group member");
+                                                        " is in the section of a workspace user");
 				        }
 			        }	
 			}			
 		}
 	}
+
+/* ==============================        CONTINUE FROM HERE ==================================*/
 
 	static function purgeInvalidSymlinksInAVSFolder($user,$users)
 	{

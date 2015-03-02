@@ -162,11 +162,11 @@ class SharingFolders
 		return $avidProjectLinks;
 	}
 
-	static function isGroupMemberHomeFolder($users,$homeFolder)
+	static function isGroupMemberHomeFolder($pathAbs,$users,$homeFolder)
 	{
 		foreach($users as $user)
 		{
-			if($homeFolder==$user->homeFolder) return true;
+			if($homeFolder=="$pathAbs/$user") return true;
 		}
 		return false;
 	}
