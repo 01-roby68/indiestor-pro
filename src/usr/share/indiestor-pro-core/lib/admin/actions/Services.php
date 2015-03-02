@@ -138,4 +138,19 @@ class Services extends EntityType
                 //handled by show command
                 return;
         }
+
+	static function startWatching($commandAction)
+	{
+        	ShellCommand::exec_fail_if_error("incrontab -u indienotify --remove");
+        	ShellCommand::exec_fail_if_error("echo /var/spool/indiestor-pro ".
+                        "IN_CREATE /usr/bin/indiestor-pro-inotify | incrontab -u indienotify -");
+		InotifyWait::startWatchingAll();
+	}
+
+	static function stopWatching($commandAction)
+	{
+        	ShellCommand::exec_fail_if_error("incrontab -u indienotify --remove");
+		InotifyWait::stopWatchingAll();
+	}
+
 }

@@ -9,18 +9,15 @@
 case "$1" in
   start)
 	echo "Start indiestor pro watching"
-	indiestor-pro --groups -start-watching
+	indiestor-pro --services -start-watching
     ;;
   stop)
 	echo "Stop indiestor pro watching"
-	indiestor-pro --groups -stop-watching
-    ;;
-  status)
-	indiestor-pro --groups -status-watching
+	indiestor-pro --services -stop-watching
     ;;
 
   *)
-    echo "Usage: /etc/init.d/indiestor-pro-watch {start|stop|status}"
+    echo "Usage: /etc/init.d/indiestor-pro-watch {start|stop}"
     exit 1
     ;;
 esac

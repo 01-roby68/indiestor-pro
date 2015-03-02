@@ -8,6 +8,19 @@
         Licensed under the GPL
 */
 
+function sysquery_pgrep($pattern)
+{
+	$pids=array();
+	$query="pgrep -f '$pattern'";
+	$result=ShellCommand::query($query,true);
+	if($result->returnCode!=0) return $pids;
+	$lines=explode("\n",$result->stdout);
+	foreach($lines as $line)
+		if(trim($line)!='')
+			$pids[]=intval($line);
+	return $pids;
+}
+
 class InotifyWait
 {
 	static function execBackground($cmd)
@@ -17,45 +30,36 @@ class InotifyWait
 
 	static function stopWatchingAll()
 	{
-                $etcGroup=EtcGroup::instance();
-                foreach($etcGroup->groups as $group)
-			self::stopWatching($group->name);
+                $conf=new EtcWorkspaces('avid');
+                foreach($conf->workspaces as $workspace=>$path)
+			self::stopWatching($workspace);
 	}
 
 	static function startWatchingAll()
 	{
-                $etcGroup=EtcGroup::instance();
-                foreach($etcGroup->groups as $group)
-			self::startWatching($group->name);
+                $conf=new EtcWorkspaces('avid');
+                foreach($conf->workspaces as $workspace=>$path)
+			self::startWatching($workspace);
 	}
 
-        static function statusWatchingAll()
-        {
-                $etcGroup=EtcGroup::instance();
-                $countPids=0;
-                foreach($etcGroup->groups as $group)
-			$countPids+=self::statusWatching($group->name);
-                return $countPids;
-        }
-
-	static function watchProcesses($groupName)
+	static function watchProcesses($workspace)
 	{
 		return array_merge(
-			self::watchProcessesForWatchType($groupName,'main'),
-			self::watchProcessesForWatchType($groupName,'avp')
+			self::watchProcessesForWatchType($workspace,'main'),
+			self::watchProcessesForWatchType($workspace,'avp')
 		);
 	}
 
-	static function watchProcessesForWatchType($groupName,$watchType)
+	static function watchProcessesForWatchType($workspace,$watchType)
 	{
-		$pidsPrg=sysquery_pgrep("^/bin/sh /usr/bin/indiestor-pro-watch-avid-workspace $groupName $watchType");
-		$pidsInotifyWait=sysquery_pgrep("^inotifywait --exclude __{$groupName}__{$watchType}__ ");
+		$pidsPrg=sysquery_pgrep("^/bin/sh /usr/bin/indiestor-pro-watch-avid-workspace $workspace $watchType");
+		$pidsInotifyWait=sysquery_pgrep("^inotifywait --exclude __{$workspace}__{$watchType}__ ");
 		return array_merge($pidsPrg,$pidsInotifyWait);
 	}
 
-	static function stopWatching($groupName)
+	static function stopWatching($workspace)
 	{
-		$pids=self::watchProcesses($groupName);
+		$pids=self::watchProcesses($workspace);
 		foreach($pids as $pid) {
 			posix_kill($pid,SIGKILL);
                         $posix_error=posix_get_last_error();
@@ -64,26 +68,22 @@ class InotifyWait
                 }
 	}
 
-        static function statusWatching($groupName)
-        {
-		$pids=self::watchProcesses($groupName);
-                return count($pids);
-        }
-
-	static function startWatching($groupName)
+	static function startWatching($workspace)
 	{
-		self::stopWatching($groupName);
+		self::stopWatching($workspace);
 
-		$group=EtcGroup::instance()->findGroup($groupName);
+                $groupName='avid_'.$workspace;                        
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
 		if(count($group->members)<2) return;
 
-		$foldersMain=InotifyWatchFolders::watchesMain($group);
+		$foldersMain=InotifyWatchFolders::watchesMain($workspace);
 		if(count($foldersMain)>0)
-			self::execBackground("indiestor-pro-watch-avid-workspace $groupName main");
+			self::execBackground("indiestor-pro-watch-avid-workspace $workspace main");
 
-		$foldersAVP=InotifyWatchFolders::watchesAVP($group);
+		$foldersAVP=InotifyWatchFolders::watchesAVP($workspace);
 		if(count($foldersAVP)>0)
-			self::execBackground("indiestor-pro-watch-avid-workspace $groupName avp");
+			self::execBackground("indiestor-pro-watch-avid-workspace $workspace avp");
 	}
 }
 
