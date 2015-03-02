@@ -135,6 +135,14 @@ class AvidWorkspace extends Workspace
         static function showMembers($commandAction)
         {
 		$workspace=ProgramActions::$entityName;
+
+                $conf=new EtcWorkspaces('avid');
+                if(!array_key_exists($workspace,$conf->workspaces));
+                {
+                        ActionEngine::error('ERR_AVID_WORKSPACE_MUST_EXIST');
+                        return;
+                }
+
                 $groupName='avid_'.$workspace;
 
                 //the group must exist
@@ -160,6 +168,13 @@ class AvidWorkspace extends Workspace
 	static function showWatches($commandAction)
 	{
 		$workspace=ProgramActions::$entityName;
+
+                $conf=new EtcWorkspaces('avid');
+                if(!array_key_exists($workspace,$conf->workspaces));
+                {
+                        ActionEngine::error('ERR_AVID_WORKSPACE_MUST_EXIST');
+                        return;
+                }
 
                 //must have at least 2 members
                 $groupName='avid_'.$workspace;
