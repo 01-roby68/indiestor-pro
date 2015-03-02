@@ -61,7 +61,6 @@ requireLibFile("admin/ActionEngine.php");
 requireLibFile("admin/ShellCommand.php");
 requireLibFile("admin/DefinitionFile.php");
 requireLibFile("admin/NoticeDefinitions.php");
-requireLibFile("inotify/SharingStructureDefault.php");
 requireLibFile("inotify/SharingStructureAvid.php");
 requireLibFile("inotify/SharingStructureMXF.php");
 
