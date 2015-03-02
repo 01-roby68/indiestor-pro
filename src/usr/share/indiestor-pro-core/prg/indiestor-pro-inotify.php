@@ -121,7 +121,7 @@ while(true)
 
 	//reshare
 	SharingStructureAvid::reshare($workspace,$members);
-	SharingStructureMXF::reshare($members);
+	SharingStructureMXF::reshare($workspace,$members);
 
 	//restart watching
 	InotifyWait::startWatching($workspace);

@@ -18,42 +18,52 @@ define('MXF_SUBFOLDER',AMF_SUBFOLDER.'/'.'MXF');
 class SharingStructureMXF
 {
 
-        static function ensureAMFPermsOwnership($users)
+        static function ensureAMFPermsOwnership($pathAbs,$users)
         {
 		foreach($users as $user)
 		{
-		        $amfSubFolder=$user->homeFolder.'/'.AMF_SUBFOLDER;
+		        $amfSubFolder="$pathAbs/$user/".AMF_SUBFOLDER;
                         if(is_dir($amfSubFolder))
-                                chmodRecursive($amfSubFolder, 0644,0755,$user->name,$user->name);
+                                chmodRecursive($amfSubFolder, 0644,0755,$user,$user);
 		}
         }
 
-	static function reshare($users,$ensureAMFPermsOwnership=false)
+	static function reshare($workspace,$users,$ensureAMFPermsOwnership=false)
 	{
+
+                $conf=new EtcWorkspaces('avid');
+                $path=$conf->workspaces[$workspace];
+      
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+
+                $group='avid_'.$workspace;
+
 		if($users==null) $users=array();
                 if($ensureAMFPermsOwnership)
-                        self::ensureAMFPermsOwnership($users);
-		self::reshareAvid($users);
-		self::purgeAvid($users);
+                        self::ensureAMFPermsOwnership($pathAbs,$users);
+		self::reshareAvid($pathAbs,$users);
+		self::purgeAvid($pathAbs,$users);
 	}
 
-	static function reshareAvid($users)
+	static function reshareAvid($pathAbs,$users)
 	{
 		foreach($users as $user)
 		{
-			self::reshareAvidFromUser($user,$users);
+			self::reshareAvidFromUser($pathAbs,$user,$users);
 		}
 	}
 
-	static function reshareAvidFromUser($user,$users)
+	static function reshareAvidFromUser($pathAbs,$user,$users)
 	{
-		$amfFolder=$user->homeFolder.'/'.AMF_SUBFOLDER;
-		$mxfFolder=$user->homeFolder.'/'.MXF_SUBFOLDER;
+		$amfFolder="$pathAbs/$user/".AMF_SUBFOLDER;
+		$mxfFolder="$pathAbs/$user/".MXF_SUBFOLDER;
 		if(!file_exists($mxfFolder)) return;
 
                 //fix ownership for AMF subfolder
                 if(file_exists($amfFolder)) {
-                        SharingOperations::fixUserObjectOwnership($user->name,$amfFolder);
+                        SharingOperations::fixUserObjectOwnership($user,$amfFolder);
                 }
 
 		$folders=self::mxfSubFolders($mxfFolder);
@@ -62,44 +72,44 @@ class SharingStructureMXF
 			$target="$mxfFolder/$folder";
 			foreach($users as $sharingUser)
 			{
-				if($user->name != $sharingUser->name)
-					self::reshareAvidMXFToUser($sharingUser,$target,$folder,$user->name);
+				if($user != $sharingUser)
+					self::reshareAvidMXFToUser($pathAbs,$sharingUser,$target,$folder,$user);
 			}
 		}
 	}
 
-	static function reshareAvidMXFToUser($sharingUser,$target,$entry,$fromUserName)
+	static function reshareAvidMXFToUser($pathAbs,$sharingUser,$target,$entry,$fromUserName)
 	{
-		$amfSubFolder="{$sharingUser->homeFolder}/".AMF_SUBFOLDER;
-		$mxfSubFolder="{$sharingUser->homeFolder}/".MXF_SUBFOLDER;
+		$amfSubFolder="$pathAbs/$sharingUser/".AMF_SUBFOLDER;
+		$mxfSubFolder="$pathAbs/$sharingUser/".MXF_SUBFOLDER;
 		if(!is_dir($mxfSubFolder))
 		{	
 			$result=mkdir($mxfSubFolder,0755,true);
 			if(!$result) syslog_notice("Cannot create folder '$mxfSubFolder'");
-			syslog_notice("chown($mxfSubFolder,{$sharingUser->name})");
-			chown($mxfSubFolder,$sharingUser->name);
-			if(!$result) syslog_notice("Cannot chown folder '$mxfSubFolder' to {$sharingUser->name}");
-			syslog_notice("chgrp($mxfSubFolder,{$sharingUser->name}");
-			chgrp($mxfSubFolder,$sharingUser->name);
-			if(!$result) syslog_notice("Cannot chgrp folder '$mxfSubFolder' to {$sharingUser->name}");
+			syslog_notice("chown($mxfSubFolder,$sharingUser)");
+			chown($mxfSubFolder,$sharingUser);
+			if(!$result) syslog_notice("Cannot chown folder '$mxfSubFolder' to $sharingUser");
+			syslog_notice("chgrp($mxfSubFolder,$sharingUser");
+			chgrp($mxfSubFolder,$sharingUser);
+			if(!$result) syslog_notice("Cannot chgrp folder '$mxfSubFolder' to $sharingUser");
 		}
 
 		$linkName="$mxfSubFolder/{$entry}_$fromUserName";
 		if(!is_link($linkName))
-			SharingOperations::createSymlink($linkName,$target,$sharingUser->name);
-		SharingOperations::ensureLinkOwnership($linkName,$sharingUser->name);
+			SharingOperations::createSymlink($linkName,$target,$sharingUser);
+		SharingOperations::ensureLinkOwnership($linkName,$sharingUser);
 	}
 
-	static function purgeAvid($users)
+	static function purgeAvid($pathAbs,$users)
 	{
 		foreach($users as $user)
-			self::purgeAvidForUser($user,$users);
+			self::purgeAvidForUser($pathAbs,$user,$users);
 	}
 
 
-	static function purgeAvidForUser($user,$users)
+	static function purgeAvidForUser($pathAbs,$user,$users)
 	{
-		$mxfFolder=$user->homeFolder.'/'.MXF_SUBFOLDER;
+		$mxfFolder="$pathAbs/$user/".MXF_SUBFOLDER;
 		if(!file_exists($mxfFolder)) return;
 		$folders=self::mxfSubFolderLinks($mxfFolder);
 		foreach($folders as $folder)
@@ -123,14 +133,14 @@ class SharingStructureMXF
 					"the target is not a valid mxf folder");
 			}
 			//the link must point to member project folder
-			elseif(!SharingFolders::isGroupMemberHomeFolder($users,$targetHomeFolder))
+			elseif(!SharingFolders::isGroupMemberHomeFolder($pathAbs,$users,$targetHomeFolder))
 			{
 				//file could have been deleted already by a concurrent process
 				if(file_exists($linkName))
                                 {
                                         unlink($linkName);
         				syslog_notice("Removed '$linkName'; in target '$target' ".
-					"the home folder '$targetHomeFolder' is not the home folder for a group member");
+					"the home folder '$targetHomeFolder' is not the home folder for a workspace member");
                                 }
 			}
 
