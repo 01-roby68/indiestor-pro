@@ -42,6 +42,21 @@ class InotifyWait
 			self::startWatching($workspace);
 	}
 
+       static function statusWatchingAll()
+        {
+                $conf=new EtcWorkspaces('avid');
+                $countPids=0;
+                foreach($conf->workspaces as $workspace=>$path)
+			$countPids+=self::statusWatching($workspace);
+                return $countPids;
+        }
+
+        static function statusWatching($workspace)
+        {
+		$pids=self::watchProcesses($workspace);
+                return count($pids);
+        }
+
 	static function watchProcesses($workspace)
 	{
 		return array_merge(
