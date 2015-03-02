@@ -52,7 +52,6 @@ requireLibFile("admin/sysqueries/df.php");
 requireLibFile("admin/action-engine/InotifyWait.php");
 requireLibFile("admin/renameUsingShell.php");
 requireLibFile("inotify/syslog.php");
-requireLibFile("inotify/SharingStructureDefault.php");
 requireLibFile("inotify/SharingStructureAvid.php");
 requireLibFile("inotify/SharingStructureMXF.php");
 requireLibFile("inotify/SharingOperations.php");
@@ -122,7 +121,6 @@ while(true)
 	//reshare
 	SharingStructureAvid::reshare($groupName,$members);
 	SharingStructureMXF::reshare($members);
-	SharingStructureDefault::reshare($groupName,$members);
 
 	//restart watching
 	InotifyWait::startWatching($groupName);

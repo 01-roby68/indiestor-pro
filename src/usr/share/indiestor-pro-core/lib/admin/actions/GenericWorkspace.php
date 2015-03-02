@@ -203,12 +203,5 @@ class GenericWorkspace extends Workspace
 
         }
 
-//-----------------------
-
-        static function reshare($commandAction)
-        {
-                echo "to be implemented\n";
-        }
-
 }
 
