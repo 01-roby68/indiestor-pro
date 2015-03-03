@@ -225,7 +225,28 @@ class AvidWorkspace extends Workspace
 
         static function reshare($commandAction)
         {
-                echo "to be implemented\n";
+		$workspace=ProgramActions::$entityName;
+                $conf=new EtcWorkspaces('avid');
+                if(!array_key_exists($workspace,$conf->workspaces))
+                {
+                        ActionEngine::error('ERR_AVID_WORKSPACE_MUST_EXIST');
+                        return;
+                }
+                $groupName='avid_'.$workspace;
+
+                //the group must exist
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+                if($group===null) {
+                        ActionEngine::error('ERR_AVID_GROUP_MUST_EXIST');
+                        return;
+                }
+
+                //members
+                $members=$group->members;
+
+	        SharingStructureAvid::reshare($workspace,$members);
+	        SharingStructureMXF::reshare($workspace,$members,true);
         }
 
 

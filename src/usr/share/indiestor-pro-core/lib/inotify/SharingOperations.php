@@ -138,11 +138,11 @@ class SharingOperations
 		//group must be the indiestor pro group
 
 		$currentGroup=SharingOperations::groupByGid($stat['gid']);
-		if(!empty($groupName) && !empty($currentGroup) && $currentGroup!='pro_'.$groupName)
+		if(!empty($groupName) && !empty($currentGroup) && $currentGroup!=$groupName)
 		{
-			$result=chgrp($fsObject,'pro_'.$groupName);
+			$result=chgrp($fsObject,$groupName);
 			if(!$result)
-				syslog_notice("cannot chgrp '$fsObject' to 'pro_$groupName'");
+				syslog_notice("cannot chgrp '$fsObject' to '$groupName'");
 		}
 	}
 

@@ -33,7 +33,7 @@ class SharingStructureAvid
 
 		if($users==null) $users=array();
 		syslog_notice("resharing workspace '$workspace' for avid folders");
-		self::verifyProjects($groupName,$users);
+		self::verifyProjects($workspace,$pathAbs,$group,$users);
                 self::$repurgeRequired=true;
                 while(self::$repurgeRequired)
                 {
@@ -48,7 +48,7 @@ class SharingStructureAvid
                 self::$repurgeRequired=true;
         }
 
-	static function verifyProjects($workspace,$patAbs,$group,$users)
+	static function verifyProjects($workspace,$pathAbs,$group,$users)
 	{
 		foreach($users as $user)
 		{
@@ -118,10 +118,7 @@ class SharingStructureAvid
 		SharingOperations::fixProjectFsObjectOwnership($group,$user,$sharedSubOwner);
 		SharingOperations::fixFsObjectPermissions($sharedSubOwner,"755");
 
-                if(!empty($group))
-                        chmodRecursive($sharedSubOwner, 0644,0755,$user,$group);
-                else
-                        chmodRecursive($sharedSubOwner, 0644,0755,$user,$user);
+                chmodRecursive($sharedSubOwner, 0644,0755,$user,$group);
 
 
 	        #the unprotected shared subfolder
@@ -140,10 +137,7 @@ class SharingStructureAvid
                                 }
 	        }
 
-                if(!empty($group))
-                        chmodRecursive($sharedUnprotected, 0664,0775,$user,$group);
-                else
-                        chmodRecursive($sharedUnprotected, 0664,0775,$user,$user);
+                chmodRecursive($sharedUnprotected, 0664,0775,$user,$group);
 
 		#avid copy 
 		$projectCopy=self::folderAvidToCopy($project);
@@ -151,11 +145,11 @@ class SharingStructureAvid
 		#link for each other member
 		foreach($users as $sharingUser)
 		{
-			if($sharingUser->name!=$userName)
+			if($sharingUser!=$user)
 			{
-				$linkName="$shared/{$sharingUser->name}";
-				$target="$pathAbs/{$sharingUser->name}/Avid Shared Projects".
-                                        "/$projectCopy/Shared/{$sharingUser->name}";
+				$linkName="$shared/$sharingUser";
+				$target="$pathAbs/$sharingUser/Avid Shared Projects".
+                                        "/$projectCopy/Shared/$sharingUser";
 				SharingOperations::verifySymLink($linkName,$target,$user);		
 			}
 		}
@@ -229,10 +223,8 @@ class SharingStructureAvid
 		SharingOperations::fixProjectFsObjectOwnership($group,$user,$shared);
 		SharingOperations::fixFsObjectPermissions($shared,"755");
 
-                if(!empty($groupName))
-                        chmodRecursive($shared, 0644,0755,$user,$group);
-                else
-                        chmodRecursive($shared, 0644,0755,$user,$user);
+
+                chmodRecursive($shared, 0644,0755,$user,$group);
 
 
 		#the link from the project owner

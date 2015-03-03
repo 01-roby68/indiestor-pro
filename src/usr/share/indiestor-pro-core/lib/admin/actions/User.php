@@ -161,7 +161,7 @@ class User extends EntityType
         	if(!$isExistingUser)
 		{
                 	ShellCommand::exec_fail_if_error(
-		                "adduser --system --shell /bin/false --disabled-password --gecos '' --no-create-home $userName");
+		                "adduser --system --group --shell /bin/false --disabled-password --gecos '' --no-create-home $userName");
 			EtcPasswd::reset();
 		}
 		//add user to indiestor user group
