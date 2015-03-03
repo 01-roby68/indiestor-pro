@@ -168,13 +168,14 @@ class AvidWorkspace extends Workspace
 	static function showWatches($commandAction)
 	{
 		$workspace=ProgramActions::$entityName;
-
                 $conf=new EtcWorkspaces('avid');
-                if(!array_key_exists($workspace,$conf->workspaces));
+
+                if(!isset($conf->workspaces[$workspace]))
                 {
                         ActionEngine::error('ERR_AVID_WORKSPACE_MUST_EXIST');
                         return;
                 }
+
 
                 //must have at least 2 members
                 $groupName='avid_'.$workspace;
@@ -203,6 +204,21 @@ class AvidWorkspace extends Workspace
 	{
 		foreach(InotifyWatchFolders::watchesAVP($workspace) as $folder)
 			echo "$folder\n";
+	}
+
+	static function showWatchProcesses($commandAction)
+	{
+		$workspace=ProgramActions::$entityName;
+                $conf=new EtcWorkspaces('avid');
+                if(!array_key_exists($workspace,$conf->workspaces))
+                {
+                        ActionEngine::error('ERR_AVID_WORKSPACE_MUST_EXIST');
+                        return;
+                }
+		$pids=InotifyWait::watchProcesses($workspace);
+		foreach($pids as $pid)
+			echo "$pid\n";
+
 	}
 
 //-----------------------
