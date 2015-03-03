@@ -28,6 +28,6 @@ fi
 
 while indiestor-pro --avid-workspace $avid_workspace -show-watches $watchType | \
 		inotifywait --exclude __${avid_workspace}__${watchType}__ --fromfile - --event $events; do
-	indiestor-pro-touch $avid_workspace
+        indiestor-pro-touch "$avid_workspace"
 done
 

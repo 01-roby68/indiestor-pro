@@ -22,7 +22,7 @@ if (dirname(__FILE__)=='/usr/share/indiestor-pro-core/prg')
 else
 {
 	$BIN=dirname(__FILE__);
-	$LIB=dirname(__FILE__).'/lib';
+	$LIB=dirname(dirname(__FILE__)).'/lib';
 	$INUSER='root';
 }
 
@@ -46,9 +46,7 @@ function requireLibFile($path)
 
 //--------------------------
 
-requireLibFile("admin/etcfiles/EtcPasswd.php");
 requireLibFile("admin/etcfiles/EtcGroup.php");
-requireLibFile("admin/sysqueries/df.php");
 requireLibFile("admin/action-engine/InotifyWait.php");
 requireLibFile("admin/renameUsingShell.php");
 requireLibFile("inotify/syslog.php");
@@ -64,12 +62,6 @@ function customError($errno,$errmsg,$errfile,$errline)
         if($errno==0) return true; //ignore errors prepended with @
 	$msg="err:$errno,$errmsg in file $errfile, line $errline";
 	syslog_notice($msg);
-	echo $msg."\n\n";
-	debug_print_backtrace();
-	ob_start();
-	var_dump($someVar);
-	$trace = ob_get_clean();
-	syslog_notice($trace);
 	die();
 }
 set_error_handler("customError");
@@ -109,7 +101,7 @@ while(true)
 
 	//find group
         $groupName='avid_'.$workspace;
-	$group=EtcGroup::instance()->findGroup($workspace);
+	$group=EtcGroup::instance()->findGroup($groupName);
 	if($group==null)
 	{
 		syslog_notice("cannot find group for workspace '$workspace'; skipping");
