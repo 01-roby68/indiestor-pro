@@ -1,4 +1,4 @@
-[{workspace}]
+[{workspace}_avid]
 path = {path}/$u
 follow symlinks = yes
 umask = 0022

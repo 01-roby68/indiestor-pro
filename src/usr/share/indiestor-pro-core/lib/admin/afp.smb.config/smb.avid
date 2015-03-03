@@ -1,7 +1,9 @@
-[{workspace}]
+[{workspace}_avid]
 path = {path}/%u
 follow symlinks = yes
-umask = 0022
+writeable = yes
+create mask = 0644
+directory mask = 0755
 valid users = {group}
 map read only = permissions
 inherit permissions = no
