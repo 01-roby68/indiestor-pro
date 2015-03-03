@@ -21,9 +21,9 @@ case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
 	if [ "$release" = "wheezy" ] ; then
-		insserv --remove indiestor-pro-watch
+		insserv --remove indiestor-pro-watch-avid-workspace
 	else
-		update-rc.d -f indiestor-pro-watch remove
+		update-rc.d -f indiestor-pro-watch-avid-workspace remove
 	fi
     ;;
 

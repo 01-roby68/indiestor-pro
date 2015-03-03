@@ -33,6 +33,8 @@ case "$1" in
 	nmbd restart
 	smbd restart
         echo /var/spool/indiestor-pro IN_CREATE /usr/bin/indiestor-pro-inotify | incrontab -u indienotify -
+        mkdir -p /var/spool/indiestor-pro
+        chown -R indienotify /var/spool/indiestor-pro
 	indiestor-pro --groups -start-watching
 	indiestor-pro --users -reshare
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
