@@ -75,6 +75,8 @@ function handleShutdown()
 }
 register_shutdown_function('handleShutdown');
 
+syslog_notice('start running indiestor-pro-inotify');
+
 syslog_notice_start_running();
 
 while(true)

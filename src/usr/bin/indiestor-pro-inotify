@@ -10,7 +10,10 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 export PATH
 
+logger "running indiestor-pro-inotify program"
+
 if [  "$(pgrep -f '/usr/bin/php /usr/share/indiestor-pro-core/prg/indiestor-pro-inotify.php')" = "" ] ; then
+        logger "super indiestor-pro-inotify"
 	super indiestor-pro-inotify
 fi
 

@@ -9,17 +9,21 @@
 #------------------------------------------------------------
 workspace=$1
 
+logger "Entering indiestor touch program"
+
 if [ "$workspace" = "" ] ; then
 	echo "workspace argument required" >&2 
 	exit 1
 fi
 
-workspaceFile="/var/spool/indiestor/$workspace"
+workspaceFile="/var/spool/indiestor-pro/$workspace"
 
 if [ ! -f $workspaceFile ]; then
+        logger "Touching $workspaceFile" 
 	touch $workspaceFile
 else
 	if [  "$(pgrep -f '/usr/bin/php /usr/share/indiestor-core/prg/indiestor-pro-inotify.php')" = "" ] ; then
+                logger "Deleting and touching $workspaceFile" 
 		rm -f $workspaceFile
 		/usr/bin/touch $workspaceFile
 	fi
