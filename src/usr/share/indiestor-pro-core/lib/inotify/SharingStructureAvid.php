@@ -44,6 +44,7 @@ class SharingStructureAvid
 
         static function renameRepurge($from,$to)
         {
+                syslog_notice("purge: moving $from to $to");
                 renameUsingShell($from,$to);
                 self::$repurgeRequired=true;
         }
@@ -461,6 +462,8 @@ class SharingStructureAvid
 	static function purgeOldProjectsForUser($pathAbs,$user)
 	{
 		$oldProjectFolders=SharingFolders::userRenamedProjectFolders("$pathAbs/$user");
+                if(count($oldProjectFolders)>0)
+                        syslog_notice('purge: discovered old project folders:'.join(',',$oldProjectFolders));
 		foreach($oldProjectFolders as $oldProjectFolder)
 		{
 			self::verifyProjectFiles($pathAbs,$user,$oldProjectFolder);
@@ -476,7 +479,7 @@ class SharingStructureAvid
 		SharingOperations::fixUserObjectOwnership($user,$archiveFolder);
 
 		//handle shared subfolders
-		$sharedSubFolderRoot="$pathAbs/user/$oldProjectFolder/Shared";
+		$sharedSubFolderRoot="$pathAbs/$user/$oldProjectFolder/Shared";
 		$sharedSubFolders=SharingFolders::userSubFolders($sharedSubFolderRoot);
 		foreach($sharedSubFolders as $sharedSubFolder)
 		{
@@ -518,6 +521,7 @@ class SharingStructureAvid
 		}
 
 		//purge shared folder
+                syslog_notice("purge: deleting folder $sharedSubFolderRoot");
 		shellSilent("rm -rf '$sharedSubFolderRoot'");
 	}
 }
