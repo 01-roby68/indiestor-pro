@@ -211,7 +211,14 @@ class SharingStructureAvid
 		#the user's project.copy folder
 		$projectCopy=self::folderAvidToCopy($project);
 		$prjCopyFolder="$aspFolder/$projectCopy";
+
+		$archivedToplevel="$pathAbs/$owner/$project/Archived/$user.toplevel";
+                if(is_dir($archivedToplevel))
+        		renameUsingShell($archivedToplevel,$prjCopyFolder);
+
 		if(!is_dir($prjCopyFolder)) mkdir($prjCopyFolder);
+
+
 		SharingOperations::fixProjectFsObjectOwnership($group,$user,$prjCopyFolder);
 		SharingOperations::fixFsObjectPermissions($prjCopyFolder,"750");
 
@@ -308,7 +315,7 @@ class SharingStructureAvid
 	{
 		foreach($users as $user)
 		{
-			self::purgeOldProjectsForUser($pathAbs,$user);
+			self::purgeOldProjectsForUser($pathAbs,$user,$users);
 			self::purgeInvalidSymlinksInProjects($pathAbs,$user,$users);
 			self::purgeInvalidSymlinksInAVSFolder($pathAbs,$user,$users);
 		}
@@ -459,7 +466,7 @@ class SharingStructureAvid
                 }
 	}
 
-	static function purgeOldProjectsForUser($pathAbs,$user)
+	static function purgeOldProjectsForUser($pathAbs,$user,$users)
 	{
 		$oldProjectFolders=SharingFolders::userRenamedProjectFolders("$pathAbs/$user");
                 if(count($oldProjectFolders)>0)
@@ -467,12 +474,46 @@ class SharingStructureAvid
 		foreach($oldProjectFolders as $oldProjectFolder)
 		{
 			self::verifyProjectFiles($pathAbs,$user,$oldProjectFolder);
-			self::purgeOldProjectForUser($pathAbs,$user,$oldProjectFolder);
+                        self::createOldProjectArchiveFolder($pathAbs,$user,$oldProjectFolder);
+			self::purgeOldProjectSharedFolderForUser($pathAbs,$user,$oldProjectFolder);
+                        self::archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users);
 		}
 	}
 	
-	static function purgeOldProjectForUser($pathAbs,$user,$oldProjectFolder)
+        static function createOldProjectArchiveFolder($pathAbs,$user,$oldProjectFolder) 
+        {
+		//create archive folder
+		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived";
+		if(!is_dir($archiveFolder) && !file_exists($archiveFolder)) mkdir($archiveFolder);
+		SharingOperations::fixUserObjectOwnership($user,$archiveFolder);
+        }
+
+        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users)
+        {
+                //archive folder
+		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived";
+
+                foreach($users as $sharingUser) {
+                        if($sharingUser!=$user) {
+                                $toplevel="$pathAbs/$sharingUser/Avid Shared Projects/$oldProjectFolder.copy";
+                                if(is_dir($toplevel)) {
+                                        $archiveToplevel="$archiveFolder/{$sharingUser}.toplevel";
+                                        self::renameRepurge($toplevel,$archiveToplevel);
+                                        shellSilent("rm -Rf $archiveToplevel/Shared");
+                                        shellSilent("rm $archiveToplevel/$oldProjectFolder.copy.avp");
+                                        shellSilent("rm '$archiveToplevel/$oldProjectFolder.copy Settings.avs'");
+                                        shellSilent("rm '$archiveToplevel/$oldProjectFolder.copy Settings.xml'");
+                			shellSilent("chown -R $sharingUser.$sharingUser '$archiveToplevel'");
+                                }
+                        }
+                }
+        }
+
+	static function purgeOldProjectSharedFolderForUser($pathAbs,$user,$oldProjectFolder)
 	{
+                //archive folder
+		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived";
+
 		//create archive folder
 		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived";
 		if(!is_dir($archiveFolder) && !file_exists($archiveFolder)) mkdir($archiveFolder);
