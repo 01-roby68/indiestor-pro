@@ -24,6 +24,12 @@ class Workspace extends EntityType
                 $conf=new EtcWorkspaces(static::WORKSPACETYPE);
 		$workspace=ProgramActions::$entityName;
 
+                //only accept valid characters
+                if(!ActionEngine::isValidCharactersInName($workspace)) {
+                        ActionEngine::error('ERR_INVALID_CHARACTERS');
+                        return;
+                }
+
                 //stop if workspace exists already
                 if(array_key_exists($workspace,$conf->workspaces)) {
                         ActionEngine::error('ERR_WORKSPACE_EXISTS_ALREADY');
