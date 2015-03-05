@@ -9,5 +9,6 @@ map read only = permissions
 inherit permissions = no
 create mask = 0644
 directory mask = 0755
+wide links = yes
 vfs objects = netatalk
 
