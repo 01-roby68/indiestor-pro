@@ -17,7 +17,7 @@ case "$1" in
     ;;
 
   *)
-    echo "Usage: /etc/init.d/indiestor-pro-watch {start|stop}"
+    echo "Usage: /etc/init.d/indiestor-pro-watch-avid-workspace {start|stop}"
     exit 1
     ;;
 esac

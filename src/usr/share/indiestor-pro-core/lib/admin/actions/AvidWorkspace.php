@@ -89,6 +89,10 @@ class AvidWorkspace extends Workspace
 
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
+
+                //reshare+startwatching
+                self::reshare($commandAction);
+                InotifyWait::startWatching($workspace);
         }
 
         static function removeUser($commandAction)
@@ -124,6 +128,10 @@ class AvidWorkspace extends Workspace
 
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
+
+                //reshare+startwatching
+                self::reshare($commandAction);
+                InotifyWait::startWatching($workspace);
         }
 
         static function json($commandAction)
@@ -135,9 +143,9 @@ class AvidWorkspace extends Workspace
         static function showMembers($commandAction)
         {
 		$workspace=ProgramActions::$entityName;
-
                 $conf=new EtcWorkspaces('avid');
-                if(!array_key_exists($workspace,$conf->workspaces));
+
+                if(!array_key_exists($workspace,$conf->workspaces))
                 {
                         ActionEngine::error('ERR_AVID_WORKSPACE_MUST_EXIST');
                         return;
@@ -221,8 +229,6 @@ class AvidWorkspace extends Workspace
 
 	}
 
-//-----------------------
-
         static function reshare($commandAction)
         {
 		$workspace=ProgramActions::$entityName;
@@ -248,7 +254,5 @@ class AvidWorkspace extends Workspace
 	        SharingStructureAvid::reshare($workspace,$members);
 	        SharingStructureMXF::reshare($workspace,$members,true);
         }
-
-
 }
 
