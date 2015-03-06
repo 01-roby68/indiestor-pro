@@ -63,12 +63,13 @@ class SharingStructureAvid
                                 {
 				        self::verifyProject($pathAbs,$user,$project,$users,$group);
 				        self::verifyProjectSharing($pathAbs,$user,$project,$users,$group);
-				        self::verifyProjectArchive($pathAbs,$user,$project);
+//				        self::verifyProjectArchive($pathAbs,$user,$project);
                                 }
 			}
 		}
 	}
 
+/*
 	static function verifyProjectArchive($pathAbs,$user,$project)
 	{
 		#remove archive, if needed
@@ -81,7 +82,7 @@ class SharingStructureAvid
 			if($numberOfItems==0) shellSilent("rm -rf '$archived'");
 		}
 	}
-
+*/
 	static function verifyProject($pathAbs,$user,$project,$users,$group)
 	{
 		//verify ownership/groupship on .avid folder
@@ -104,17 +105,18 @@ class SharingStructureAvid
 		#the owner's own shared subfolder
 		$sharedSubOwner="$shared/$user";
 
-		#owner's archive, if it exists
-		$archived="$projectFolder/Archived";
+//		#owner's archive, if it exists
+//		$archived="$projectFolder/Archived";
 
-                #the owner's own archive folder
-		$archivedOwner="$archived/$user";
+//                #the owner's own archive folder
+//		$archivedOwner="$archived/$user";
 		if(!is_dir($sharedSubOwner)) 
 		{
-			if(is_dir($archivedOwner))
-				renameUsingShell($archivedOwner, $sharedSubOwner);
-			else
-				if(!file_exists($sharedSubOwner)) mkdir($sharedSubOwner);
+//			if(is_dir($archivedOwner))
+//				renameUsingShell($archivedOwner, $sharedSubOwner);
+//			else
+//				if(!file_exists($sharedSubOwner)) 
+                        mkdir($sharedSubOwner);
 		}
 		SharingOperations::fixProjectFsObjectOwnership($group,$user,$sharedSubOwner);
 		SharingOperations::fixFsObjectPermissions($sharedSubOwner,"755");
@@ -125,13 +127,13 @@ class SharingStructureAvid
 	        #the unprotected shared subfolder
 	        $sharedUnprotected="$shared/Unprotected";
 
-                #the unprotected folder
-	        $archivedUnprotected="$archived/Unprotected";
+  //              #the unprotected folder
+//	        $archivedUnprotected="$archived/Unprotected";
 	        if(!is_dir($sharedUnprotected)) 
 	        {
-		        if(is_dir($archivedUnprotected))
-			        renameUsingShell($archivedUnprotected, $sharedUnprotected);
-		        else
+//		        if(is_dir($archivedUnprotected))
+//			        renameUsingShell($archivedUnprotected, $sharedUnprotected);
+//		        else
 			        if(!is_dir($sharedUnprotected)) 
                                 {
                                         mkdir($sharedUnprotected);
@@ -212,11 +214,12 @@ class SharingStructureAvid
 		$projectCopy=self::folderAvidToCopy($project);
 		$prjCopyFolder="$aspFolder/$projectCopy";
 
-		$archivedToplevel="$pathAbs/$owner/$project/Archived/$user.toplevel";
-                if(is_dir($archivedToplevel))
-        		renameUsingShell($archivedToplevel,$prjCopyFolder);
+//		$archivedToplevel="$pathAbs/$owner/$project/Archived/$user-toplevel";
+//                if(is_dir($archivedToplevel))
+//        		renameUsingShell($archivedToplevel,$prjCopyFolder);
 
-		if(!is_dir($prjCopyFolder)) mkdir($prjCopyFolder);
+		if(!is_dir($prjCopyFolder)) 
+                        mkdir($prjCopyFolder);
 
 
 		SharingOperations::fixProjectFsObjectOwnership($group,$user,$prjCopyFolder);
@@ -249,15 +252,15 @@ class SharingStructureAvid
 		$sharedSubUser="$shared/$user";
 		if(!is_dir($sharedSubUser))
 		{
-			$archived="$pathAbs/$owner/$project/Archived";
-			$archivedUser="$archived/$user";
-			if(!is_dir($archivedUser))
+//			$archived="$pathAbs/$owner/$project/Archived";
+//			$archivedUser="$archived/$user";
+//			if(!is_dir($archivedUser))
 				mkdir($sharedSubUser);
-			else
-			{
-				renameUsingShell($archivedUser,$sharedSubUser);
-				shellSilent("chown -R $user.$group '$sharedSubUser'");
-			}
+//			else
+//			{
+//				renameUsingShell($archivedUser,$sharedSubUser);
+//				shellSilent("chown -R $user.$group '$sharedSubUser'");
+//			}
 		}
 
 		SharingOperations::fixProjectFsObjectOwnership($group,$user,$sharedSubUser);
@@ -474,51 +477,41 @@ class SharingStructureAvid
 		foreach($oldProjectFolders as $oldProjectFolder)
 		{
 			self::verifyProjectFiles($pathAbs,$user,$oldProjectFolder);
-                        self::createOldProjectArchiveFolder($pathAbs,$user,$oldProjectFolder);
-			self::purgeOldProjectSharedFolderForUser($pathAbs,$user,$oldProjectFolder);
-                        self::archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users);
+                        $archiveFolder=self::createOldProjectArchiveFolder($pathAbs,$user,$oldProjectFolder);
+			self::purgeOldProjectSharedFolderForUser($pathAbs,$user,$oldProjectFolder,$archiveFolder);
+                        self::archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder);
 		}
 	}
 	
         static function createOldProjectArchiveFolder($pathAbs,$user,$oldProjectFolder) 
         {
-		//create archive folder
-		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived";
+                $timestamp=date("Ymd-His");
+		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived-{$timestamp}";
 		if(!is_dir($archiveFolder) && !file_exists($archiveFolder)) mkdir($archiveFolder);
 		SharingOperations::fixUserObjectOwnership($user,$archiveFolder);
+                return $archiveFolder;
         }
 
-        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users)
+        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder)
         {
-                //archive folder
-		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived";
-
                 foreach($users as $sharingUser) {
                         if($sharingUser!=$user) {
                                 $toplevel="$pathAbs/$sharingUser/Avid Shared Projects/$oldProjectFolder.copy";
                                 if(is_dir($toplevel)) {
-                                        $archiveToplevel="$archiveFolder/{$sharingUser}.toplevel";
+                                        $archiveToplevel="$archiveFolder/{$sharingUser}-toplevel";
                                         self::renameRepurge($toplevel,$archiveToplevel);
                                         shellSilent("rm -Rf $archiveToplevel/Shared");
                                         shellSilent("rm $archiveToplevel/$oldProjectFolder.copy.avp");
                                         shellSilent("rm '$archiveToplevel/$oldProjectFolder.copy Settings.avs'");
                                         shellSilent("rm '$archiveToplevel/$oldProjectFolder.copy Settings.xml'");
-                			shellSilent("chown -R $sharingUser.$sharingUser '$archiveToplevel'");
+                			shellSilent("chown -R $user.$user '$archiveToplevel'");
                                 }
                         }
                 }
         }
 
-	static function purgeOldProjectSharedFolderForUser($pathAbs,$user,$oldProjectFolder)
+	static function purgeOldProjectSharedFolderForUser($pathAbs,$user,$oldProjectFolder,$archiveFolder)
 	{
-                //archive folder
-		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived";
-
-		//create archive folder
-		$archiveFolder="$pathAbs/$user/$oldProjectFolder/Archived";
-		if(!is_dir($archiveFolder) && !file_exists($archiveFolder)) mkdir($archiveFolder);
-		SharingOperations::fixUserObjectOwnership($user,$archiveFolder);
-
 		//handle shared subfolders
 		$sharedSubFolderRoot="$pathAbs/$user/$oldProjectFolder/Shared";
 		$sharedSubFolders=SharingFolders::userSubFolders($sharedSubFolderRoot);
