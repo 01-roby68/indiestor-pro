@@ -33,7 +33,7 @@ class SharingFolders
 
 	static function isAvidProjectFolder($folder)
 	{
-		if(self::endsWith($folder,'.avid')) return true;
+		if(self::endsWith($folder,TRIGGER)) return true;
 		return false;
 	}
 

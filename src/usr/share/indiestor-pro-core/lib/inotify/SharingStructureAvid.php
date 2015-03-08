@@ -195,7 +195,7 @@ class SharingStructureAvid
 
 	static function folderAvidToCopy($folderName)
 	{
-		$prefix=substr($folderName,0,strlen($folderName)-strlen('.avid'));
+		$prefix=substr($folderName,0,strlen($folderName)-strlen(TRIGGER));
 		return "$prefix.copy";
 	}
 
@@ -293,7 +293,7 @@ class SharingStructureAvid
 			while(false !== ($entry = readdir($handle)))
 			{
 				$source="$ownerProjectFolder/$entry";
-			        $copy=str_replace('.avid','.copy',$entry);
+			        $copy=str_replace(TRIGGER,'.copy',$entry);
 			        $target="$sharingMemberCopyFolder/$copy";
 				if(is_file($source))
 				{
@@ -431,7 +431,7 @@ class SharingStructureAvid
                         {
                                 if($user !== $member)
                                 {
-                                        $originalAvidProject="$pathAbs/$member/$baseOfCopy.avid";
+                                        $originalAvidProject="$pathAbs/$member/$baseOfCopy".TRIGGER;
                                         if(is_dir($originalAvidProject)) $originalProjectFound=true;
                                 }
                         }

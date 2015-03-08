@@ -203,19 +203,6 @@ class SharingOperations
 		self::fixFsObjectPermissions($file,"660");
 	}
 
-	static function fixProjectFolderPermissions($folder)
-	{
-		//permissions must be owner=rwx group=rwx other=---
-		//sticky bit must be set: only the owner of a project file/folder may delete it
-		//setgid must be set: all files/folders created must inherit the group id
-		//Other must have execute rights for sticky bit to work
-
-		if(SharingFolders::endsWith($folder,'.avid'))
-			self::fixFsObjectPermissions($folder,"2771");
-		if(SharingFolders::endsWith($folder,'.shared'))
-			self::fixFsObjectPermissions($folder,"750");
-	}
-
 	static function renameProjectFileIfNeeded($userName,$oldName,$newName)
 	{
 		if($oldName!=$newName)

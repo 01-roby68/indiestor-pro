@@ -1,0 +1,4 @@
+<?php
+
+define('TRIGGER','.avid');
+

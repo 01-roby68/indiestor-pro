@@ -10,6 +10,8 @@
         Licensed under the GPL
 */
 
+require_once('project-trigger.php');
+
 //--------------------------
 //Check deployment location
 //--------------------------
