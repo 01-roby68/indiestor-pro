@@ -231,12 +231,10 @@ class SharingStructureAvid
 		#the user's shared folder
 		$shared="$prjCopyFolder/Shared";
 		if(!is_dir($shared)) mkdir($shared);
-		SharingOperations::fixProjectFsObjectOwnership($group,$user,$shared);
 		SharingOperations::fixFsObjectPermissions($shared,"755");
 
-
-                chmodRecursive($shared, 0644,0755,$user,$group);
-
+//                chmodRecursive($shared, 0644,0755,$user,$group);
+		SharingOperations::fixProjectFsObjectOwnership('indienotify','root',$shared);
 
 		#the link from the project owner
 		$sharedSubOwner="$shared/$owner";
