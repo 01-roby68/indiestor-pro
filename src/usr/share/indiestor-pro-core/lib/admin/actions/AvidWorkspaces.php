@@ -47,7 +47,9 @@ class AvidWorkspaces extends EntityType
                         }
 
                         //watching
-                        $row['watching']='';
+                        if(InotifyWait::statusWatching($workspace)) $watching='Y';
+                        else $watching='N';
+                        $row['watching']=$watching;
 
                         //add record
                         $rows[]=$row;
