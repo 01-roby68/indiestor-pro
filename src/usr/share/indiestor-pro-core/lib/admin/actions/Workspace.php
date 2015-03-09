@@ -126,6 +126,13 @@ class Workspace extends EntityType
                         $pathAbs="/$path";
                 else $pathAbs=$path;
 
+                //do not delete if busy
+                $lsof=trim(ShellCommand::query("lsof +D $pathAbs"));
+                if(strlen($lsof)>0) {
+                        ActionEngine::error('ERR_DELETE_WORKSPACE_BUSY');
+                        return;
+                }
+
                 $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
 
 		if($fileSystem=='zfs') {
