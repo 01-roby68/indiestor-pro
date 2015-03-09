@@ -196,7 +196,7 @@ class SharingStructureAvid
 	static function folderAvidToCopy($folderName)
 	{
 		$prefix=substr($folderName,0,strlen($folderName)-strlen(TRIGGER));
-		return "$prefix.copy";
+		return "$prefix".PROJCOPY;
 	}
 
 	static function verifyProjectSharingMember($pathAbs,$group,$owner,$user,$project,$users)
@@ -293,7 +293,7 @@ class SharingStructureAvid
 			while(false !== ($entry = readdir($handle)))
 			{
 				$source="$ownerProjectFolder/$entry";
-			        $copy=str_replace(TRIGGER,'.copy',$entry);
+			        $copy=str_replace(TRIGGER,PROJCOPY,$entry);
 			        $target="$sharingMemberCopyFolder/$copy";
 				if(is_file($source))
 				{
@@ -425,7 +425,7 @@ class SharingStructureAvid
 			        }	
 			}
                         //check if there exists an .avid folder for this .copy folder
-                        $baseOfCopy=preg_replace('/(.*)\.copy/','${1}',$copyFolder);
+                        $baseOfCopy=preg_replace('/(.*)'.preg_quote(PROJCOPY,'/').'/','${1}',$copyFolder);
                         $originalProjectFound=false;
                         foreach($users as $member)
                         {
@@ -496,14 +496,14 @@ class SharingStructureAvid
         {
                 foreach($users as $sharingUser) {
                         if($sharingUser!=$user) {
-                                $toplevel="$pathAbs/$sharingUser/Avid Shared Projects/$oldProjectFolder.copy";
+                                $toplevel="$pathAbs/$sharingUser/Avid Shared Projects/$oldProjectFolder".PROJCOPY;
                                 if(is_dir($toplevel)) {
                                         $archiveToplevel="$archiveFolder/{$sharingUser}-toplevel";
                                         self::renameRepurge($toplevel,$archiveToplevel);
                                         shellSilent("rm -Rf $archiveToplevel/Shared");
-                                        shellSilent("rm $archiveToplevel/$oldProjectFolder.copy.avp");
-                                        shellSilent("rm '$archiveToplevel/$oldProjectFolder.copy Settings.avs'");
-                                        shellSilent("rm '$archiveToplevel/$oldProjectFolder.copy Settings.xml'");
+                                        shellSilent("rm $archiveToplevel/$oldProjectFolder".PROJCOPY.".avp");
+                                        shellSilent("rm '$archiveToplevel/$oldProjectFolder".PROJCOPY." Settings.avs'");
+                                        shellSilent("rm '$archiveToplevel/$oldProjectFolder".PROJCOPY." Settings.xml'");
                 			shellSilent("chown -R $user.$user '$archiveToplevel'");
                                 }
                         }

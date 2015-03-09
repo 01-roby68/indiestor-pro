@@ -39,7 +39,7 @@ class SharingFolders
 
 	static function isAvidProjectCopyFolder($folder)
 	{
-		if(self::endsWith($folder,'.copy')) return true;
+		if(self::endsWith($folder,PROJCOPY)) return true;
 		return false;
 	}
 
