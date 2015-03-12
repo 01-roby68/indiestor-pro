@@ -4,3 +4,4 @@ follow symlinks = yes
 umask = 0022
 valid users = {group}
 vol dbpath = /var/netatalk/CNID/$v/$u
+
