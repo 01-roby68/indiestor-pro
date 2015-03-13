@@ -49,6 +49,7 @@ function requireLibFile($path)
 //--------------------------
 
 requireLibFile("admin/etcfiles/EtcGroup.php");
+requireLibFile("admin/ShellCommand.php");
 requireLibFile("admin/action-engine/InotifyWait.php");
 requireLibFile("admin/renameUsingShell.php");
 requireLibFile("inotify/syslog.php");
