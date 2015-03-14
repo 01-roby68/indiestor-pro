@@ -100,6 +100,11 @@ class Workspace extends EntityType
 
                 }
 
+                //make CNID folder
+                mkdir("$path/CNID");
+                ShellCommand::exec_fail_if_error("chmod 755 $path/CNID");                
+                ShellCommand::exec_fail_if_error("chown root.root $path/CNID");
+
                 //create group
                 static::createGroup($workspace);
 
