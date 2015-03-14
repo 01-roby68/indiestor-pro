@@ -3,5 +3,5 @@ path = {path}/$u
 follow symlinks = yes
 umask = 0022
 valid users = {group}
-vol dbpath = {path}/$v/$u
+vol dbpath = {path}/{workspace}/$u
 
