@@ -76,15 +76,6 @@ class Services extends EntityType
                 else return false;
         }
 
-        static function zfsServiceStatus($serviceName)
-        {
-                $zfsinstalled = shell_exec("dpkg-query -l | grep zfs-dkms | wc -l");
-                $zpoolhealth = shell_exec("zpool status -x");
-                if($zfsinstalled == 0) return "Not Installed";
-                elseif (preg_match("/healthy/",$zpoolhealth)) return "Healthy";
-                else return "ERROR!";
-        }
-
         static function status()
         {
                 {
@@ -92,7 +83,6 @@ class Services extends EntityType
                 $status['samba']=self::upstartServiceStatus('samba');
                 $status['incron']=self::upstartServiceStatus('incron');
                 $status['netatalk']=self::netatalkServiceStatus('netatalk');
-                $status['zfs']=self::zfsServiceStatus('zfs');
                 $countPids=InotifyWait::statusWatchingAll();
                 if($countPids>0)
                         $status['watching']=true;
@@ -115,11 +105,7 @@ class Services extends EntityType
                 $status=self::status();
                 foreach($status as $service=>$serviceStatus) 
                 {
-                        if ($service == "zfs")
-                        {
-                                echo "$service $serviceStatus\n";
-                        }
-                        elseif ($serviceStatus == 1)
+                        if ($serviceStatus == 1)
                         {
                                 echo "$service running\n";
                         }
