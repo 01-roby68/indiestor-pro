@@ -37,7 +37,7 @@ class SharingOperations
 		{
 			//delete the linkname if it is a file or a folder
 			if(is_file($linkName)) unlink($linkName);
-			else if(is_dir($linkName)) rmdir($linkName);
+			else if(is_dir($linkName)) shell_exec("rm -rf '$linkName'");
 
 			self::createSymLink($linkName,$target,$owner);
 		}
