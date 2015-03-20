@@ -100,10 +100,12 @@ class Workspace extends EntityType
 
                 }
 
-                //make CNID folder
-                mkdir("$pathAbs/CNID");
-                ShellCommand::exec_fail_if_error("chmod 755 $pathAbs/CNID");                
-                ShellCommand::exec_fail_if_error("chown root.root $pathAbs/CNID");
+                //make CNID folder for avid
+                if(static::WORKSPACETYPE=='avid') {
+                        mkdir("$pathAbs/CNID");
+                        ShellCommand::exec_fail_if_error("chmod 755 $pathAbs/CNID");                
+                        ShellCommand::exec_fail_if_error("chown root.root $pathAbs/CNID");
+                }
 
                 //create group
                 static::createGroup($workspace);
