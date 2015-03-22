@@ -58,16 +58,14 @@ class Workspace extends EntityType
                         }
 
                         //check if zfs path exists already
-                        if(is_dir($pathAbs)) {
-                                ActionEngine::error('ERR_ZFS_DATASET_EXISTS_ALREADY');
-                                return;
+                        if(!is_dir($pathAbs)) {
+                                ShellCommand::exec_fail_if_error("zfs create $path");
                         }
-
-                        ShellCommand::exec_fail_if_error("zfs create $path");
 
                         //generic workspaces should be writeable
                         if(static::WORKSPACETYPE==='generic')
                                 ShellCommand::exec_fail_if_error("chmod -R a+rwx $pathAbs");
+
 
                 }
                 else 
@@ -75,12 +73,6 @@ class Workspace extends EntityType
                         //non-zfs folder must be absolute path
                         if(substr($path,0,1)!=='/') {
                                 ActionEngine::error('ERR_NON_ZFS_FOLDER_MUST_BE_ABSOLUTE_PATH');
-                                return;
-                        }
-
-                        //check if folder exists already
-                        if(is_dir($path)) {
-                                ActionEngine::error('ERR_FOLDER_EXISTS_ALREADY');
                                 return;
                         }
 
@@ -92,11 +84,16 @@ class Workspace extends EntityType
                         }
 
 
-                        mkdir($path);
+                        //check if folder exists already; only create it if it does not exist
+                        if(!is_dir($path)) {
+
+                                mkdir($path);
+                        }
 
                         //generic workspaces should be writeable
                         if(static::WORKSPACETYPE==='generic')
                                 ShellCommand::exec_fail_if_error("chmod -R a+rwx $path");
+
 
                 }
 
