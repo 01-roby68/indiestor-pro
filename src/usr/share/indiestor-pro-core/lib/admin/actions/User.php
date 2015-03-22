@@ -197,8 +197,12 @@ class User extends EntityType
                         $groupName='avid_'.$workspace;
                         $group=$etcGroup->findGroup($groupName);                
                         if($group===null) continue;
-                        if($group->isMember($userName))
+                        if($group->isMember($userName)) {
                                 ShellCommand::exec("rm -rf $pathAbs/$userName");
+                                $members=$group->members;
+	                        SharingStructureAvid::reshare($workspace,$members);
+	                        SharingStructureMXF::reshare($workspace,$members,true);
+                        }                        
                 }
 
                 //remove system user
