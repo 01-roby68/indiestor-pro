@@ -187,6 +187,20 @@ class User extends EntityType
                         return;
                 }
 
+                //remove user's avid workspace folders
+                $etcGroup=EtcGroup::instance();                
+                $confAvid=new EtcWorkspaces('avid');
+                foreach($confAvid->workspaces as $workspace=>$path) {
+                        if(substr($path,0,1)!=='/')
+                                $pathAbs="/$path";
+                        else $pathAbs=$path;
+                        $groupName='avid_'.$workspace;
+                        $group=$etcGroup->findGroup($groupName);                
+                        if($group===null) continue;
+                        if($group->isMember($userName))
+                                ShellCommand::exec("rm -rf $pathAbs/$userName");
+                }
+
                 //remove system user
         	ShellCommand::exec_fail_if_error("deluser $userName");
 		EtcPasswd::reset();
