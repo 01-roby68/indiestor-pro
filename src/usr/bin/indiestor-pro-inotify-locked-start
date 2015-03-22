@@ -1,0 +1,16 @@
+#!/bin/sh
+#------------------------------------------------------------
+# Indiestor program
+# Concept, requirements, specifications, and unit testing
+# By Alex Gardiner, alex@indiestor.com
+# Written by Erik Poupaert, erik@sankuru.biz
+# Commissioned at peopleperhour.com 
+# Licensed under the GPL
+#------------------------------------------------------------
+
+( 
+        flock -n 9 || exit 1
+        /usr/bin/indiestor-pro-inotify >> /dev/null 2>&1
+
+) 9>/var/lock/indiestor-pro
+
