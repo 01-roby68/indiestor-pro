@@ -187,6 +187,7 @@ class User extends EntityType
                         return;
                 }
 
+                $workspacesToReshare=array();
                 //remove user's avid workspace folders
                 $etcGroup=EtcGroup::instance();                
                 $confAvid=new EtcWorkspaces('avid');
@@ -200,8 +201,7 @@ class User extends EntityType
                         if($group->isMember($userName)) {
                                 ShellCommand::exec("rm -rf $pathAbs/$userName");
                                 $members=$group->members;
-	                        SharingStructureAvid::reshare($workspace,$members);
-	                        SharingStructureMXF::reshare($workspace,$members,true);
+                                $workspacesToReshare[]=$workspace;
                         }                        
                 }
 
@@ -215,6 +215,16 @@ class User extends EntityType
 		        if(sysquery_pdbedit_user($userName)!=null)
 			        ShellCommand::exec_fail_if_error("pdbedit --delete --user $userName");
 	        }
+
+                //reshare
+                foreach($workspacesToReshare as $workspace=>$path) {
+                        $groupName='avid_'.$workspace;
+                        $group=$etcGroup->findGroup($groupName);                
+                        if($group===null) continue;
+                        SharingStructureAvid::reshare($workspace,$members);
+                        SharingStructureMXF::reshare($workspace,$members,true);
+                }
+
         }
 
 	static function setPasswd($commandAction)
