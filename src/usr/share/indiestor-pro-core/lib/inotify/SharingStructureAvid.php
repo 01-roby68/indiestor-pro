@@ -214,10 +214,6 @@ class SharingStructureAvid
 		$projectCopy=self::folderAvidToCopy($project);
 		$prjCopyFolder="$aspFolder/$projectCopy";
 
-//		$archivedToplevel="$pathAbs/$owner/$project/Archived/$user-toplevel";
-//                if(is_dir($archivedToplevel))
-//        		renameUsingShell($archivedToplevel,$prjCopyFolder);
-
 		if(!is_dir($prjCopyFolder)) 
                         mkdir($prjCopyFolder);
 
@@ -232,8 +228,6 @@ class SharingStructureAvid
 		$shared="$prjCopyFolder/Shared";
 		if(!is_dir($shared)) mkdir($shared);
 		SharingOperations::fixFsObjectPermissions($shared,"755");
-
-//                chmodRecursive($shared, 0644,0755,$user,$group);
 		SharingOperations::fixProjectFsObjectOwnership('indienotify','root',$shared);
 
 		#the link from the project owner
@@ -249,17 +243,7 @@ class SharingStructureAvid
 		#the user's own shared subfolder
 		$sharedSubUser="$shared/$user";
 		if(!is_dir($sharedSubUser))
-		{
-//			$archived="$pathAbs/$owner/$project/Archived";
-//			$archivedUser="$archived/$user";
-//			if(!is_dir($archivedUser))
 				mkdir($sharedSubUser);
-//			else
-//			{
-//				renameUsingShell($archivedUser,$sharedSubUser);
-//				shellSilent("chown -R $user.$group '$sharedSubUser'");
-//			}
-		}
 
 		SharingOperations::fixProjectFsObjectOwnership($group,$user,$sharedSubUser);
 		SharingOperations::fixFsObjectPermissions($sharedSubUser,"755");
