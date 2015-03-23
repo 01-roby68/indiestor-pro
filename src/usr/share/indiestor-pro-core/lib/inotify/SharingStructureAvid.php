@@ -362,7 +362,7 @@ class SharingStructureAvid
 				        {
 					        if(file_exists($memberFolder)) unlink($memberFolder);
 					        syslog_notice("Removed '$memberFolder'; in target '$target' ".
-						        "the home folder '$targetHomeFolder'".
+						        "the workspace folder '$targetHomeFolder'".
                                                         " is in the section of a workspace user");
 				        }
 			        }	
@@ -401,8 +401,8 @@ class SharingStructureAvid
 				        {
 					        if(file_exists($memberFolder)) unlink($memberFolder);
 					        syslog_notice("Removed '$memberFolder'; in target '$target' ".
-						        "the home folder '$targetHomeFolder'".
-                                                        " is not the home folder for a workspace member");
+						        "the workspace folder '$targetHomeFolder'".
+                                                        " is not the folder for a workspace member");
 				        }
 			        }	
 			}
@@ -474,7 +474,7 @@ class SharingStructureAvid
                 return $archiveFolder;
         }
 
-        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder)
+        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiv eFolder)
         {
                 foreach($users as $sharingUser) {
                         if($sharingUser!=$user) {
