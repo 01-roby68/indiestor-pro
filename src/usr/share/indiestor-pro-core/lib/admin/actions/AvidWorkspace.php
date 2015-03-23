@@ -19,6 +19,7 @@ class AvidWorkspace extends Workspace
         static function createGroup($workspace)
         {
                 $groupName='avid_'.$workspace;
+        	ShellCommand::exec("delgroup --quiet $groupName");
         	ShellCommand::exec_fail_if_error("addgroup $groupName");
         }
 

@@ -99,7 +99,7 @@ class Workspace extends EntityType
 
                 //make CNID folder for avid
                 if(static::WORKSPACETYPE=='avid') {
-                        mkdir("$pathAbs/CNID");
+                        if(!is_dir("$pathAbs/CNID")) mkdir("$pathAbs/CNID");
                         ShellCommand::exec_fail_if_error("chmod 755 $pathAbs/CNID");                
                         ShellCommand::exec_fail_if_error("chown root.root $pathAbs/CNID");
                 }

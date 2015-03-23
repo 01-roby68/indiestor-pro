@@ -474,7 +474,7 @@ class SharingStructureAvid
                 return $archiveFolder;
         }
 
-        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiv eFolder)
+        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder)
         {
                 foreach($users as $sharingUser) {
                         if($sharingUser!=$user) {
