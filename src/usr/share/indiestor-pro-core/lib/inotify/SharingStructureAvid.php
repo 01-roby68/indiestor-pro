@@ -33,6 +33,7 @@ class SharingStructureAvid
 
 		if($users==null) $users=array();
 		syslog_notice("resharing workspace '$workspace' for avid folders");
+                self::verifyUserFolders($workspace,$pathAbs,$group,$users);
 		self::verifyProjects($workspace,$pathAbs,$group,$users);
                 self::$repurgeRequired=true;
                 while(self::$repurgeRequired)
@@ -47,6 +48,16 @@ class SharingStructureAvid
                 syslog_notice("purge: moving $from to $to");
                 renameUsingShell($from,$to);
                 self::$repurgeRequired=true;
+        }
+
+        static function verifyUserFolders($workspace,$pathAbs,$group,$users)
+        {
+                foreach($users as $user) {
+                        $userFolder="$pathAbs/$user";
+                        if(!is_dir($userFolder)) mkdir($userFolder);
+                        SharingOperations::fixOwnerGroup($group,$user,$userFolder);
+		        SharingOperations::fixFsObjectPermissions($userFolder,"755");
+                }
         }
 
 	static function verifyProjects($workspace,$pathAbs,$group,$users)
