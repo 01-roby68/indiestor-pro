@@ -431,25 +431,25 @@ class SharingStructureAvid
                         if(!$originalProjectFound)
                         {
                                 $copyFolderPath="$avpFolder/$copyFolder";
-                                $finderCmd1="find '$copyFolderPath' -type f 2> /dev/null ".
-                                                "| grep -v '.avp$' 2> /dev/null ".
-                                                "| grep -v '.avs$' 2> /dev/null ".
-                                                "| grep -v '.xml$' 2> /dev/null ".
-                                                "| grep -v '/Statistics' 2> /dev/null ".
-                                                "| grep -v '/WaveformCache' 2> /dev/null ".
-                                                "| grep -v '/SearchData' 2> /dev/null ";
-                                $finderCmd="$finderCmd1 | wc -l";
-                                $numberOfFiles=shellSilent($finderCmd);
-                                if(intval($numberOfFiles)==0) 
-                                {
+//                                $finderCmd1="find '$copyFolderPath' -type f 2> /dev/null ".
+//                                                "| grep -v '.avp$' 2> /dev/null ".
+//                                                "| grep -v '.avs$' 2> /dev/null ".
+//                                                "| grep -v '.xml$' 2> /dev/null ".
+//                                                "| grep -v '/Statistics' 2> /dev/null ".
+//                                                "| grep -v '/WaveformCache' 2> /dev/null ".
+//                                                "| grep -v '/SearchData' 2> /dev/null ";
+//                                $finderCmd="$finderCmd1 | wc -l";
+//                                $numberOfFiles=shellSilent($finderCmd);
+//                                if(intval($numberOfFiles)==0) 
+//                                {
                                         syslog_notice("rm -rf '$copyFolderPath'");
                                         shellSilent("rm -rf '$copyFolderPath'");
-                                }
-                                else
-                                {
-                                        syslog_notice("finderCmd1:".
-                                                shellSilent($finderCmd1));                                        
-                                }
+//                                }
+//                                else
+//                                {
+//                                        syslog_notice("finderCmd1:".
+//                                                shellSilent($finderCmd1));                                        
+//                                }
                         }
 			
 		}
