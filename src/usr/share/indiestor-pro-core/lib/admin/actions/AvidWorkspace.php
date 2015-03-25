@@ -124,6 +124,22 @@ class AvidWorkspace extends Workspace
                         return;
                 }
 
+                //archive all his projects
+                $conf=new EtcWorkspaces('avid');
+                $path=$conf->workspaces[$workspace];
+
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+                
+                //find all .avid folders and prepare them for archiving
+                $avidProjects=SharingFolders::userAvidProjects("$pathAbs/$userName");
+                foreach($avidProjects as $avidProject) {
+                        $base=basename($avidProject,TRIGGER);
+                        rename("$pathAbs/$userName/$avidProject","$pathAbs/$userName/$base");
+                }
+                self::reshare($commandAction);
+
                 //remove the user
         	ShellCommand::exec("deluser $userName $groupName");                
 

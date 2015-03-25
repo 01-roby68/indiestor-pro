@@ -200,7 +200,6 @@ class User extends EntityType
                         if($group===null) continue;
                         if($group->isMember($userName)) {
                                 ShellCommand::exec("rm -rf $pathAbs/$userName");
-                                $members=$group->members;
                                 $workspacesToReshare[]=$workspace;
                         }                        
                 }
@@ -208,6 +207,7 @@ class User extends EntityType
                 //remove system user
         	ShellCommand::exec_fail_if_error("deluser $userName");
 		EtcPasswd::reset();
+		EtcGroup::reset();
 
                 //remove samba user
 	        if(sysquery_which('pdbedit'))
@@ -221,6 +221,7 @@ class User extends EntityType
                         $groupName='avid_'.$workspace;
                         $group=$etcGroup->findGroup($groupName);                
                         if($group===null) continue;
+                        $members=$group->members;
                         SharingStructureAvid::reshare($workspace,$members);
                         SharingStructureMXF::reshare($workspace,$members,true);
                 }
