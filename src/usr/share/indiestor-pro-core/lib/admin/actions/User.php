@@ -195,10 +195,7 @@ class User extends EntityType
                         if(substr($path,0,1)!=='/')
                                 $pathAbs="/$path";
                         else $pathAbs=$path;
-                        $groupName='avid_'.$workspace;
-                        $group=$etcGroup->findGroup($groupName);                
-                        if($group===null) continue;
-                        if($group->isMember($userName)) {
+                        if(is_dir("$pathAbs/$userName")) {
                                 ShellCommand::exec("rm -rf $pathAbs/$userName");
                                 $workspacesToReshare[]=$workspace;
                         }                        
@@ -217,7 +214,7 @@ class User extends EntityType
 	        }
 
                 //reshare
-                foreach($workspacesToReshare as $workspace=>$path) {
+                foreach($workspacesToReshare as $workspace) {
                         $groupName='avid_'.$workspace;
                         $group=$etcGroup->findGroup($groupName);                
                         if($group===null) continue;

@@ -239,7 +239,7 @@ class SharingStructureAvid
 		$shared="$prjCopyFolder/Shared";
 		if(!is_dir($shared)) mkdir($shared);
 		SharingOperations::fixFsObjectPermissions($shared,"755");
-		SharingOperations::fixProjectFsObjectOwnership('indienotify','root',$shared);
+		SharingOperations::fixProjectFsObjectOwnership('indienotify-pro','root',$shared);
 
 		#the link from the project owner
 		$sharedSubOwner="$shared/$owner";

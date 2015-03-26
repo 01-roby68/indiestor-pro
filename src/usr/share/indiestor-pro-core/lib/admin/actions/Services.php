@@ -127,15 +127,15 @@ class Services extends EntityType
 
 	static function startWatching($commandAction)
 	{
-        	ShellCommand::exec_fail_if_error("incrontab -u indienotify --remove");
+        	ShellCommand::exec_fail_if_error("incrontab -u indienotify-pro --remove");
         	ShellCommand::exec_fail_if_error("echo '/var/spool/indiestor-pro ".
-                        "IN_CREATE /usr/bin/indiestor-pro-inotify-locked-start >> /dev/null 2>&1' | incrontab -u indienotify -");
+                        "IN_CREATE /usr/bin/indiestor-pro-inotify-locked-start >> /dev/null 2>&1' | incrontab -u indienotify-pro -");
 		InotifyWait::startWatchingAll();
 	}
 
 	static function stopWatching($commandAction)
 	{
-        	ShellCommand::exec_fail_if_error("incrontab -u indienotify --remove");
+        	ShellCommand::exec_fail_if_error("incrontab -u indienotify-pro --remove");
 		InotifyWait::stopWatchingAll();
 	}
 

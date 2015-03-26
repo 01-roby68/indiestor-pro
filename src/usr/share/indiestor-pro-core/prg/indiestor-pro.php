@@ -24,7 +24,7 @@ $BIN="$appPrefix/usr/bin";
 
 if (dirname(__FILE__)=='/usr/share/indiestor-pro-core/prg')
 {
-	$INUSER='indienotify';
+	$INUSER='indienotify-pro';
 }
 else
 {

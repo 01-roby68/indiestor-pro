@@ -136,9 +136,8 @@ class AvidWorkspace extends Workspace
                 $avidProjects=SharingFolders::userAvidProjects("$pathAbs/$userName");
                 foreach($avidProjects as $avidProject) {
                         $base=basename($avidProject,TRIGGER);
-                        rename("$pathAbs/$userName/$avidProject","$pathAbs/$userName/$base");
+                        ShellCommand::exec("mv $pathAbs/$userName/$avidProject $pathAbs/$userName/$base");
                 }
-                self::reshare($commandAction);
 
                 //remove the user
         	ShellCommand::exec("deluser $userName $groupName");                
@@ -147,7 +146,9 @@ class AvidWorkspace extends Workspace
                 ActionEngine::generateAfpSmbConfig();
 
                 //reshare+startwatching
-                self::reshare($commandAction);
+//                self::reshare($commandAction);
+                //no direct reshare; touch workspace spool file
+        	ShellCommand::exec("indiestor-pro-touch $workspace");                
                 InotifyWait::startWatching($workspace);
         }
 

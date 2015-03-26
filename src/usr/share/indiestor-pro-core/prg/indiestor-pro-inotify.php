@@ -19,7 +19,7 @@ if (dirname(__FILE__)=='/usr/share/indiestor-pro-core/prg')
 {
 	$BIN='/usr/bin';
 	$LIB='/usr/share/indiestor-pro-core/lib';
-	$INUSER='indienotify';
+	$INUSER='indienotify-pro';
 }
 else
 {

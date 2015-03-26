@@ -25,16 +25,15 @@ case "$1" in
 	if [ -z "$indiewheel" ]; then
 		groupadd indiewheel
 	fi
-	indienotify=$(cat /etc/passwd | grep indienotify)
-	if [ -z "$indienotify" ]; then
-		adduser --system --group indienotify
+	indienotifypro=$(cat /etc/passwd | grep indienotify-pro)
+	if [ -z "$indienotifypro" ]; then
+		adduser --system --group indienotify-pro
 	fi
 	/etc/init.d/incron restart
 	nmbd restart
 	smbd restart
-        echo '/var/spool/indiestor-pro IN_CREATE /usr/bin/indiestor-pro-inotify >> /dev/null 2>&1' | incrontab -u indienotify -
         mkdir -p /var/spool/indiestor-pro
-        chown -R indienotify /var/spool/indiestor-pro
+        chown -R indienotify-pro /var/spool/indiestor-pro
 	indiestor-pro --services -start-watching
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
 	if [ "$release" = "wheezy" ] ; then
