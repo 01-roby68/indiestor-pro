@@ -9,8 +9,16 @@
 #------------------------------------------------------------
 
 ( 
-        flock -n 9 || exit 1
-        /usr/bin/indiestor-pro-inotify >> /dev/null 2>&1
-
+        flock -n 9
+        result=$?
+        logger "locked start, locking result: $result"
+        if [ "$result" -ne "0" ] ; then
+                logger "locked start, cannot acquire lock; exiting"
+                exit 1
+        else
+                logger "locked start, lock acquired. starting indiestor-pro-inotify"
+                /usr/bin/indiestor-pro-inotify >> /dev/null 2>&1
+        fi
 ) 9>/var/lock/indiestor-pro
+
 
