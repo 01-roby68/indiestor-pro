@@ -10,16 +10,6 @@
 
 class Services extends EntityType
 {
-        static function startSamba($commandAction)
-        {
-                self::upstartServiceAction('samba','start');
-        }
-
-        static function stopSamba($commandAction)
-        {
-                self::upstartServiceAction('samba','stop');
-        }
-
         static function startIncron($commandAction)
         {
                 self::upstartServiceAction('incron','start');
@@ -34,36 +24,13 @@ class Services extends EntityType
                 if($pid!='') ShellCommand::exec("kill -9 $pid");
         }
 
-        static function startNetatalk($commandAction)
-        {
-                self::upstartServiceAction('netatalk','start');
-                sleep(4);
-        }
-
-        static function stopNetatalk($commandAction)
-        {
-                self::upstartServiceAction('netatalk','stop');
-                sleep(4);
-        }
-
-        static function findSambaServiceName()
-        {
-                $stdout=ShellCommand::query("uname -a");
-                if(preg_match('/Ubuntu/',$stdout)) return 'smbd';
-                else return 'samba';
-        }
-
         static function upstartServiceAction($serviceName,$action)
         {
-                if($serviceName=='samba')
-                        $serviceName=self::findSambaServiceName();
                 ShellCommand::exec("service $serviceName $action");
         }
 
         static function upstartServiceStatus($serviceName)
         {
-                if($serviceName=='samba')
-                        $serviceName=self::findSambaServiceName();
                 $stdout=ShellCommand::query("service $serviceName status");
                 if(preg_match('/not|stop/',$stdout)) return false;
                 else return true;
