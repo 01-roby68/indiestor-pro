@@ -68,7 +68,7 @@ class AvidWorkspaces extends EntityType
                         } else {
                                 $format1="%-20s %-30s %10s %10s %-30s %10s\n";
                                 $format2="%-20s %-30s %10s %10s %-30s %10s\n";
-                                printf($format1,'workspace','path','zfs-quota','space-used','members','watching');
+                                printf($format1,'workspace','path','zfs-quota','used','members','watching');
                                 foreach(self::avidWorkspaceData() as $row) {
                                         printf($format2,$row['workspace'],$row['path'],$row['zfs-quota'],
                                                 $row['space-used'],$row['members'],$row['watching']);

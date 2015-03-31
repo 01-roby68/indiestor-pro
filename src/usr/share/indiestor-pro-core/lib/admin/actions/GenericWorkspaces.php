@@ -76,7 +76,7 @@ class GenericWorkspaces extends EntityType
                         } else {
                                 $format1="%-20s %-30s %10s %10s %-30s %30s\n";
                                 $format2="%-20s %-30s %10s %10s %-30s %30s\n";
-                                printf($format1,'workspace','path','zfs-quota','space-used','write-members','read-members');
+                                printf($format1,'workspace','path','zfs-quota','space','write-members','read-members');
                                 foreach(self::genericWorkspaceData() as $row) {
                                         printf($format2,$row['workspace'],$row['path'],$row['zfs-quota'],
                                                 $row['space-used'],$row['write-members'],$row['read-members']);
