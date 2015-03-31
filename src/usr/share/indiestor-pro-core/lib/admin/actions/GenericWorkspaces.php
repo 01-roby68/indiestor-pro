@@ -37,6 +37,12 @@ class GenericWorkspaces extends EntityType
                         else $pathAbs=$path;
                         $row['space-used']=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
 
+                        //avail
+                        $row['zfs-avail']='';
+                        if(substr($path,0,1)!=='/') {
+                                $row['zfs-avail']=trim(ShellCommand::query("zfs get avail -H  -o value $path"));
+                        }
+
                         //read/write group members
                         $rwGroupName='generic_rw_'.$workspace;
                         $roGroupName='generic_ro_'.$workspace;
@@ -55,9 +61,6 @@ class GenericWorkspaces extends EntityType
                                 $row['read-members']='';
                         }
 
-                        //watching
-                        $row['watching']='';
-
                         //add record
                         $rows[]=$row;
                 }
@@ -74,12 +77,12 @@ class GenericWorkspaces extends EntityType
                         if(count($conf->workspaces)===0) {
                                 echo "no generic workspaces.\n";
                         } else {
-                                $format1="%-20s %-30s %10s %10s %-30s %30s\n";
-                                $format2="%-20s %-30s %10s %10s %-30s %30s\n";
-                                printf($format1,'workspace','path','zfs-quota','space','write-members','read-members');
+                                $format1="%-20s %-30s %10s %10s %10s %-30s %30s\n";
+                                $format2="%-20s %-30s %10s %10s %10s %-30s %30s\n";
+                                printf($format1,'workspace','path','zfs-quota','space','avail','write-members','read-members');
                                 foreach(self::genericWorkspaceData() as $row) {
                                         printf($format2,$row['workspace'],$row['path'],$row['zfs-quota'],
-                                                $row['space-used'],$row['write-members'],$row['read-members']);
+                                                $row['space-used'],$row['zfs-avail'],$row['write-members'],$row['read-members']);
                                 }
                         }
                 }                        

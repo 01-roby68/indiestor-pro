@@ -38,6 +38,13 @@ class AvidWorkspaces extends EntityType
                         else $pathAbs=$path;
                         $row['space-used']=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
 
+                        //avail
+                        $row['zfs-avail']='';
+                        if(substr($path,0,1)!=='/') {
+                                $row['zfs-avail']=trim(ShellCommand::query("zfs get avail -H  -o value $path"));
+                        }
+
+
                         //group members
                         $groupName='avid_'.$workspace;                        
                         $etcGroup=EtcGroup::instance();
@@ -66,12 +73,12 @@ class AvidWorkspaces extends EntityType
                         if(count($conf->workspaces)===0) {
                                 echo "no avid workspaces.\n";
                         } else {
-                                $format1="%-20s %-30s %10s %10s %-30s %10s\n";
-                                $format2="%-20s %-30s %10s %10s %-30s %10s\n";
-                                printf($format1,'workspace','path','zfs-quota','used','members','watching');
+                                $format1="%-20s %-30s %10s %10s %10s %-30s %10s\n";
+                                $format2="%-20s %-30s %10s %10s %10s %-30s %10s\n";
+                                printf($format1,'workspace','path','zfs-quota','used','avail','members','watching');
                                 foreach(self::avidWorkspaceData() as $row) {
                                         printf($format2,$row['workspace'],$row['path'],$row['zfs-quota'],
-                                                $row['space-used'],$row['members'],$row['watching']);
+                                                $row['space-used'],$row['zfs-avail'],$row['members'],$row['watching']);
                                 }
                         }
                 }                        
