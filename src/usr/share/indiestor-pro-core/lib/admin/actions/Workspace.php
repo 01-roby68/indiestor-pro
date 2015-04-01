@@ -168,11 +168,6 @@ class Workspace extends EntityType
 
                 $quota=$commandAction->actionArg;
 
-                if(!preg_match("/^[1-9][0-9]*$/D", $quota)) {
-                        ActionEngine::error('ERR_QUOTA_MUST_BE_INTEGER');
-                        return;
-                }        
-
                 $path=$conf->workspaces[$workspace];
 
                 if(substr($path,0,1)!=='/')
@@ -182,7 +177,7 @@ class Workspace extends EntityType
                 $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
 
 		if($fileSystem=='zfs') {
-                        ShellCommand::exec_fail_if_error("zfs set quota={$quota}G $path");
+                        ShellCommand::exec_fail_if_error("zfs set quota={$quota} $path");
                 } else {
                         ActionEngine::error('ERR_QUOTA_ONLY_FOR_ZFS');
                         return;
