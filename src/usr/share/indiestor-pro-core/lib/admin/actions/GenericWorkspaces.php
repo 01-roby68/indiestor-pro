@@ -38,9 +38,12 @@ class GenericWorkspaces extends EntityType
                         $row['space-used']=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
 
                         //avail
-                        $row['zfs-avail']='';
+                        $row['avail']='';
                         if(substr($path,0,1)!=='/') {
-                                $row['zfs-avail']=trim(ShellCommand::query("zfs get avail -H  -o value $path"));
+                                $row['avail']=trim(ShellCommand::query("zfs get avail -H  -o value $path"));
+                                if($row['avail']=='') $row['avail']='-';
+                        } else {
+	                        $row['avail']=trim(ShellCommand::query_fail_if_error("df -h $pathAbs | tail -n +2 | awk '{ print  $2 }' "));	
                         }
 
                         //read/write group members
@@ -82,7 +85,7 @@ class GenericWorkspaces extends EntityType
                                 printf($format1,'workspace','path','zfs-quota','space','avail','write-members','read-members');
                                 foreach(self::genericWorkspaceData() as $row) {
                                         printf($format2,$row['workspace'],$row['path'],$row['zfs-quota'],
-                                                $row['space-used'],$row['zfs-avail'],$row['write-members'],$row['read-members']);
+                                                $row['space-used'],$row['avail'],$row['write-members'],$row['read-members']);
                                 }
                         }
                 }                        
