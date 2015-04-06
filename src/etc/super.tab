@@ -43,4 +43,5 @@ indiestor-free-auth /usr/share/indiestor-free-gui-core/indiestor-free-auth uid=r
 indiestor-pro /usr/share/indiestor-pro-core/prg/indiestor-pro.php uid=root env=PATH :indiewheel
 indiestor-pro-inotify /usr/share/indiestor-pro-core/prg/indiestor-pro-inotify.php uid=root env=PATH :indienotify-pro
 indiestor-pro-auth /usr/share/indiestor-pro-gui-core/indiestor-pro-auth uid=root env=PATH :indiewheel
+indiestor-pro-list-volumes /usr/share/indiestor-pro-gui-core/indiestor-pro-list-volumes uid=root env=PATH :indiewheel
 

@@ -20,7 +20,9 @@ class GenericWorkspace extends Workspace
         {
                 $groupName1='generic_rw_'.$workspace;
                 $groupName2='generic_ro_'.$workspace;
+        	ShellCommand::exec("delgroup --quiet $groupName1");
         	ShellCommand::exec_fail_if_error("addgroup $groupName1");
+        	ShellCommand::exec("delgroup --quiet $groupName2");
         	ShellCommand::exec_fail_if_error("addgroup $groupName2");
         }
 
