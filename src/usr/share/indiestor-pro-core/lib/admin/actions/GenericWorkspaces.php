@@ -26,7 +26,7 @@ class GenericWorkspaces extends EntityType
                         $row['path']=$path;
 
                         //quota
-                        $row['zfs-quota']='';
+                        $row['zfs-quota']='-';
                         if(substr($path,0,1)!=='/') {
                                 $row['zfs-quota']=trim(ShellCommand::query("zfs get quota -H  -o value $path"));
                         }
@@ -38,7 +38,7 @@ class GenericWorkspaces extends EntityType
                         $row['space-used']=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
 
                         //avail
-                        $row['avail']='';
+                        $row['avail']='-';
                         if(substr($path,0,1)!=='/') {
                                 $row['avail']=trim(ShellCommand::query("zfs get avail -H  -o value $path"));
                                 if($row['avail']=='') $row['avail']='-';
