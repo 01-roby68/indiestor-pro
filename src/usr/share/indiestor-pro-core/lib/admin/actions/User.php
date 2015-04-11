@@ -214,6 +214,7 @@ class User extends EntityType
 	        }
 
                 //reshare
+                $etcGroup=EtcGroup::instance();                
                 foreach($workspacesToReshare as $workspace) {
                         $groupName='avid_'.$workspace;
                         $group=$etcGroup->findGroup($groupName);                
