@@ -131,12 +131,34 @@ class Workspace extends EntityType
                 else $pathAbs=$path;
 
                 //do not delete if busy
-                $lsof=trim(ShellCommand::query("lsof +D $pathAbs"));
-                if(strlen($lsof)>0) {
-                        ActionEngine::error('ERR_DELETE_WORKSPACE_BUSY');
-                        return;
-                }
+                //check if any command uses the folder
+                $firstCheck=trim(ShellCommand::query("lsof +D $pathAbs"));
 
+                //if there is lsof output, there are commands using the folder
+                if(strlen($firstCheck)>0) {
+                        //check which commands are using the folder
+                        $busyCommands=split("\n",trim(ShellCommand::query("lsof +D $pathAbs | tail -n+2 | awk '{print $1}' | sort | uniq")));
+                        //more than one command, then the workspace is certainly busy
+                        if(count($busyCommands)>1) {
+                                ActionEngine::error('ERR_DELETE_WORKSPACE_BUSY');
+                                return;
+                        }
+                        //if only command is not cnid_dbd, then the workspace is busy
+                        if(count($busyCommands)==1 && $busyCommands[0]!=='cnid_dbd') {
+                                ActionEngine::error('ERR_DELETE_WORKSPACE_BUSY');
+                                return;
+                        }
+
+                        //if only command is cnid_dbd, then kill the processes
+                        if(count($busyCommands)==1 && $busyCommands[0]==='cnid_dbd') {
+                                $cnidPids=split("\n",trim(ShellCommand::query("lsof +D $pathAbs | tail -n+2 | awk '{print $2}' | sort | uniq")));
+                                foreach($cnidPids as $cnidPid) {
+                                        ShellCommand::exec("kill -9 $cnidPid");
+                                }
+                        }
+                }                
+
+                //delete folder
                 $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
 
 		if($fileSystem=='zfs') {
