@@ -32,8 +32,9 @@ case "$1" in
 	/etc/init.d/incron restart
 	nmbd restart
 	smbd restart
-        mkdir -p /var/spool/indiestor-pro
-        chown -R indienotify-pro /var/spool/indiestor-pro
+	service netatalk restart
+    mkdir -p /var/spool/indiestor-pro
+    chown -R indienotify-pro /var/spool/indiestor-pro
 	indiestor-pro --services -start-watching
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
 	if [ "$release" = "wheezy" ] ; then
