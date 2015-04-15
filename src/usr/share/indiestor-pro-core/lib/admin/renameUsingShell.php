@@ -15,6 +15,7 @@
 
 function renameUsingShell($from,$to)
 {
-	shell_exec("mv --force '$from' '$to'");
+        $instruction="mv --force '$from' '$to'";
+	$output=shell_exec($instruction);
 }
 

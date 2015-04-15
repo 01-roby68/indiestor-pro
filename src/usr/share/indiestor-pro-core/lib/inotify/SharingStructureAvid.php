@@ -312,9 +312,14 @@ class SharingStructureAvid
 		foreach($users as $user)
 		{
 			self::purgeOldProjectsForUser($pathAbs,$user,$users);
+		}
+		foreach($users as $user)
+		{
 			self::purgeInvalidSymlinksInProjects($pathAbs,$user,$users);
 			self::purgeInvalidSymlinksInAVSFolder($pathAbs,$user,$users);
 		}
+
+                
 	}
 
 	static function homeFolderSegmentForLinkTarget($folder)
@@ -523,7 +528,8 @@ class SharingStructureAvid
 				$islink=false;
 				$source=$pathSharedSubFolder;
 			}
-			if(file_exists($source)) self::renameRepurge($source,$subArchiveFolder);
+			if(file_exists($source)) 
+                                self::renameRepurge($source,$subArchiveFolder);
 			shellSilent("chown -R $user.$user '$subArchiveFolder'");
 
 			//purge copy
