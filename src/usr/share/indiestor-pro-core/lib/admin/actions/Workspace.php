@@ -155,6 +155,7 @@ class Workspace extends EntityType
                                 foreach($cnidPids as $cnidPid) {
                                         ShellCommand::exec("kill -9 $cnidPid");
                                 }
+                                sleep(2);
                         }
                 }                
 
