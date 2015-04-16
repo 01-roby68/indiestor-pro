@@ -29,12 +29,22 @@ case "$1" in
 	if [ -z "$indienotifypro" ]; then
 		adduser --system --group indienotify-pro
 	fi
+
+	indiemail=$(cat /etc/passwd | grep indiemail)
+	if [ -z "$indiemail" ]; then
+		adduser --system indiemail
+		adduser indiemail indiewheel
+	fi
+        echo '@daily /usr/bin/indiestor-pro-mail' | crontab -u indiemail -
+        #just in case cron is not running
+        /etc/init.d/cron restart
+
 	/etc/init.d/incron restart
 	nmbd restart
 	smbd restart
 	service netatalk restart
-    mkdir -p /var/spool/indiestor-pro
-    chown -R indienotify-pro /var/spool/indiestor-pro
+        mkdir -p /var/spool/indiestor-pro
+        chown -R indienotify-pro /var/spool/indiestor-pro
 	indiestor-pro --services -start-watching
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
 	if [ "$release" = "wheezy" ] ; then

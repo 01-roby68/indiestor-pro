@@ -317,9 +317,7 @@ class SharingStructureAvid
 		{
 			self::purgeInvalidSymlinksInProjects($pathAbs,$user,$users);
 			self::purgeInvalidSymlinksInAVSFolder($pathAbs,$user,$users);
-		}
-
-                
+		}                
 	}
 
 	static function homeFolderSegmentForLinkTarget($folder)

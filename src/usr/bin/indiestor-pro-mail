@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#------------------------------------------------------------
+# Indiestor Pro program
+# Concept, requirements, specifications, and unit testing
+# By Alex Gardiner, alex@indiestor.com
+# Written by Erik Poupaert, erik@sankuru.biz
+# Commissioned at peopleperhour.com 
+# Licensed under the GPL
+#------------------------------------------------------------
+source /etc/indiestor-pro/mail.conf
+hostname=$(hostname)
+indiestor-pro-report | mail -s "Indiestor report for ${hostname}" $mailto -aFrom:$hostname
+

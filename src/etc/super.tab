@@ -45,4 +45,6 @@ indiestor-pro-inotify /usr/share/indiestor-pro-core/prg/indiestor-pro-inotify.ph
 indiestor-pro-auth /usr/share/indiestor-pro-gui-core/indiestor-pro-auth uid=root env=PATH :indiewheel
 indiestor-pro-list-volumes /usr/share/indiestor-pro-gui-core/indiestor-pro-list-volumes uid=root env=PATH :indiewheel
 indiestor-pro-zfs-status /usr/share/indiestor-pro-gui-core/indiestor-pro-zfs-status uid=root env=PATH :indiewheel
+indiestor-pro-report /usr/bin/indiestor-pro-report-elevated uid=root env=PATH :indiewheel
+
 
