@@ -8,6 +8,9 @@
 # Licensed under the GPL
 #------------------------------------------------------------
 source /etc/indiestor-pro/mail.conf
+if [ "$mailto" = "" ] ; then
+        exit 0
+fi
 hostname=$(hostname)
 indiestor-pro-report | mail -s "Indiestor report for ${hostname}" $mailto -aFrom:$hostname
 
