@@ -39,14 +39,13 @@ class AvidWorkspaces extends EntityType
                         $row['space-used']=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
 
                         //avail
-                        $row['avail']='-';
-                        if(substr($path,0,1)!=='/') {
-                                $row['avail']=trim(ShellCommand::query("zfs get avail -H  -o value $path"));
-                                if($row['avail']=='') $row['avail']='-';
-                        } else {
+//                        $row['avail']='-';
+//                        if(substr($path,0,1)!=='/') {
+//                                $row['avail']=trim(ShellCommand::query("zfs get avail -H  -o value $path"));
+//                                if($row['avail']=='') $row['avail']='-';
+//                        } else {
 	                        $row['avail']=trim(ShellCommand::query_fail_if_error("df -h $pathAbs | tail -n +2 | awk '{ print  $2 }' "));	
-                        }
-
+ //                       }
 
                         //group members
                         $groupName='avid_'.$workspace;                        
