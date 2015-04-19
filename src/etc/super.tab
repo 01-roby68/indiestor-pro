@@ -32,10 +32,6 @@
 #
 :define OfficeHours {8:00-17:30}/{mon,tue,wed,thu,fri}
 
-indiestor /usr/share/indiestor-core/prg/indiestor.php uid=root env=PATH :indiewheel
-indiestor-inotify /usr/share/indiestor-core/prg/indiestor-inotify.php uid=root env=PATH :indienotify
-indiestor-auth /usr/share/indiestor-gui-core/indiestor-auth uid=root env=PATH :indiewheel
-
 indiestor-free /usr/share/indiestor-free-core/prg/indiestor-free.php uid=root env=PATH :indiewheel
 indiestor-free-inotify /usr/share/indiestor-free-core/prg/indiestor-free-inotify.php uid=root env=PATH :indienotify-free
 indiestor-free-auth /usr/share/indiestor-free-gui-core/indiestor-free-auth uid=root env=PATH :indiewheel	
