@@ -42,5 +42,6 @@ indiestor-pro-auth /usr/share/indiestor-pro-gui-core/indiestor-pro-auth uid=root
 indiestor-pro-list-volumes /usr/share/indiestor-pro-gui-core/indiestor-pro-list-volumes uid=root env=PATH :indiewheel
 indiestor-pro-zfs-status /usr/share/indiestor-pro-gui-core/indiestor-pro-zfs-status uid=root env=PATH :indiewheel
 indiestor-pro-report /usr/bin/indiestor-pro-report-elevated uid=root env=PATH :indiewheel
-
+indiestor-pro-get-email /usr/share/indiestor-pro-gui-core/indiestor-pro-get-email uid=root env=PATH :indiewheel
+indiestor-pro-set-email /usr/share/indiestor-pro-gui-core/indiestor-pro-set-email uid=root env=PATH :indiewheel
 
