@@ -43,7 +43,7 @@ indiestor listens to share triggers on the top level each workspace ONLY.
 
 Upon detection of each
 .B .avid
-trigger indiestor-free automatically creates and distributes 
+trigger indiestor-pro automatically creates and distributes 
 .B .copy
 versions of the project. The .copy projects can be found in other editors “Avid Shared Projects” folder. Inside each node of the shared project you will find the 'sharing tree', which allows bins to be offered to other editors. An Unprotected folder is provided for conveniently passing bins between editors.
 
@@ -214,7 +214,7 @@ Here is an example of adding a workspace, then assigning two users to it:
 .B indiestor-pro --avid-workspace test -add-user sally
 
 
-SH FILES
+.SH FILES
 .I /etc/passwd
 .RS
 This is where the system stores the user records. There is a special user, which monitors the filesystem through incron.
@@ -237,7 +237,7 @@ This file must have an entry for the indiestor-pro and indiestor-pro-inotify com
 .RE
 .I /etc/afp.conf
 .RS
-Indiestor-pro will deploy its include line in /etc/afp.conf, which points at /etc/indiestor-pro/indie.afp.conf. This assumes you are using the netatalk 3.1.7 package avialble from the free.indiestor.com repository.
+Indiestor-pro will deploy an 'include' path in /etc/afp.conf, which points at /etc/indiestor-pro/indie.afp.conf. This assumes you are using the netatalk 3.1.7 package avialble from the free.indiestor.com repository.
 .RE
 .I /etc/samba/smb.conf
 .RS
@@ -275,8 +275,7 @@ Right click on "Computer" then choose "Map Network Drive".
 
 In windows environments users should agree to map mounts to the same drive letter using the following folder path(s):
 
-\e\e<IP-ADDRESS-or-HOST-NAME>\eindiestor-free
-\e\e<IP-ADDRESS-or-HOST-NAME>\epublic
+\e\e<IP-ADDRESS-or-HOST-NAME>\eworkspace-name
 
 The 'Connect using different credentials' is handy if windows signs you in automatically.
 
