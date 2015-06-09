@@ -177,8 +177,8 @@ class SharingStructureAvid
 			{
 				if(is_file("$pathAbs/$user/$project/$entry"))
 				{
-					if(SharingFolders::endsWith($entry,'.avp'))
-						SharingOperations::renameAvpProjectFile($user,"$pathAbs/$user",$project,$entry);
+					//if(SharingFolders::endsWith($entry,'.avp'))
+					//	SharingOperations::renameAvpProjectFile($user,"$pathAbs/$user",$project,$entry);
 					if(SharingFolders::endsWith($entry,'.avs'))
 						SharingOperations::renameAvsProjectFile($user,"$pathAbs/$user",$project,$entry);
 					if(SharingFolders::endsWith($entry,'.xml'))
