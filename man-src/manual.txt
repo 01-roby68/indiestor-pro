@@ -1,287 +1,218 @@
 .\" Process this file with
-.\" groff -man -Tascii indiestor.1
+.\" groff -man -Tascii indiestor-pro.1
 .\"
-.TH indiestor 1 "NOVEMBER 2014" Linux "User Manuals"
+.TH indiestor-pro 1 "APRIL 2015" Linux "User Manuals"
 .SH NAME
-indiestor - An Open Source storage platform for Avid project and media sharing.
+indiestor-pro - An Open Source storage platform for Avid project and media sharing.
 .SH SYNOPSIS
 
-.B indiestor
+.B indiestor-pro
 
- --groups [-show -start-watching -stop-watching]
+--users [-show -json] 
 
- --groups [-show -json]
+--user [<arg> -add -delete -pkill -set-passwd <arg>]
 
- --group [-add -delete -show-members -start-watching -stop-watching -show-watch-processes]
+--avid-workspace [<arg> -add <arg> -delete -show-members -json -add-user <arg> -remove-user <arg> -set-zfs-quota <arg> -remove-zfs-quota -reshare -show-watches <arg> -show-watch-processes]
 
- --group [<arg> -show-watches <arg>]
+--avid-workspaces [-show -json] 
 
- --users [-show -show-incrontab -regenerate-incrontab -reshare]
+--generic-workspace [<arg> -add <arg> -delete -show-members -json -add-write-user <arg> -remove-write-user <arg> -add-read-only-user <arg> -remove-read-only-user <arg> -set-zfs-quota <arg> -remove-zfs-quota]
 
- --users [-show -json]
+--generic-workspaces [-show -json] 
 
- --user [<arg> -add -delete -set-home <arg> -remove-home -set-group <arg> -unset-group -set-passwd <arg> -lock -pkill -add-to-samba]
+--services [-start-incron -stop-incron -start-watching -stop-watching -show -json]
 
- --user [<arg> -remove-from-indiestor]
+--help
 
- --user [<arg> -remove-from-samba]
+--version [-show -json] 
 
- --user [<arg> -reshare]
+supported options: [-simulate] [-verbose]
 
- --services [-start-watching -stop-watching -start-incron -stop-incron -start-samba -stop-samba -start-netatalk -stop-netatalk]
- 
- --services [-show -json]
 
- --help
+
 .SH DESCRIPTION
-indiestor is an Open Source storage platform for Avid collboration. Management is performed using our free command line tool. This takes care user and group management, as well as the sharing of projects and media. A none-free Graphical User Interface is avaible from our site for a small fee.
+indiestor-pro is a complete shared storage utility. It supports both Avid workspaces, for project and media sharing, as well as generic workspaces - for everything else.
 
-Incron and inotify are used to watch the file system for 'share triggers' (see below). There is very little for the editor to learn and nothing to install on each workstation.
-
-Be aware that indiestor does not attempt to emulate Avid sharing environment. Instead as a home centric storage solution, it provides each editor with his/her own network drive.
-
-.B OS COMPATIBILITY:
-Debian Wheezy (Recommended),
-Debian Squeeze,
-Ubuntu Precise,
-Ubuntu Raring,
+In the case of Avid-workspaces, incron and inotify are used to watch the file system for 'share triggers' (see below). There is very little for the editor to learn and nothing to install on edit workstations. Be aware that this version of indiestor does not attempt to emulate the Avid sharing environment.
 
 .B SHARING PROJECTS:
-To share a project the leading editor must be: A) in a group with his/her co-editors B) connected to his/her own area.  By simply naming a new or existing project with the with appropriately the project will be shared.
-
-For avid shared projects use:
-.B
- <projectname>.avid
-
-For folders containing AMA volumes, legacy style FCP projects or anything else use:
-.B
- <foldername>.shared
+To share an Avid project an editor must be connected to an Avid workspace. By simply naming a new (or existing) project as follows, the project will be shared: <projectname>.avid
 
 .B NB:
-indiestor only listens to share triggers on the top level each user home. 
+indiestor listens to share triggers on the top level each workspace ONLY.
 
 Upon detection of each
 .B .avid
-trigger indiestor automatically creates and distributes 
+trigger indiestor-pro automatically creates and distributes 
 .B .copy
-versions of the project. The .copy projects can be found in each group memebers “Avid Shared Projects” folder.
-
-Inside each node of the shared project you will find the 'sharing tree'. The sharing tree allows bins to be offered read-only to other editors. An Unprotected folder is provided for conveniently passing bins between editors.
+versions of the project. The .copy projects can be found in other editors “Avid Shared Projects” folder. Inside each node of the shared project you will find the 'sharing tree', which allows bins to be offered to other editors. An Unprotected folder is provided for conveniently passing bins between editors.
 
 .B SHARING MXF MEDIA:
-Media sharing is enabled automatically as soon as media exists in /<user>/Avid MediaFiles/MXF. As an aside, it is quite possible to use indiestor as a cheap way of expanding the media storage capacity of an exsiting storage network.
-
-.B ONE GROUP LIMITATION:
-At present users can only be a member of one group at a time.
+Media sharing is enabled automatically between the users on a workspace, as soon as media exists in /Avid MediaFiles/MXF. Legacy style OMFI media sharing is not supported at this time.
 
 .B UNSHARING:
-The leading editor (.avid owner) can unshare at any time by simply removing the share trigger. For example, by renaming the project folder “episode3.avid" to “episode”3 indiestor will automatically unshare the project. As part of this process work completed by each editor in /shared/<user> will be archived into the lead project.
+The leading editor (.avid owner) can unshare at any time by simply removing the share trigger. For example, by renaming the project folder “episode1.avid" to “episode1" the system will automatically unshare the project. As part of this process the work completed by each editor will be archived into the lead project.
 
-
-.B FURTHER DEVELOPMENT
-We aim to raise funding for further development via sales of our web management interface.
-
-Our project roadmap is available here:
-http://indiestor.com/roadmap/
 
 .SH OPTIONS
-There are six main entities through which the command line operates:
-
-.B --groups, --group, --users, --user, --services --help
-
-.IP --groups
-
-.B -show:
-Shows the list of indiestor groups. Not all groups listed in
-.B /etc/group
-are indiestor groups. 
-
-.B -start-watching:
-Starts indiestor-inotify watching for share triggers
-
-.B -stop-watching:
-Stops indiestor-inotify watching for share triggers
-
-.IP --groups
-
-.B -show -json:
-JSON export of the group list (for easy plugin to GUI applications)
-
-.IP --group <arg>
- 
-The
-.B <arg>
-argument must be an indiestor group.
-
-.B -add:
-creates a new indiestor group.
-
-.B -delete:
-deletes the named indiestor group.
-
-.B -show-members:
-shows the users in the named indiestor group.
-
-.B -start-watching:
-Starts indiestor-inotify watching for share triggers assigned to a specified group
-
-.B -stop-watching:
-Stops indiestor-inotify watching for share triggers assigned to a specified group
-
-.B -show-watch-processes:
-Displays the 2 watch processes for the specified group.
-
-.IP --group <arg>
-
-.B -show-watches <arg>
-Displays the watch table for the arguments 'main' and 'avp'. All watches are main type unless a user attempts to trigger .avid sharing without a valid avp project file. In this case we use an 'avp' watch to monitor the situation. The project will only trigger when the .avp is appropriately named and has physical KB size.
+There are nine entities through which the command line operates:
 
 .IP --users
 
 .B -show:
-shows the list of indiestor users.
+show list of indiestor-pro users.
 
-.B COLUMNS
-
-.B 	user: 
-username
-
-.B 	home: 
-home directory for the user
-
-.B 	locked: 
-Y=yes, N=no
-
-.B 	group: 
-indiestor group for the user*
-
-.B 	avail.: 
-space available to user home
-
-.B used:
-space used by user home
-
-.B 	samba: 
-Y=has samba access, N=does not have samba access
-
-.B 	flags: 
-samba flags. Normally U=user.
-
-.B 	SMB conn.: 
-Currently connected through samba.
-
-* "-" if the user does not belong to an indiestor group.
-
-.B  -regenerate-incrontab:
-for debugging purposes. If the incrontab seems inconsistent, you can forcably regenerate it.
-
-.B  -reshare:
-reshares all triggers and updates share permission, should you need to prompt the system.
-
-.IP --users
-
-.B -show -json:
-JSON export of the users list (for easy plugin to GUI applications)
+.B -json:
+JSON export indiestor-pro user list.
 
 .IP --user
 .B <arg>
 
 The
-.B <arg>
-argument must be an indiestor username.
-
-.B -add: 
-adds the user named to indiestor. If the user account does not exist, indiestor will create it. If the user exists, but is not an indiestor user, indiestor will add the user to the "indiestor-users" group. By default, indiestor also adds the user to Samba.
+.B <arg> -add:
+creates/adds a new user.
 
 .B -delete:
-removes the user named from indiestor.
-
-.B -set-home <arg>:
-sets the home directory for the user named to <arg>.
-
-.B -remove-home:
-only used in conjuction with the -delete action. In addition to deleting the user account, this option also deletes the user's home folder.
-
-.B -set-group <arg>:
-sets the group for the user named to the indiestor group <arg>. This indiestor group must exist already.
-
-.B -unset-group:
-removes the user named from his/her current indiestor group.
-
-
-.B -set-passwd <arg>:
-sets the user's password to <arg>.
-
-.B -lock:
-locks the account for the user named. This prevents the user from logging in or connecting through samba. The samba flags will contain the "D" flag. The system locks the user by writing "!" in front of the password field of the user's record in the file
-.B /etc/shadow
-.You can unlock the account by setting the password again with the -set-passwd <arg> action.
+removes the specified user from indiestor-pro. This action will remove all assets associated with that user!
 
 .B -pkill:
-Pkill will terminate all processes relating the selected user. This function is handy in cadses that Avid projects cannot be opened due to the warning:"resouce temporarily unavailable"
+Pkill terminates all processes relating the selected user. This function is handy in cases that Avid projects cannot be opened due to the warning:"resouce temporarily unavailable"
 
-.B -add-to-samba:
-Adds an existing user to samba. 
+.B -set-passwd <arg>:
+sets/resets the user's password.
 
-.IP --user <arg>:
-.B -remove-from-indiestor:
-Removes the user <arg> from indiestor. This action cannot be combined with other actions.
+.IP --avid-workspace
 
-.IP --user <arg>:
-.B -remove-from-samba:
-Removes the user <arg> from samba. This action cannot be combined with other actions.
+The
+.B <arg> -add <arg>
+argument is the name of the workspace you wish to create, followed by the path. In the case of a ZFS target do not specify a leading slash. When we see a ZFS pool a discreet dataset will be created for the workspace.
 
-.IP --user <arg>:
-.B -reshare:
-reshares all project folders and media manually (for the specified user).
+.B -delete
+deletes a specified avid-workspace.
 
-.IP --services <arg>:
-.B -start-watching:
-Starts indiestor watches (same as groups -start-watching)
+.B -add-user <arg>
+Adds an existing user to the specified avid-workspace.
 
-.B -stop-watching:
-Stops indiestor watches (same as groups -start-watching)
+.B -remove-user <arg>
+Removes the specified user from the specified avid worksapce. This action will remove all assets associated with that user!
 
-.B -start-samba:
-Starts samba server
+.B -set-zfs-quota <arg>
+Set a per ZFS quota (applies to workspace dataset as a whole)
 
-.B -stop-watching:
-Stops samba server
+.B -remove-zfs-quota
+Removes ZFS quota.
 
-.B -start-netatalk:
-Starts netatalk server
+.B -reshare
+forcibly refresh all permissions and sharing across the specified workspace.
 
-.B -stop-netatalk:
-Stops netatalk server
+.B -show-members
+shows the memebers of the specified avid-workspace.
 
-.B -start-incron:
-Starts incron service
+.B -json
+JSON export specified avid-workspace.
 
-.B -stop-incron:
-Stops incron service
+.B NOTE:
+Both incron and indistor-pro watching must be running for events to be automatically processed!
+
+.B -show-watches <arg>
+Shows the indiestor-pro watch table for specified workspace. Supported arguments are "main" and "avp".
+
+.B -show-watch-processes
+Shows indiestor-pro watch processes for speficied workspace. Under normal operation there should be two main threads.
+
+.IP --avid-workspaces
+
+.B -show
+Show a list of avid-workspaces and associated memberships.
+
+.B -json 
+JSON export all avid-workspaces data.
+
+.IP --generic-workspace
+
+.B <arg> -add <arg>
+argument is the name of the workspace you wish to create, followed by the path. In the case of a ZFS target do not specify a leading slash. When we see a ZFS pool a discreet dataset will be created for the workspace.
+
+.B -delete
+deletes the specified workspace.
+
+.B -add-write-user
+add a write user to the workspace.
+
+.B -remove-write-user
+remove a write user from the workspace.
+
+.B -add-read-only-user
+add a read-only user to the workspace.
+
+.B -remove-read-only-user
+remove a read-only user from the workspace.
+
+.B -set-zfs-quota <arg>
+Set a per ZFS quota (applies to workspace dataset as a whole)
+
+.B -remove-zfs-quota
+Removes ZFS quota.
+
+.B -show-members
+shows the memebers of the specified generic-workspace.
+
+.B -json
+JSON export specified generic-workspace.
+
+.IP --generic-workspaces
+
+.B -show
+Show a list of generic-workspaces and associated memberships.
+
+.B -json 
+JSON export all generic-workspaces data.
 
 .IP --services
 
-.B -show:
-Displays service summary
+.B -start-incron
+Start incron service.
 
-.B -show -json:
-JSON export of service summary (for easy plugin to GUI)
+.B -stop-incron
+Stop incron service.
 
-.IP --help:
-Shows the command the synopsis.
+.B -start-watching
+Start indiestor-pro Avid workspace watching.
+
+.B -stop-watching
+Stop indiestor-pro Avid workspace watching.
+
+.B -show
+Show an overview of service status.
+
+.B -json
+Export an overview of service status.
+
+.IP --help
+Display a list of commands.
+
+.IP --version
+
+.B -show
+Show the version number.
+
+.B -json
+JSON export version number.
 
 
-.SH EXAMPLES
-It is possible to combine multiple actions for the same entity.
+.SH COMMAND LINE EXAMPLES
+It is possible to combine multiple actions for the same entity, for example:
 
-For example:
+.B indiestor-pro --user john -add -passwd hello
 
-.B indiestor --user john -add -set-group grp1 -passwd hello
+The command above adds “john” to the system and sets his password to "hello". By default, John is not able to login until he is a member of a workspace(s).
 
-The command above adds “john” to the system, makes him a memeber of the group "grp1" and sets his password to "hello". By default, the system will create john's home folder in
-.B /home/john
-. You can override this default by using the -set-home <arg> option. The argument should simply be the path required.
+Here is an example of adding a workspace, then assigning two users to it:
+
+.B indiestor-pro --avid-workspace test -add tank/test
+.B indiestor-pro --avid-workspace test -add-user john
+.B indiestor-pro --avid-workspace test -add-user sally
+
 
 .SH FILES
 .I /etc/passwd
@@ -290,49 +221,46 @@ This is where the system stores the user records. There is a special user, which
 .RE
 .I /etc/group
 .RS
-This is where the system stores the group records. All indiestor users are registered in the indiestor-users group.
-For example, all users for indiestor group "grp1" are registered in the "is_grp1" group. The "is_" prefix stands for "indiestor". special group: The indiewheel group lists the users that are allowed to execute the indiestor command besides the root user.
+This is where the system stores the group records for workspaces.
 .RE
 .I /etc/incron.allow
 .RS
-Must list the indienotify user. The indienotify user is the user for which incron watches the filesystem.
+Must list the indienotify-pro user. The indienotify-pro user is the user for which incron watches the filesystem.
 .RE
-.I /var/spool/incron/indienotify
-.RS
-The incron table for the indienotify system user. The indiestor and indiestor-inotify commands regenerate this table as needed as a consequence of admin actions or as a consequence of changes in the filesystem monitored. In case of issues, use the --users -regenerate-incrontab option to regenerate this file. You can show the content of the file with the option --users -show-incrontab.
-.RE
-.I /etc/init.d/indiestor-watch
+.I /etc/init.d/indiestor-pro-watch
 .RS
 This init.d script starts/stops all watches. It is deployed on installation and positioned to initialise when the system boots.
 .RE
 .I /etc/super.tab
 .RS
-This file must have an entry for the indiestor and indiestor-inotify command ensuring that the indiewheel group can operate the indiestor command as root and the indienotify user to operate the indiestor-inotify command as root.
+This file must have an entry for the indiestor-pro and indiestor-pro-inotify command ensuring that the indiewheel group can operate the indiestor command as root and the indienotify user to operate the indiestor-pro-inotify command as root.
 .RE
-.I /etc/netatalk/Applevolumes.default
+.I /etc/afp.conf
 .RS
-Netatalk home shares for Mac clients.
-.RE
-.I /etc/samba/smb.conf
-.RS
-Netatalk home shares for Windows clients.
+Indiestor-pro will deploy an 'include' path in /etc/afp.conf, which points at /etc/indiestor-pro/indie.afp.conf. This assumes you are using the netatalk 3.1.7 package avialble from the free.indiestor.com repository.
 .RE
 .I /etc/samba/smb.conf
 .RS
-Must list indiestor shares.
+Indiestor-pro will deploy its include line in /etc/samba/smb.conf, which points at /etc/indiestor-pro/indie.smb.conf.
 .RE
-.I /var/lib/samba
+.I /etc/indiestor-pro/avid-workspaces.conf
 .RS
-Indiestor automatically keeps the users and passwords for the indiestor-users group in sync with samba's users and passwords.
+a list of avid workspace names and path 'stems'.
+.RE
+.I /etc/indiestor-pro/generic-workspaces.conf
+.RS
+a list of generic workspace names and path 'stems'.
 .RE
 .I /var/log/syslog:
 .RS
-indiestor-inotify logs its operations to this file, which is the system log file. You can inspect it with the command:
+indiestor-pro-inotify logs its operations to this file, which is the system log file. You can inspect it with tail -f /var/log/syslog.
 .RE
 .I /etc/shadow
 .RS
 The system stores the user passwords in this file.
 .RE
+
+
 .SH MISCELLANEOUS NOTES
 
 .B Connecting Mac clients to indiestor:
@@ -340,14 +268,14 @@ Users should switch to Finder and use Command + K or click Go > connect to serve
 
 afp://<IP-ADDRESS-or-HOST-NAME>/
 
-Mac users will periodically see the “project settings not saved due to an error”. While this can be annoying, it is largely cosemtic and only effects the .avp file. It does not effect .avb or .avs files. We recommend AFP over samba for Mac clients because of its superior performance. Users that wish to use Samba on Mac will need the Thursby Dave samba client. To enable samba for Mac you will need to uncomment the “indiestor-mac” share in /etc/samba/smb.conf.
+Mac users should install the "indiestor Avid AFP tuner" from our website, which resoleves the well known "project settings not saved" error.
 
 .B Connecting Windows clients to indiestor:
 Right click on "Computer" then choose "Map Network Drive".
 
-All users in a group should agree to map mounts to the same drive letter using the following folder path:
+In windows environments users should agree to map mounts to the same drive letter using the following folder path(s):
 
-\e\e<IP-ADDRESS-or-HOST-NAME>\eindiestor-win
+\e\e<IP-ADDRESS-or-HOST-NAME>\eworkspace-name
 
 The 'Connect using different credentials' is handy if windows signs you in automatically.
 
@@ -360,8 +288,7 @@ Hit enter and the console should respond with:
  "All drives will be viewed as media drives"
 
 .B FURTHER DIAGNOSTIC INFORMATION:
-Further diagnostic information can be found on our Technical FAQs page at: http://indiestor.com/faqs/
+Further diagnostic information can be found in the technical FAQ's section of our website.
 
 .SH AUTHOR
 Alex Gardiner (alex@indiestor.com) & Erik Poupaert (erik@indiestor.com)
-
