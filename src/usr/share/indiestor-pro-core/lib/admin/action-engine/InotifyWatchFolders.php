@@ -60,7 +60,6 @@ class InotifyWatchFolders
 		$folders=explode("\n",$folders);
 		foreach($folders as $folder)
 		{
-			$folder=trim($folder);
 			if($folder!="")
 				$watchFolders[]=$folder;
 		}
