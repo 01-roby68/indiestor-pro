@@ -21,7 +21,7 @@ if [ "$watchType" = "" ] ; then
 fi
 
 if [ "$watchType" = "main" ] ; then
-	events='move,move_self,create'
+	events='move,move_self,create,delete,delete_self'
 else
 	events='modify'
 fi
