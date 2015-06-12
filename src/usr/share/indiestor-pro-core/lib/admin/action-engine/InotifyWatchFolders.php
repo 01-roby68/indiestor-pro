@@ -29,7 +29,6 @@ class InotifyWatchFolders
 
         static function isLocatedInValidHomeFolderOfGroupMember($folder,$workspace)
         {
-
                 $conf=new EtcWorkspaces('avid');
                 $path=$conf->workspaces[$workspace];
                 if(substr($path,0,1)!=='/')
@@ -41,9 +40,10 @@ class InotifyWatchFolders
 
                 foreach($group->members as $member)
                 {
-                        $memberPath="$workspace/$member";
-                        if(preg_match("|^{$memberPath}|",$folder))
+                        $memberPath="$pathAbs/$member";
+                        if(preg_match("|^{$memberPath}.*|",$folder)) {
                                 return true;
+                        }
                 }
                 return false;
         }
