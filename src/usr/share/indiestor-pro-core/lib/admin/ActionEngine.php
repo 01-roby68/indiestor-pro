@@ -17,8 +17,7 @@ requireLibFile('admin/action-engine/InotifyWait.php');
 requireLibFile('admin/action-engine/json_encode_legacy.php');
 requireLibFile('admin/afp.smb.config/AfpAvidConfigGenerator.php');
 requireLibFile('admin/afp.smb.config/AfpGenericConfigGenerator.php');
-requireLibFile('admin/afp.smb.config/SmbAvidConfigGenerator.php');
-requireLibFile('admin/afp.smb.config/SmbGenericConfigGenerator.php');
+requireLibFile('admin/afp.smb.config/SmbConfigGenerator.php');
 
 class ActionEngine
 {
@@ -110,19 +109,7 @@ class ActionEngine
 
         static function generateSmbConfig()
         {
-                $buffer ="# ==========================\n";
-                $buffer.="# Avid workspaces\n";
-                $buffer.="# ==========================\n";
-
-                $buffer.= SmbAvidConfigGenerator::generate() . "\n";
-
-                $buffer.="# ==========================\n";
-                $buffer.="# Generic workspaces\n";
-                $buffer.="# ==========================\n";
-
-                $buffer.= SmbGenericConfigGenerator::generate() . "\n";        
-
-                file_put_contents('/etc/indiestor-pro/indie.smb.conf',$buffer);
+                SmbConfigGenerator::generate();
         }
 
 	static function restartWatching()

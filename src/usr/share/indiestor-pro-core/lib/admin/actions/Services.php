@@ -106,4 +106,9 @@ class Services extends EntityType
 		InotifyWait::stopWatchingAll();
 	}
 
+        static function refreshShareDefinitions($commandAction)
+        {
+                ActionEngine::generateAfpSmbConfig();
+        }
+
 }

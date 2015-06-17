@@ -2,7 +2,7 @@
 path = {path}/
 directory mask = 0777
 create mask = 0666
-read list = {rolist}
-write list = {rwlist}
-valid users = {rwgroup}
+#read list = {rolist}
+#write list = {rwlist}
+#valid users = {rwgroup}
 
