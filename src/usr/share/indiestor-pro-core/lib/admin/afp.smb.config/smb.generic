@@ -1,5 +1,6 @@
 [{workspace}]
 path = {path}/
+writeable = yes
 directory mask = 0777
 create mask = 0666
 read list = {rolist}
