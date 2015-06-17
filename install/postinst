@@ -45,6 +45,7 @@ case "$1" in
 	service netatalk restart
         mkdir -p /var/spool/indiestor-pro
         chown -R indienotify-pro /var/spool/indiestor-pro
+	indiestor-pro --services -refresh-share-definitions
 	indiestor-pro --services -start-watching
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
 	if [ "$release" = "wheezy" ] ; then
