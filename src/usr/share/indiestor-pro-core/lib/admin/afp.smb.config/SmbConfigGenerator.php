@@ -70,35 +70,38 @@ class SmbConfigGenerator
                         //group names
                         $rwGroupName='generic_rw_'.$workspace;
                         $roGroupName='generic_ro_'.$workspace;
-                        if(EtcGroup::instance()->findGroup($rwGroupName)->isMember($user))
+                        if(EtcGroup::instance()->findGroup($rwGroupName)->isMember($user) ||
+                           EtcGroup::instance()->findGroup($roGroupName)->isMember($user) )
                         {
-                                //absolute path
                                 if(substr($path,0,1)!=='/')
                                         $pathAbs="/$path";
                                 else $pathAbs=$path;
+
+                                $etcGroup=EtcGroup::instance();
+
+                                $rwGroup=$etcGroup->findGroup($rwGroupName);    
+                                if($rwGroup===null ) $rwList='';
+                                else if($rwGroup->members===null) $rwList='';
+                                else $rwList=join(',',$rwGroup->members);           
+
+                                $roGroup=$etcGroup->findGroup($roGroupName); 
+                                if($roGroup===null) $roList='';
+                                else if($roGroup->members===null) $roList='';
+                                else $roList=join(',',$roGroup->members);           
+
                                 //replace data in template
                                 $patterns=[];
                                 $patterns[]='/\{workspace\}/';
                                 $patterns[]='/\{path\}/';
+                                $patterns[]='/\{rolist\}/';
+                                $patterns[]='/\{rwlist\}/';
+                                $patterns[]='/\{rwgroup\}/';
                                 $replacements=[];
                                 $replacements[]=$workspace;
                                 $replacements[]=$pathAbs;
-                                $detailedConfig=preg_replace($patterns,$replacements,$template);
-                                $buffer.=$detailedConfig;
-                        }
-                        if(EtcGroup::instance()->findGroup($roGroupName)->isMember($user))
-                        {
-                                //absolute path
-                                if(substr($path,0,1)!=='/')
-                                        $pathAbs="/$path";
-                                else $pathAbs=$path;
-                                //replace data in template
-                                $patterns=[];
-                                $patterns[]='/\{workspace\}/';
-                                $patterns[]='/\{path\}/';
-                                $replacements=[];
-                                $replacements[]=$workspace;
-                                $replacements[]=$pathAbs;
+                                $replacements[]=$roList;
+                                $replacements[]=$rwList;
+                                $replacements[]='@'.$rwGroupName. ", ".'@'.$roGroupName;
                                 $detailedConfig=preg_replace($patterns,$replacements,$template);
                                 $buffer.=$detailedConfig;
                         }
