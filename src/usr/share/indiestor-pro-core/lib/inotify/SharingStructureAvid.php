@@ -474,8 +474,9 @@ class SharingStructureAvid
 		{
 			self::verifyProjectFiles($pathAbs,$user,$oldProjectFolder);
                         $archiveFolder=self::createOldProjectArchiveFolder($pathAbs,$user,$oldProjectFolder);
+                        $oldProjectName=self::detectOldProjectName($pathAbs,$user,$oldProjectFolder);
 			self::purgeOldProjectSharedFolderForUser($pathAbs,$user,$oldProjectFolder,$archiveFolder);
-                        self::archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder);
+                        self::archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder,$oldProjectName);
 		}
 	}
 	
@@ -495,12 +496,33 @@ class SharingStructureAvid
 	   	return $result;
 	}
 
-        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder)
-        {
-                $oldProjectName=trim(shell_exec("basename $(find $pathAbs/$user/$oldProjectFolder -type f -name *.avp) .avp"));
-                if(self::endsWith($oldProjectName,'.avid')) {
-                        $oldProjectName=substr($oldProjectName,0,-strlen('.avid'));
+        static function detectOldProjectName($pathAbs,$user,$oldProjectFolder) {
+		$sharedSubFolderRoot="$pathAbs/$user/$oldProjectFolder/Shared";
+		$sharedSubFolders=SharingFolders::userSubFolders($sharedSubFolderRoot);
+		foreach($sharedSubFolders as $sharedSubFolder)
+		{
+			$pathSharedSubFolder="$sharedSubFolderRoot/$sharedSubFolder";
+			if(is_link($pathSharedSubFolder))
+			{
+				$source=readlink($pathSharedSubFolder);
+                                $copySegment=basename(dirname(dirname($source)));
+                                $oldProjectName=substr($copySegment,0,-strlen(PROJCOPY));
+                                return $oldProjectName;
+                        }
                 }
+                return null; //not found
+        }
+
+        static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder,$oldProjectName)
+        {
+                if($oldProjectName==null) {
+                        //try to detect old project name from avp file
+                        $oldProjectName=trim(shell_exec("basename $(find $pathAbs/$user/$oldProjectFolder -type f -name *.avp) .avp"));
+                        if(self::endsWith($oldProjectName,TRIGGER)) {
+                                $oldProjectName=substr($oldProjectName,0,-strlen(TRIGGER));
+                        }
+                }
+
                 foreach($users as $sharingUser) {
                         if($sharingUser!=$user) {
                                 $toplevel="$pathAbs/$sharingUser/Avid Shared Projects/$oldProjectName".PROJCOPY;
