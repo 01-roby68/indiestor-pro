@@ -490,9 +490,10 @@ class SharingStructureAvid
 
         static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder)
         {
+                $oldProjectName=trim(shell_exec("basename $(find $pathAbs/$user/$oldProjectFolder -type f -name *.avp) .avp"));
                 foreach($users as $sharingUser) {
                         if($sharingUser!=$user) {
-                                $toplevel="$pathAbs/$sharingUser/Avid Shared Projects/$oldProjectFolder".PROJCOPY;
+                                $toplevel="$pathAbs/$sharingUser/Avid Shared Projects/$oldProjectName".PROJCOPY;
                                 if(is_dir($toplevel)) {
                                         $archiveToplevel="$archiveFolder/{$sharingUser}-toplevel";
                                         self::renameRepurge($toplevel,$archiveToplevel);
