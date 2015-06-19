@@ -488,9 +488,19 @@ class SharingStructureAvid
                 return $archiveFolder;
         }
 
+	static function endsWith($str, $needle)
+	{
+		$length = strlen($needle);
+		$result=!$length || substr($str, - $length) === $needle;
+	   	return $result;
+	}
+
         static function archiveProjectTopLevelsForUsers($pathAbs,$user,$oldProjectFolder,$users,$archiveFolder)
         {
                 $oldProjectName=trim(shell_exec("basename $(find $pathAbs/$user/$oldProjectFolder -type f -name *.avp) .avp"));
+                if(self::endsWith($oldProjectName,'.avid')) {
+                        $oldProjectName=substr($oldProjectName,0,-strlen('.avid'));
+                }
                 foreach($users as $sharingUser) {
                         if($sharingUser!=$user) {
                                 $toplevel="$pathAbs/$sharingUser/Avid Shared Projects/$oldProjectName".PROJCOPY;
