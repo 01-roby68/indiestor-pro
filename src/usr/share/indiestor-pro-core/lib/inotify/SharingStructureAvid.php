@@ -74,26 +74,11 @@ class SharingStructureAvid
                                 {
 				        self::verifyProject($pathAbs,$user,$project,$users,$group);
 				        self::verifyProjectSharing($pathAbs,$user,$project,$users,$group);
-//				        self::verifyProjectArchive($pathAbs,$user,$project);
                                 }
 			}
 		}
 	}
 
-/*
-	static function verifyProjectArchive($pathAbs,$user,$project)
-	{
-		#remove archive, if needed
-		$projectFolder="$pathAbs/$user/$project";
-		$archived="$projectFolder/Archived";
-		if(is_dir($archived)) 
-		{
-			//check if archive is empty
-			$numberOfItems=intval(shellSilent("ls --ignore resource.frk '$archived' 2> /dev/null | wc -l"));
-			if($numberOfItems==0) shellSilent("rm -rf '$archived'");
-		}
-	}
-*/
 	static function verifyProject($pathAbs,$user,$project,$users,$group)
 	{
 		//verify ownership/groupship on .avid folder
@@ -116,17 +101,8 @@ class SharingStructureAvid
 		#the owner's own shared subfolder
 		$sharedSubOwner="$shared/$user";
 
-//		#owner's archive, if it exists
-//		$archived="$projectFolder/Archived";
-
-//                #the owner's own archive folder
-//		$archivedOwner="$archived/$user";
 		if(!is_dir($sharedSubOwner)) 
 		{
-//			if(is_dir($archivedOwner))
-//				renameUsingShell($archivedOwner, $sharedSubOwner);
-//			else
-//				if(!file_exists($sharedSubOwner)) 
                         mkdir($sharedSubOwner);
 		}
 		SharingOperations::fixProjectFsObjectOwnership($group,$user,$sharedSubOwner);
@@ -138,17 +114,10 @@ class SharingStructureAvid
 	        #the unprotected shared subfolder
 	        $sharedUnprotected="$shared/Unprotected";
 
-  //              #the unprotected folder
-//	        $archivedUnprotected="$archived/Unprotected";
+               #the unprotected folder
 	        if(!is_dir($sharedUnprotected)) 
 	        {
-//		        if(is_dir($archivedUnprotected))
-//			        renameUsingShell($archivedUnprotected, $sharedUnprotected);
-//		        else
-			        if(!is_dir($sharedUnprotected)) 
-                                {
-                                        mkdir($sharedUnprotected);
-                                }
+                        mkdir($sharedUnprotected);
 	        }
 
                 chmodRecursive($sharedUnprotected, 0664,0775,$user,$group);
@@ -177,8 +146,6 @@ class SharingStructureAvid
 			{
 				if(is_file("$pathAbs/$user/$project/$entry"))
 				{
-					//if(SharingFolders::endsWith($entry,'.avp'))
-					//	SharingOperations::renameAvpProjectFile($user,"$pathAbs/$user",$project,$entry);
 					if(SharingFolders::endsWith($entry,'.avs'))
 						SharingOperations::renameAvsProjectFile($user,"$pathAbs/$user",$project,$entry);
 					if(SharingFolders::endsWith($entry,'.xml'))
@@ -434,34 +401,19 @@ class SharingStructureAvid
                         if(!$originalProjectFound)
                         {
                                 $copyFolderPath="$avpFolder/$copyFolder";
-//                                $finderCmd1="find '$copyFolderPath' -type f 2> /dev/null ".
-//                                                "| grep -v '.avp$' 2> /dev/null ".
-//                                                "| grep -v '.avs$' 2> /dev/null ".
-//                                                "| grep -v '.xml$' 2> /dev/null ".
-//                                                "| grep -v '/Statistics' 2> /dev/null ".
-//                                                "| grep -v '/WaveformCache' 2> /dev/null ".
-//                                                "| grep -v '/SearchData' 2> /dev/null ";
-//                                $finderCmd="$finderCmd1 | wc -l";
-//                                $numberOfFiles=shellSilent($finderCmd);
-//                                if(intval($numberOfFiles)==0) 
-//                                {
-                                        syslog_notice("rm -rf '$copyFolderPath'");
-                                        shellSilent("rm -rf '$copyFolderPath'");
-//                                }
-//                                else
-//                                {
-//                                        syslog_notice("finderCmd1:".
-//                                                shellSilent($finderCmd1));                                        
-//                                }
+                                syslog_notice("rm -rf '$copyFolderPath'");
+                                $copyFolderPath=escapeshellarg($copyFolderPath);
+                                shellSilent("rm -rf $copyFolderPath");
                         }
 			
 		}
-                $finderCmd2="ls '$avpFolder' 2> /dev/null";
+                $avpFolder=escapeshellarg($avpFolder);
+                $finderCmd2="ls $avpFolder 2> /dev/null";
                 $numberOfRemainingCopyFolders=shellSilent("$finderCmd2 | wc -l");
                 if(intval($numberOfRemainingCopyFolders)==0)
                 {
-                        syslog_notice("rm -rf '$avpFolder'");
-                        shellSilent("rm -rf '$avpFolder'");
+                        syslog_notice("rm -rf $avpFolder");
+                        shellSilent("rm -rf $avpFolder");
                 }
 	}
 
@@ -517,7 +469,8 @@ class SharingStructureAvid
         {
                 if($oldProjectName==null) {
                         //try to detect old project name from avp file
-                        $oldProjectName=trim(shell_exec("basename $(find $pathAbs/$user/$oldProjectFolder -type f -name *.avp) .avp"));
+                        $path=escapeshellarg("$pathAbs/$user/$oldProjectFolder");
+                        $oldProjectName=trim(shell_exec("basename $(find $path -type f -name *.avp) .avp"));
                         if(self::endsWith($oldProjectName,TRIGGER)) {
                                 $oldProjectName=substr($oldProjectName,0,-strlen(TRIGGER));
                         }
@@ -529,11 +482,12 @@ class SharingStructureAvid
                                 if(is_dir($toplevel)) {
                                         $archiveToplevel="$archiveFolder/{$sharingUser}-toplevel";
                                         self::renameRepurge($toplevel,$archiveToplevel);
-                                        shellSilent("rm -Rf $archiveToplevel/Shared");
-                                        shellSilent("rm $archiveToplevel/$oldProjectFolder".PROJCOPY.".avp");
-                                        shellSilent("rm '$archiveToplevel/$oldProjectFolder".PROJCOPY." Settings.avs'");
-                                        shellSilent("rm '$archiveToplevel/$oldProjectFolder".PROJCOPY." Settings.xml'");
-                			shellSilent("chown -R $user.$user '$archiveToplevel'");
+                                        
+                                        shellSilent("rm -Rf ".escapeshellarg($archiveToplevel)."/Shared");
+                                        shellSilent("rm ".escapeshellarg("$archiveToplevel/$oldProjectFolder".PROJCOPY.".avp"));
+                                        shellSilent("rm ".escapeshellarg("$archiveToplevel/$oldProjectFolder".PROJCOPY." Settings.avs"));
+                                        shellSilent("rm ".escapeshellarg("$archiveToplevel/$oldProjectFolder".PROJCOPY." Settings.xml"));
+                			shellSilent("chown -R $user.$user ".escapeshellarg($archiveToplevel));
                                 }
                         }
                 }
@@ -561,7 +515,8 @@ class SharingStructureAvid
 			}
 			if(file_exists($source)) 
                                 self::renameRepurge($source,$subArchiveFolder);
-			shellSilent("chown -R $user.$user '$subArchiveFolder'");
+                        $subArchiveFolder=escapeshellarg($subArchiveFolder);
+			shellSilent("chown -R $user.$user $subArchiveFolder");
 
 			//purge copy
 			if($islink)
@@ -573,9 +528,11 @@ class SharingStructureAvid
 				{
 
 					//remove copy of project, if it is empty
-					$numberOfItems=intval(shellSilent("ls '$copy' 2> /dev/null | wc -l"));
-					if($numberOfItems==0) shellSilent("rm -rf '$copy'");
+                                        $copy=escapeshellarg($copy);
+					$numberOfItems=intval(shellSilent("ls $copy 2> /dev/null | wc -l"));
+					if($numberOfItems==0) shellSilent("rm -rf $copy");
 					//check if this is the last copy
+                                        $rootOfCopy=escapeshellarg($rootOfCopy);
 					$numberOfItems=intval(shellSilent("ls '$rootOfCopy' 2> /dev/null | wc -l"));
 					if($numberOfItems==0) shellSilent("rm -rf '$rootOfCopy'");
 				}
@@ -586,7 +543,8 @@ class SharingStructureAvid
 
 		//purge shared folder
                 syslog_notice("purge: deleting folder $sharedSubFolderRoot");
-		shellSilent("rm -rf '$sharedSubFolderRoot'");
+                $sharedSubFolderRoot=escapeshellarg($sharedSubFolderRoot);
+		shellSilent("rm -rf $sharedSubFolderRoot");
 	}
 }
 

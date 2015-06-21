@@ -15,7 +15,9 @@
 
 function renameUsingShell($from,$to)
 {
-        $instruction="mv --force '$from' '$to'";
+        $from=escapeshellarg($from);
+        $to=escapeshellarg($to);
+        $instruction="mv --force $from $to";
 	$output=shell_exec($instruction);
 }
 

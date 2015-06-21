@@ -24,7 +24,9 @@ class SharingOperations
 				if(!file_exists($target))
 					mkdir($target,0755,true);
 				syslog_notice("moving content of '$currentTarget' to '$target'.");
-				shell_exec("mv -f '$currentTarget'/* '$target'");
+                                $currentTargetEsc=escapeshellarg($currentTarget);
+                                $targetEsc=escapeshellarg($target);
+				shell_exec("mv -f $currentTargetEsc/* $targetEsc");
 				unlink($linkName);
 				self::createSymLink($linkName,$target,$owner);
 			}
@@ -37,8 +39,10 @@ class SharingOperations
 		{
 			//delete the linkname if it is a file or a folder
 			if(is_file($linkName)) unlink($linkName);
-			else if(is_dir($linkName)) shell_exec("rm -rf '$linkName'");
-
+			else if(is_dir($linkName)) { 
+                                $linkNameEsc=escapeshellarg($linkName);
+                                shell_exec("rm -rf $linkNameEsc");
+                        }
 			self::createSymLink($linkName,$target,$owner);
 		}
 	}
@@ -72,7 +76,8 @@ class SharingOperations
 
 		if($owner!=$userName || $group!=$userName) 
 		{
-			shellSilent("chown --no-dereference $userName.$userName '$linkName'");
+                        $linkNameEsc=escapeshellarg($linkName);
+			shellSilent("chown --no-dereference $userName.$userName $linkNameEsc");
 			syslog_notice("changed ownership of '$linkName' to '$userName.$userName'");
 		}
 	}
