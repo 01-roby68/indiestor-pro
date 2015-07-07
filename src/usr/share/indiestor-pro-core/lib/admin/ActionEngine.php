@@ -84,10 +84,61 @@ class ActionEngine
                 $className::execute();
         }
 
+        static function generateImportSpecFiles() {
+                self::generateImportSpecFilesAvid();
+                self::generateImportSpecFilesGeneric();
+        }
+
+        static function generateImportSpecFilesAvid() {
+                $wsconf=new EtcWorkspaces('avid');
+                foreach($wsconf->workspaces as $workspace=>$path) {
+                        //absolute path
+                        if(substr($path,0,1)!=='/')
+                                $pathAbs="/$path";
+                        else $pathAbs=$path;
+                        self::generateImportSpecFileAvid($workspace,$pathAbs);       
+                }                
+        }
+
+        static function generateImportSpecFileAvid($workspace,$pathAbs) {
+                $specs=[ 'type' => 'avid' ];
+                file_put_contents("$pathAbs/indiestor.workspace.conf",json_encode($specs));
+        }
+
+        static function generateImportSpecFilesGeneric() {
+                $wsconf=new EtcWorkspaces('generic');
+                foreach($wsconf->workspaces as $workspace=>$path) {
+                        //absolute path
+                        if(substr($path,0,1)!=='/')
+                                $pathAbs="/$path";
+                        else $pathAbs=$path;
+                        self::generateImportSpecFileGeneric($workspace,$pathAbs);       
+                }                
+        }
+
+        static function generateImportSpecFileGeneric($workspace,$pathAbs) {
+                $rwGroupName='generic_rw_'.$workspace;
+                $roGroupName='generic_ro_'.$workspace;
+                $etcGroup=EtcGroup::instance();
+                $rwGroup=$etcGroup->findGroup($rwGroupName);    
+                if($rwGroup===null ) $rwList='';
+                else if($rwGroup->members===null) $rwList='';
+                else $rwList=join(',',$rwGroup->members);           
+
+                $roGroup=$etcGroup->findGroup($roGroupName); 
+                if($roGroup===null) $roList='';
+                else if($roGroup->members===null) $roList='';
+                else $roList=join(',',$roGroup->members);           
+
+                $specs=[ 'type' => 'generic', 'rw'=>$rwList, 'ro'=>$roList ];
+                file_put_contents("$pathAbs/indiestor.workspace.conf",json_encode($specs));
+        }
+
         static function generateAfpSmbConfig()
         {
                 self::generateAfpConfig();
                 self::generateSmbConfig();
+                self::generateImportSpecFiles();
         }
 
         static function generateAfpConfig()
