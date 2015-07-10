@@ -30,6 +30,11 @@ class ActionEngine
 		NoticeDefinitions::instance()->error($messageCode,$parameters);
 	}
 
+        static function err($message) {
+                file_put_contents('php://stderr',"$message\n");
+                exit(1);
+        }
+
 	static function warning($messageCode,$parameters=array())
 	{
 		NoticeDefinitions::instance()->warning($messageCode,$parameters);

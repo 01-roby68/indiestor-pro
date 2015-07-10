@@ -111,4 +111,47 @@ class Services extends EntityType
                 ActionEngine::generateAfpSmbConfig();
         }
 
+        static function import($commandAction)
+        {
+                //collect folder and workspace
+                $folder=$commandAction->actionArg;
+                $workspaceAction=ProgramActions::findByName('workspace');
+                if($workspaceAction==null) {
+                        //should not happen
+                        //this would be a bug in the commandline arg parser
+                       ActionEngine::err("workspace not supplied");
+                }
+                $workspace=$workspaceAction->actionArg;
+
+                //folder must exist
+                if(!is_dir($folder)) {
+                       ActionEngine::err("'$folder' not a valid folder");
+                }
+
+                $configFile="$folder/indiestor.workspace.conf";
+
+                //config file must exist
+                if(!file_exists($configFile)) {
+                       ActionEngine::err("config file '$configFile' not found");
+                }
+
+                //config file must be valid json & valid structure
+
+                //workspace must not exist ==> use workspace/add
+
+                echo "to be implemented\n";
+        }
+
+        static function importAvidWorkspace($workspace) {
+        }
+
+        static function importGenericWorkspace($workspace,$rwUsers,$roUsers) {
+        }
+
+        static function workspace($commandAction)
+        {
+                //handled by import
+        }
+
 }
+
