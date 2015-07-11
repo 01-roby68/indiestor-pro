@@ -6,5 +6,5 @@ rolist = {rolist}
 rwlist = {rwlist}
 valid users = {rwgroup}
 dircachesize = 131072
-veto files = "indiestor.workspace.conf"
+veto files = indiestor.workspace.conf/
 
