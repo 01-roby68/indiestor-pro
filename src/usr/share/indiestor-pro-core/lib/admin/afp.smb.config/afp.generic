@@ -5,6 +5,6 @@ directory perm = 0777
 rolist = {rolist}
 rwlist = {rwlist}
 valid users = {rwgroup}
-cnid scheme = tdb
 dircachesize = 131072
+veto files = indiestor.workspace.conf/
 

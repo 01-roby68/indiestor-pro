@@ -4,6 +4,6 @@ follow symlinks = yes
 file perm = 0644
 directory perm = 0755
 valid users = {group}
-cnid scheme = tdb
 dircachesize = 131072
+vol dbpath = {path}/CNID/$u
 
