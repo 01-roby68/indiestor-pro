@@ -8,7 +8,7 @@
         Licensed under the GPL
 */
 
-require "Workspace.php";
+require_once("Workspace.php");
 
 class GenericWorkspace extends Workspace
 {
@@ -38,6 +38,11 @@ class GenericWorkspace extends Workspace
         {
                 $userName=$commandAction->actionArg;
 		$workspace=ProgramActions::$entityName;
+                self::addWriteUserWithParms($workspace,$userName);
+        }
+
+        static function addWriteUserWithParms($workspace,$userName) 
+        {
                 $groupName='generic_rw_'.$workspace;
                 $oppGroupName='generic_ro_'.$workspace;
                 self::addUser($userName,$groupName,$oppGroupName);
@@ -50,6 +55,11 @@ class GenericWorkspace extends Workspace
         {
                 $userName=$commandAction->actionArg;
 		$workspace=ProgramActions::$entityName;
+                self::addReadOnlyUserWithParms($workspace,$userName);
+        }
+
+        static function addReadOnlyUserWithParms($workspace,$userName)
+        {
                 $groupName='generic_ro_'.$workspace;
                 $oppGroupName='generic_rw_'.$workspace;
                 self::addUser($userName,$groupName,$oppGroupName);

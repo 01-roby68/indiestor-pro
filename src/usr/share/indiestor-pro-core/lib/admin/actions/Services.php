@@ -8,6 +8,11 @@
         Licensed under the GPL
 */
 
+require_once('User.php');
+require_once('Workspace.php');
+require_once('AvidWorkspace.php');
+require_once('GenericWorkspace.php');
+
 class Services extends EntityType
 {
         static function startIncron($commandAction)
@@ -136,16 +141,101 @@ class Services extends EntityType
                 }
 
                 //config file must be valid json & valid structure
+                //avid: {"type":"avid"}
+                //generic: {"type":"generic","rw":"kk1,kk2,kk3,kk4","ro":"kk5"}
 
-                //workspace must not exist ==> use workspace/add
+                $importConfig=json_decode(file_get_contents($configFile),true);
+                if($importConfig==null) {
+                       ActionEngine::err("config file '$configFile' not a valid JSON file");
+                }
 
-                echo "to be implemented\n";
+                if(!isset($importConfig['type'])) {
+                       ActionEngine::err("config file '$configFile' has no 'type' field");
+                }
+
+                $type=$importConfig['type'];
+
+                if(substr($folder,0,1)!=='/')
+                        $pathAbs="/$folder";
+                else $pathAbs=$folder;
+                $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
+                if($fileSystem=='zfs') {
+                        $pathArg=substr($pathAbs, 1);
+                } else {
+                        $pathArg=$pathAbs;
+                }
+
+
+                switch($type) {
+                        case 'avid': self::importAvidWorkspace($workspace,$folder,$pathArg); break;
+                        case 'generic': self::importGenericWorkspace($workspace,$folder,$pathArg,$importConfig); break;
+                        default: ActionEngine::err("Invalid workspace type '$type' in '$configFile'");
+                }
         }
 
-        static function importAvidWorkspace($workspace) {
+        static function importAvidWorkspace($workspace,$folder,$pathArg) {
+
+                //add workspace
+                AvidWorkspace::addWithParms($workspace,$pathArg);
+
+                //recover users
+                $foldersGlobbed=glob("$folder/*",GLOB_ONLYDIR);
+                $users=[];
+                foreach($foldersGlobbed as $folder) {
+                        $basename=basename($folder);
+                        if($basename!='CNID') {
+                                $users[$basename]=$basename;
+                        }
+                }
+
+                //add users
+	        $etcPasswd=EtcPasswd::instance();
+                foreach($users as $user) {
+		        if(!$etcPasswd->exists($user)) {
+                                User::addWithParms($user);
+                        }
+                        AvidWorkspace::addUserWithParms($workspace,$user);
+                }
         }
 
-        static function importGenericWorkspace($workspace,$rwUsers,$roUsers) {
+        static function importGenericWorkspace($workspace,$folder,$pathArg,$importConfig) {
+
+                //add workspace
+                GenericWorkspace::addWithParms($workspace,$pathArg);
+
+                //recover users
+
+                if(!isset($importConfig['rw'])) {
+                       ActionEngine::err("config file '$configFile' has no 'rw' field");
+                }
+                
+                $rwUsersCSV=$importConfig['rw'];
+                $rwUsers=explode(',',$rwUsersCSV);
+                
+                if(!isset($importConfig['ro'])) {
+                       ActionEngine::err("config file '$configFile' has no 'ro' field");
+                }
+
+                $roUsersCSV=$importConfig['ro'];
+                $roUsers=explode(',',$roUsersCSV);
+
+                //add rw users
+	        $etcPasswd=EtcPasswd::instance();
+                foreach($rwUsers as $user) {
+		        if(!$etcPasswd->exists($user)) {
+                                User::addWithParms($user);
+                        }
+                        GenericWorkspace::addWriteUserWithParms($workspace,$user);
+                }
+
+                //add ro users
+	        $etcPasswd=EtcPasswd::instance();
+                foreach($roUsers as $user) {
+		        if(!$etcPasswd->exists($user)) {
+                                User::addWithParms($user);
+                        }
+                        GenericWorkspace::addReadOnlyUserWithParms($workspace,$user);
+                }
         }
 
         static function workspace($commandAction)

@@ -127,6 +127,10 @@ class User extends EntityType
         static function add($commandAction)
         {
 		$userName=ProgramActions::$entityName;
+        }
+
+        static function addWithParms($userName) 
+        {    
 		$etcPasswd=EtcPasswd::instance();
 		$isExistingUser=$etcPasswd->exists($userName);
 

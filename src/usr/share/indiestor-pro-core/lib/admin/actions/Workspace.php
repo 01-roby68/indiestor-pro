@@ -8,9 +8,11 @@
         Licensed under the GPL
 */
 
-function sysquery_df_filesystem_for_folder($folder)
-{
-	return trim(ShellCommand::query_fail_if_error("df -T $folder | tail -n1 | awk '{print $2}'"));
+if(!function_exists('sysquery_df_filesystem_for_folder')) {
+        function sysquery_df_filesystem_for_folder($folder)
+        {
+	        return trim(ShellCommand::query_fail_if_error("df -T $folder | tail -n1 | awk '{print $2}'"));
+        }
 }
 
 class Workspace extends EntityType
@@ -21,8 +23,14 @@ class Workspace extends EntityType
 
         static function add($commandAction)
         {
-                $conf=new EtcWorkspaces(static::WORKSPACETYPE);
 		$workspace=ProgramActions::$entityName;
+                $path=$commandAction->actionArg;
+                self::addWithParms($workspace,$path);
+        }
+
+        static function addWithParms($workspace,$path)
+        {
+                $conf=new EtcWorkspaces(static::WORKSPACETYPE);
 
                 //only accept valid characters
                 if(!ActionEngine::isValidCharactersInName($workspace)) {
@@ -44,7 +52,6 @@ class Workspace extends EntityType
                         return;
                 }
 
-                $path=$commandAction->actionArg;
                 if(substr($path,0,1)!=='/')
                         $pathAbs="/$path";
                 else $pathAbs=$path;

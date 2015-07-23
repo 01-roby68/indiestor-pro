@@ -8,7 +8,7 @@
         Licensed under the GPL
 */
 
-require "Workspace.php";
+require_once("Workspace.php");
 
 class AvidWorkspace extends Workspace
 {
@@ -33,6 +33,11 @@ class AvidWorkspace extends Workspace
         {
 		$workspace=ProgramActions::$entityName;
                 $userName=$commandAction->actionArg;
+                self::addUserWithParms($workspace,$userName);
+        }
+
+        static function addUserWithParms($workspace,$userName)
+        {
                 $groupName='avid_'.$workspace;
 
                 //check if user exists
@@ -92,7 +97,7 @@ class AvidWorkspace extends Workspace
                 ActionEngine::generateAfpSmbConfig();
 
                 //reshare+startwatching
-                self::reshare($commandAction);
+                self::reshareWithParms($workspace);
                 InotifyWait::startWatching($workspace);
         }
 
@@ -250,6 +255,11 @@ class AvidWorkspace extends Workspace
         static function reshare($commandAction)
         {
 		$workspace=ProgramActions::$entityName;
+                self::reshareWithParms($workspace);
+        }
+
+        static function reshareWithParms($workspace)
+        {
                 $conf=new EtcWorkspaces('avid');
                 if(!array_key_exists($workspace,$conf->workspaces))
                 {
