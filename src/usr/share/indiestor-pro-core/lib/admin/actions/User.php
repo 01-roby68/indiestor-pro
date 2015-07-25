@@ -134,25 +134,10 @@ class User extends EntityType
 		$etcPasswd=EtcPasswd::instance();
 		$isExistingUser=$etcPasswd->exists($userName);
 
-                //check for valid characters
-		if(!ActionEngine::isValidCharactersInName($userName)) {
-			ActionEngine::error('ERR_USER_INVALID_CHARACTERS');
-                        return;
-                }
+                //validate userName
 
-                //make sure indiestor group exists
-
-                $etcGroup=EtcGroup::instance();
-		$indiestorGroup=$etcGroup->indiestorGroup;
-                if($indiestorGroup==null) {
-		        ActionEngine::error('ERR_INDIESTOR_GROUP_DOES_NOT_EXIST');
-                        return;
-                }
-
-                //check for duplicate users
-
-		if($indiestorGroup->findMember($userName)!=null) {
-			ActionEngine::error('ERR_USER_EXISTS_ALREADY');
+                if($result=self::validateUserName($userName)!='OK') {
+			ActionEngine::error($result);
                         return;
                 }
 
@@ -179,6 +164,30 @@ class User extends EntityType
 		        if(sysquery_pdbedit_user($userName)==null)	
 			        ShellCommand::exec_fail_if_error("(echo '';echo '') | smbpasswd -s -a $userName");
 	        }
+        }
+
+        static function validateUserName($userName) {
+
+                //check for valid characters
+		if(!ActionEngine::isValidCharactersInName($userName)) {
+                        return 'ERR_USER_INVALID_CHARACTERS';
+                }
+
+                //make sure indiestor group exists
+
+                $etcGroup=EtcGroup::instance();
+		$indiestorGroup=$etcGroup->indiestorGroup;
+                if($indiestorGroup==null) {
+                        return 'ERR_INDIESTOR_GROUP_DOES_NOT_EXIST';
+                }
+
+                //check for duplicate users
+
+		if($indiestorGroup->findMember($userName)!=null) {
+                        return 'ERR_USER_EXISTS_ALREADY';
+                }
+
+                return 'OK';
         }
 
         static function delete($commandAction)

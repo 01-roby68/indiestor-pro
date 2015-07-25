@@ -192,7 +192,11 @@ class Services extends EntityType
 	        $etcPasswd=EtcPasswd::instance();
                 foreach($users as $user) {
 		        if(!$etcPasswd->exists($user)) {
-                                User::addWithParms($user);
+                                if($result=User::validateUserName($user)!='OK') {
+                                        echo "$result. Failed to add username: $user\n";
+                                } else {
+                                        User::addWithParms($user);
+                                }
                         }
                         AvidWorkspace::addUserWithParms($workspace,$user);
                 }
@@ -223,7 +227,11 @@ class Services extends EntityType
 	        $etcPasswd=EtcPasswd::instance();
                 foreach($rwUsers as $user) {
 		        if(!$etcPasswd->exists($user)) {
-                                User::addWithParms($user);
+                                if($result=User::validateUserName($user)!='OK') {
+                                        echo "$result. Failed to add read-write user: $user\n";
+                                } else {
+                                        User::addWithParms($user);
+                                }
                         }
                         GenericWorkspace::addWriteUserWithParms($workspace,$user);
                 }
@@ -232,8 +240,12 @@ class Services extends EntityType
 	        $etcPasswd=EtcPasswd::instance();
                 foreach($roUsers as $user) {
 		        if(!$etcPasswd->exists($user)) {
-                                User::addWithParms($user);
-                        }
+                                if($result=User::validateUserName($user)!='OK') {
+                                        echo "$result. Failed to add read-only user: $user\n";
+                                } else {
+                                        User::addWithParms($user);
+                                }       
+                 }
                         GenericWorkspace::addReadOnlyUserWithParms($workspace,$user);
                 }
         }
