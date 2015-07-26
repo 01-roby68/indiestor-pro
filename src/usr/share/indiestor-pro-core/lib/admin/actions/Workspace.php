@@ -219,7 +219,8 @@ class Workspace extends EntityType
                 $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
 
 		if($fileSystem=='zfs') {
-                        ShellCommand::exec_fail_if_error("zfs set quota={$quota} $path");
+                        ShellCommand::exec_fail_with_message("zfs set quota={$quota} $path",
+                                "Workspace quota unavailable. ZFS dataset not present.");
                 } else {
                         ActionEngine::error('ERR_QUOTA_ONLY_FOR_ZFS');
                         return;

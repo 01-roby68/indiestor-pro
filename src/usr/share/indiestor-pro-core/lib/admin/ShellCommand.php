@@ -83,6 +83,16 @@ class ShellCommand
 		if($processOutput->returnCode!=0) self::fail($command,$processOutput,'EXEC');
 	}
 
+	static function exec_fail_with_message($command,$message)
+	{
+		$processOutput=self::exec($command);
+		if($processOutput==null) return; //simulation mode
+		if($processOutput->returnCode!=0) {
+                        self::printStdErr($message);
+        		exit(1);
+                }
+	}
+
 	static function exec($command)
 	{
 		self::printCommand($command);
