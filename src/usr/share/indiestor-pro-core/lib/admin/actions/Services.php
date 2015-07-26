@@ -188,6 +188,9 @@ class Services extends EntityType
                         }
                 }
 
+                //remove symlinks
+                ShellCommand::exec("find $folder -type l -exec rm {} \;");
+
                 //add users
 	        $etcPasswd=EtcPasswd::instance();
                 foreach($users as $user) {
@@ -222,6 +225,9 @@ class Services extends EntityType
 
                 $roUsersCSV=$importConfig['ro'];
                 $roUsers=explode(',',$roUsersCSV);
+
+                //remove symlinks
+                ShellCommand::exec("find $folder -type l -exec rm {} \;");
 
                 //add rw users
 	        $etcPasswd=EtcPasswd::instance();
