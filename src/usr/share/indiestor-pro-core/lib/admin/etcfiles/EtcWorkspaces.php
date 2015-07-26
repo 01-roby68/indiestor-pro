@@ -30,6 +30,7 @@ class EtcWorkspaces
 	// ADD
 	//----------------------------------------------
         function add($workspace,$path) {
+                $path = rtrim($path, '/');
                 $this->workspaces[$workspace]=$path;
         }
 
