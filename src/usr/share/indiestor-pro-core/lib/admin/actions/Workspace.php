@@ -44,11 +44,23 @@ class Workspace extends EntityType
                         return;
                 }
 
+                //stop if path exists already for another workspace
+                if($conf->workspaces->pathExists($path)) {
+                        ActionEngine::error('ERR_PATH_EXISTS_ALREADY_FOR_OTHER_WORKSPACE');
+                        return;
+                }
+
                 $otherConf=new EtcWorkspaces(static::OTHER_WORKSPACETYPE);
 
                 //stop if workspace exists already in other workspace type
                 if(array_key_exists($workspace,$otherConf->workspaces)) {
                         ActionEngine::error('ERR_WORKSPACE_EXISTS_ALREADY');
+                        return;
+                }
+
+                //stop if path exists already for another workspace
+                if($otherConf->workspaces->pathExists($path)) {
+                        ActionEngine::error('ERR_PATH_EXISTS_ALREADY_FOR_OTHER_WORKSPACE');
                         return;
                 }
 

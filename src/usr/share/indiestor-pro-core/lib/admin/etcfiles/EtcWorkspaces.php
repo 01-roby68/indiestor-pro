@@ -41,6 +41,18 @@ class EtcWorkspaces
         }
 
 	//----------------------------------------------
+	// PATH EXISTS
+	//----------------------------------------------
+        function pathExists($path) {
+                foreach($this->workspaces as $workspace=>$existingPath) {
+                        if($path==$existingPath) {
+                                return true;
+                        }
+                }
+                return false;
+        }
+
+	//----------------------------------------------
 	// PARSE
 	//----------------------------------------------
 
