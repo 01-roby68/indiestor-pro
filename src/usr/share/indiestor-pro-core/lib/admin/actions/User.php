@@ -252,7 +252,12 @@ class User extends EntityType
                 }
 
                 //set password as system level
-	        $cryptedPwd=crypt($passwd);
+                $fp = fopen('/dev/urandom', 'r');
+                $randomString = fread($fp, 32);
+                fclose($fp);
+                $salt = base64_encode($randomString);
+	        $cryptedPwd=crypt($passwd,'$6$'.$salt);
+
 	        ShellCommand::exec_fail_if_error("usermod --password '$cryptedPwd' $userName");
 		EtcPasswd::reset();
 
