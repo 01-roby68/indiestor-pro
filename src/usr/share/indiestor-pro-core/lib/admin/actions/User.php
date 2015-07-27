@@ -127,6 +127,7 @@ class User extends EntityType
         static function add($commandAction)
         {
 		$userName=ProgramActions::$entityName;
+                self::addWithParms($userName);
         }
 
         static function addWithParms($userName) 
