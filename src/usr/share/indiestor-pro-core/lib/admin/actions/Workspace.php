@@ -59,7 +59,7 @@ class Workspace extends EntityType
                 }
 
                 //stop if path exists already for another workspace
-                if($otherConf->workspaces->pathExists($path)) {
+                if($otherConf->pathExists($path)) {
                         ActionEngine::error('ERR_PATH_EXISTS_ALREADY_FOR_OTHER_WORKSPACE');
                         return;
                 }
