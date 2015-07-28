@@ -36,7 +36,7 @@ class AvidWorkspace extends Workspace
                 self::addUserWithParms($workspace,$userName);
         }
 
-        static function addUserWithParms($workspace,$userName)
+        static function addUserWithParms($workspace,$userName,$reshare=true)
         {
                 $groupName='avid_'.$workspace;
 
@@ -93,12 +93,14 @@ class AvidWorkspace extends Workspace
                         chgrp("$pathAbs/$userName",$groupName);
                 }
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
+                if($reshare) {
+                        //regenerate config afp/smb files
+                        ActionEngine::generateAfpSmbConfig();
 
-                //reshare+startwatching
-                self::reshareWithParms($workspace);
-                InotifyWait::startWatching($workspace);
+                        //reshare+startwatching
+                        self::reshareWithParms($workspace);
+                        InotifyWait::startWatching($workspace);
+                }
         }
 
         static function removeUser($commandAction)

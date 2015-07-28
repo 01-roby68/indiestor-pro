@@ -171,6 +171,11 @@ class Services extends EntityType
                         case 'generic': self::importGenericWorkspace($workspace,$folder,$pathArg,$importConfig); break;
                         default: ActionEngine::err("Invalid workspace type '$type' in '$configFile'");
                 }
+
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
+                //startwatching
+                InotifyWait::startWatching($workspace);
         }
 
         static function importAvidWorkspace($workspace,$folder,$pathArg) {
@@ -201,8 +206,9 @@ class Services extends EntityType
                                         User::addWithParms($user);
                                 }
                         }
-                        AvidWorkspace::addUserWithParms($workspace,$user);
+                        AvidWorkspace::addUserWithParms($workspace,$user,false);
                 }
+                AvidWorkspace::reshareWithParms($workspace);
         }
 
         static function importGenericWorkspace($workspace,$folder,$pathArg,$importConfig) {
