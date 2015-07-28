@@ -26,7 +26,7 @@ class SharingOperations
 				syslog_notice("moving content of '$currentTarget' to '$target'.");
                                 $currentTargetEsc=escapeshellarg($currentTarget);
                                 $targetEsc=escapeshellarg($target);
-				shell_exec("mv -f $currentTargetEsc/* $targetEsc");
+				shell_exec("mv -f $currentTargetEsc/* $targetEsc 2> /dev/null");
 				unlink($linkName);
 				self::createSymLink($linkName,$target,$owner);
 			}
