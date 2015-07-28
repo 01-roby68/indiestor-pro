@@ -93,10 +93,10 @@ class AvidWorkspace extends Workspace
                         chgrp("$pathAbs/$userName",$groupName);
                 }
 
-                if($reshare) {
-                        //regenerate config afp/smb files
-                        ActionEngine::generateAfpSmbConfig();
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
 
+                if($reshare) {
                         //reshare+startwatching
                         self::reshareWithParms($workspace);
                         InotifyWait::startWatching($workspace);

@@ -227,6 +227,9 @@ class User extends EntityType
 			        ShellCommand::exec_fail_if_error("pdbedit --delete --user $userName");
 	        }
 
+                //regenerate config afp/smb files
+                ActionEngine::generateAfpSmbConfig();
+
                 //reshare
                 $etcGroup=EtcGroup::instance();                
                 foreach($workspacesToReshare as $workspace) {
