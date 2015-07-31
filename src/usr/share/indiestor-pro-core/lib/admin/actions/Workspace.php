@@ -25,6 +25,8 @@ class Workspace extends EntityType
         {
 		$workspace=ProgramActions::$entityName;
                 $path=$commandAction->actionArg;
+                //remove trailing slash
+                $folder=rtrim($path, '/'); 
                 self::addWithParms($workspace,$path);
         }
 

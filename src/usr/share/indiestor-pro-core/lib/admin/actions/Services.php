@@ -120,6 +120,9 @@ class Services extends EntityType
         {
                 //collect folder and workspace
                 $folder=$commandAction->actionArg;
+                //remove trailing slash
+                $folder=rtrim($folder, '/'); 
+
                 $workspaceAction=ProgramActions::findByName('workspace');
                 if($workspaceAction==null) {
                         //should not happen
