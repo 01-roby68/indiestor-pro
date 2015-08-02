@@ -197,7 +197,7 @@ class Services extends EntityType
                 }
 
                 //remove symlinks
-                ShellCommand::exec("find $folder -type l -exec rm {} \;");
+//                ShellCommand::exec("find $folder -type l -exec rm {} \;");
 
                 //add users
 	        $etcPasswd=EtcPasswd::instance();
