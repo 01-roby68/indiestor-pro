@@ -183,6 +183,9 @@ class Services extends EntityType
 
         static function importAvidWorkspace($workspace,$folder,$pathArg) {
 
+                //remove symlinks
+                ShellCommand::exec("find $folder -type l -delete");
+
                 //add workspace
                 AvidWorkspace::addWithParms($workspace,$pathArg);
 
@@ -195,9 +198,6 @@ class Services extends EntityType
                                 $users[$basename]=$basename;
                         }
                 }
-
-                //remove symlinks
-//                ShellCommand::exec("find $folder -type l -exec rm {} \;");
 
                 //add users
 	        $etcPasswd=EtcPasswd::instance();
