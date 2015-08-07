@@ -183,11 +183,14 @@ class Services extends EntityType
 
         static function importAvidWorkspace($workspace,$folder,$pathArg) {
 
-                //remove symlinks
-                ShellCommand::exec("find $folder -type l -delete");
-
                 //add workspace
                 AvidWorkspace::addWithParms($workspace,$pathArg);
+
+                //remove symlinks
+                ShellCommand::exec("find $folder -type l -exec rm {} \;");
+
+                //nuke all permissions back to something workable
+                ShellCommand::exec("chmod -R 0777 $folder");
 
                 //recover users
                 $foldersGlobbed=glob("$folder/*",GLOB_ONLYDIR);
@@ -219,6 +222,9 @@ class Services extends EntityType
                 //add workspace
                 GenericWorkspace::addWithParms($workspace,$pathArg);
 
+                //nuke all permissions back to something workable
+                ShellCommand::exec("chmod -R 0777 $folder");
+
                 //recover users
 
                 if(!isset($importConfig['rw'])) {
@@ -235,8 +241,6 @@ class Services extends EntityType
                 $roUsersCSV=$importConfig['ro'];
                 $roUsers=explode(',',$roUsersCSV);
 
-                //remove symlinks
-                ShellCommand::exec("find $folder -type l -exec rm {} \;");
 
                 //add rw users
 	        $etcPasswd=EtcPasswd::instance();
