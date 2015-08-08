@@ -223,8 +223,9 @@ class SharingStructureAvid
 		if(!is_dir($sharedSubUser))
 				mkdir($sharedSubUser);
 
-		SharingOperations::fixProjectFsObjectOwnership($group,$user,$sharedSubUser);
-		SharingOperations::fixFsObjectPermissions($sharedSubUser,"755");
+                chmodRecursive($sharedSubUser, 0644,0755,$user,$group);
+//		SharingOperations::fixProjectFsObjectOwnership($group,$user,);
+//		SharingOperations::fixFsObjectPermissions($sharedSubUser,"755");
 
 		#all other users (not the member himself, nor the owner)
 		foreach($users as $sharingMember)
