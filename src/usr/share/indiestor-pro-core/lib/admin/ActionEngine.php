@@ -89,6 +89,10 @@ class ActionEngine
                 $className::execute();
         }
 
+        static function refreshSMBClients() {
+                 ShellCommand::exec("killall -SIGHUP smbd "); 
+        }
+
         static function generateImportSpecFiles() {
                 self::generateImportSpecFilesAvid();
                 self::generateImportSpecFilesGeneric();

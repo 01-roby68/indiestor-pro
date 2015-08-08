@@ -96,6 +96,9 @@ class AvidWorkspace extends Workspace
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
 
+                //refresh SMB clients
+                ActionEngine::refreshSMBClients();
+
                 if($reshare) {
                         //reshare+startwatching
                         self::reshareWithParms($workspace);
@@ -157,10 +160,13 @@ class AvidWorkspace extends Workspace
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
 
+                //refresh SMB clients
+                ActionEngine::refreshSMBClients();
+
                 //reshare+startwatching
 //                self::reshare($commandAction);
                 //no direct reshare; touch workspace spool file
-        	ShellCommand::exec("indiestor-pro-touch $workspace");                
+        	ShellCommand::exec("indiestor-pro-touch $workspace"); 
                 InotifyWait::startWatching($workspace);
         }
 

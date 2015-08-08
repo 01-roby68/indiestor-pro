@@ -49,6 +49,9 @@ class GenericWorkspace extends Workspace
 
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
+
+                //refresh SMB clients
+                ActionEngine::refreshSMBClients();
         }
 
         static function addReadOnlyUser($commandAction)
@@ -66,6 +69,9 @@ class GenericWorkspace extends Workspace
 
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
+
+                //refresh SMB clients
+                ActionEngine::refreshSMBClients();
         }
 
 
