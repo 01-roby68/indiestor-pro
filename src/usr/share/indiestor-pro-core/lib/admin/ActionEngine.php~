@@ -90,7 +90,7 @@ class ActionEngine
                 $className::execute();
         }
 
-        static function refreshSMBClients() {
+        static function refreshSMBClients($username) {
                 $etcGroup=EtcGroup::instance();
 		$indiestorGroupMembers=$etcGroup->indiestorGroup->members;
 		$smbdUsers=Users::getProcessData('smbd');

@@ -65,13 +65,6 @@ class GenericWorkspace extends Workspace
         {
                 $userName=$commandAction->actionArg;
 		$workspace=ProgramActions::$entityName;
-                self::addReadOnlyUserWithParms($workspace,$userName);
-        }
-
-        static function addReadOnlyUserWithParms($workspace,$userName)
-        {
-                $groupName='generic_ro_'.$workspace;
-                $oppGroupName='generic_rw_'.$workspace;
 
 		//the workspace must exist
                 $conf=new EtcWorkspaces('generic');
@@ -80,6 +73,13 @@ class GenericWorkspace extends Workspace
                         return;
 		}
 
+                self::addReadOnlyUserWithParms($workspace,$userName);
+        }
+
+        static function addReadOnlyUserWithParms($workspace,$userName)
+        {
+                $groupName='generic_ro_'.$workspace;
+                $oppGroupName='generic_rw_'.$workspace;
                 self::addUser($userName,$groupName,$oppGroupName);
 
                 //regenerate config afp/smb files

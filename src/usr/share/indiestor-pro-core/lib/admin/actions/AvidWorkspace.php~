@@ -147,6 +147,8 @@ class AvidWorkspace extends Workspace
                         return;
                 }
 
+                //archive all his projects
+                $conf=new EtcWorkspaces('avid');
                 $path=$conf->workspaces[$workspace];
 
                 if(substr($path,0,1)!=='/')
