@@ -5,5 +5,5 @@ file perm = 0644
 directory perm = 0755
 valid users = {group}
 dircachesize = 131072
-vol dbpath = {path}/CNID/$u
+cnid scheme = tdb
 
