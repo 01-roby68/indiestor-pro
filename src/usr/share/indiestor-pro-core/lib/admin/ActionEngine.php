@@ -96,18 +96,17 @@ class ActionEngine
 		$smbdUsers=Users::getProcessData('smbd');
 		$sambaUsers=Users::getProcessData('samba');
 		foreach($indiestorGroupMembers as $userName) {
-			if(Users::isUserActiveInProcess($userName,$smbdUsers) ||
-					Users::isUserActiveInProcess($userName,$sambaUsers)) {
-				$pids=ShellCommand::query("smbstatus -p | grep '$userName' | awk '{print $1}'");
-				$pids=explode("\n",$pids);
-				foreach($pids as $pid) {
-					if(is_int($pid)) {
-						ShellCommand::exec("kill -SIGHUP $pid");
-					}
+			echo "stopping samba processes for $userName\n";
+			$pids=ShellCommand::query("smbstatus -p | grep '$userName' | awk '{print $1}'");
+			echo "$userName pids = ".str_replace("\n"," ",$pids)."\n";
+			$pids=explode("\n",$pids);
+			foreach($pids as $pid) {
+				if(is_int($pid)) {
+					echo "killing $pid\n";
+					ShellCommand::exec("kill -9 $pid");
 				}
 			}
         	}
-
 	}
 
         static function generateImportSpecFiles() {
