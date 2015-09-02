@@ -40,7 +40,7 @@ class Services extends EntityType
         static function upstartServiceStatus($serviceName)
         {
                 $stdout=ShellCommand::query("ps ax | grep $serviceName");
-                if(preg_match('/sbin/',$stdout)) return true;
+                if(preg_match('/usr\/sbin/',$stdout)) return true;
                 else return false;
         }
 
