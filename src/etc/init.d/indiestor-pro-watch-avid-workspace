@@ -1,3 +1,4 @@
+#!/bin/sh
 ### BEGIN INIT INFO
 # Provides: indiestor-pro-watch
 # Required-Start: $all
