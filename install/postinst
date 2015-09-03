@@ -30,10 +30,6 @@ case "$1" in
 		adduser --system --group indienotify-pro
 	fi
 
-        echo '@daily /usr/bin/indiestor-pro-mail' | crontab -u indiemail -
-        #just in case cron is not running
-        /etc/init.d/cron restart
-
 	/etc/init.d/incron restart
 	nmbd restart
 	smbd restart

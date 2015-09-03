@@ -34,17 +34,13 @@ class Services extends EntityType
                 ShellCommand::exec("service $serviceName $action");
         }
 
+ 
+        /* evaluate running services based on a process running from /usr/sbin*/
+        
         static function upstartServiceStatus($serviceName)
         {
-                $stdout=ShellCommand::query("service $serviceName status");
-                if(preg_match('/not|stop/',$stdout)) return false;
-                else return true;
-        }
-
-        static function netatalkServiceStatus($serviceName)
-        {
-                $stdout=ShellCommand::query("ps aux | grep afp");
-                if(preg_match("/afpd/",$stdout)) return true;
+                $stdout=ShellCommand::query("ps ax | grep $serviceName");
+                if(preg_match('/usr\/sbin/',$stdout)) return true;
                 else return false;
         }
 
@@ -52,9 +48,7 @@ class Services extends EntityType
         {
                 {
                 $status=array();
-                $status['samba']=self::upstartServiceStatus('samba');
                 $status['incron']=self::upstartServiceStatus('incron');
-                $status['netatalk']=self::netatalkServiceStatus('netatalk');
                 $countPids=InotifyWait::statusWatchingAll();
                 if($countPids>0)
                         $status['watching']=true;
@@ -275,4 +269,5 @@ class Services extends EntityType
         }
 
 }
+
 
