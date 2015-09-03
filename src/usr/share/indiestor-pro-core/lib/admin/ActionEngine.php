@@ -101,8 +101,9 @@ class ActionEngine
 			echo "$userName pids = ".str_replace("\n"," ",$pids)."\n";
 			$pids=explode("\n",$pids);
 			foreach($pids as $pid) {
-				if(is_int($pid)) {
-					echo "killing $pid\n";
+				$pid=intval($pid);
+				if($pid>0) {
+					echo "killing $pid\n";					
 					ShellCommand::exec("kill -9 $pid");
 				}
 			}
