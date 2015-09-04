@@ -96,7 +96,7 @@ class ActionEngine
 		$smbdUsers=Users::getProcessData('smbd');
 		$sambaUsers=Users::getProcessData('samba');
 		foreach($indiestorGroupMembers as $userName) {
-			$pids=ShellCommand::query("smbstatus -p | grep '$userName' | awk '{print $1}'");
+			$pids=ShellCommand::query("smbstatus -p | grep '$userName ' | awk '{print $1}'");
 			$pids=explode("\n",$pids);
 			foreach($pids as $pid) {
 				$pid=intval($pid);
