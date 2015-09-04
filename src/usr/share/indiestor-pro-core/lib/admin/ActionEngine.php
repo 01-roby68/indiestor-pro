@@ -96,7 +96,6 @@ class ActionEngine
 		$smbdUsers=Users::getProcessData('smbd');
 		$sambaUsers=Users::getProcessData('samba');
 		foreach($indiestorGroupMembers as $userName) {
-			echo "stopping samba processes for $userName\n";
 			$pids=ShellCommand::query("smbstatus -p | grep '$userName' | awk '{print $1}'");
 			echo "$userName pids = ".str_replace("\n"," ",$pids)."\n";
 			$pids=explode("\n",$pids);

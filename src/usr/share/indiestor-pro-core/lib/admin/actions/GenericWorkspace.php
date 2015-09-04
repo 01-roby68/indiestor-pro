@@ -133,7 +133,6 @@ class GenericWorkspace extends Workspace
                         return;
                 }
 
-
                 //add the user
         	ShellCommand::exec_fail_if_error("adduser $userName $groupName");                
         }
@@ -147,6 +146,9 @@ class GenericWorkspace extends Workspace
 
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
+                //refresh SMB clients
+                ActionEngine::refreshSMBClients();
+
         }
 
         static function removeReadOnlyUser($commandAction)
@@ -158,6 +160,8 @@ class GenericWorkspace extends Workspace
 
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
+                //refresh SMB clients
+                ActionEngine::refreshSMBClients();
         }
 
         static function removeUser($userName,$groupName)
