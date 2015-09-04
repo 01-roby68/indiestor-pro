@@ -97,12 +97,10 @@ class ActionEngine
 		$sambaUsers=Users::getProcessData('samba');
 		foreach($indiestorGroupMembers as $userName) {
 			$pids=ShellCommand::query("smbstatus -p | grep '$userName' | awk '{print $1}'");
-			echo "$userName pids = ".str_replace("\n"," ",$pids)."\n";
 			$pids=explode("\n",$pids);
 			foreach($pids as $pid) {
 				$pid=intval($pid);
 				if($pid>0) {
-					echo "killing $pid\n";					
 					ShellCommand::exec("kill -9 $pid");
 				}
 			}
