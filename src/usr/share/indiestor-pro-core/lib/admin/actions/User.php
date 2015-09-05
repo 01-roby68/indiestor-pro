@@ -136,8 +136,8 @@ class User extends EntityType
 		$isExistingUser=$etcPasswd->exists($userName);
 
                 //validate userName
-
-                if($result=self::validateUserName($userName)!='OK') {
+		$result=self::validateUserName($userName);
+                if($result!='OK') {
 			ActionEngine::error($result);
                         return;
                 }

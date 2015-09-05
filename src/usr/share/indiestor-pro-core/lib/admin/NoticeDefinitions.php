@@ -81,10 +81,14 @@ class NoticeDefinitions
 
 	function resolveMessage($messageCode,$parameters=array(),$errorStage,$errorLevel)
 	{
-		$noticeDefinition=$this->noticeDefinitions[$messageCode];
-		$errNum=$noticeDefinition->number;
-		$message=$this->resolveText($noticeDefinition->text,$parameters);
-		return array($errNum,"$message.\n");
+		if(isset($this->noticeDefinitions[$messageCode])) {
+			$noticeDefinition=$this->noticeDefinitions[$messageCode];
+			$errNum=$noticeDefinition->number;
+			$message=$this->resolveText($noticeDefinition->text,$parameters);
+			return [$errNum,"$message.\n"];
+		} else {
+			return [500,"ERROR: $messageCode\n"];
+		}
 	}
 
 	function resolveText($text,$parameters=array())
