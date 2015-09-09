@@ -101,7 +101,7 @@ class ActionEngine
 			foreach($pids as $pid) {
 				$pid=intval($pid);
 				if($pid>0) {
-					ShellCommand::exec("kill -9 $pid");
+					ShellCommand::exec("kill -s HUP $pid");
 				}
 			}
         	}

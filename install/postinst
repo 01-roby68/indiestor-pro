@@ -33,9 +33,8 @@ case "$1" in
 	/etc/init.d/incron restart
 	nmbd restart
 	smbd restart
-	service netatalk restart
-        mkdir -p /var/spool/indiestor-pro
-        chown -R indienotify-pro /var/spool/indiestor-pro
+    mkdir -p /var/spool/indiestor-pro
+    chown -R indienotify-pro /var/spool/indiestor-pro
 	indiestor-pro --services -refresh-share-definitions
 	indiestor-pro --services -start-watching
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
