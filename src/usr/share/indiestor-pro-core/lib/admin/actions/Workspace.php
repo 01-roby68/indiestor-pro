@@ -40,6 +40,11 @@ class Workspace extends EntityType
                         return;
                 }
 
+		if(strlen($workspace)>20) {
+                        ActionEngine::error('ERR_WORKSPACE_NAME_TOO_LONG');
+                        return;
+		}
+
                 //stop if workspace exists already
                 if(array_key_exists($workspace,$conf->workspaces)) {
                         ActionEngine::error('ERR_WORKSPACE_EXISTS_ALREADY');
