@@ -1,7 +1,7 @@
 .\" Process this file with
 .\" groff -man -Tascii indiestor-pro.1
 .\"
-.TH indiestor-pro 1 "APRIL 2015" Linux "User Manuals"
+.TH indiestor-pro 1 "SEPTEMBER 2015" Linux "User Manuals"
 .SH NAME
 indiestor-pro - An Open Source storage platform for Avid project and media sharing.
 .SH SYNOPSIS
@@ -20,7 +20,7 @@ indiestor-pro - An Open Source storage platform for Avid project and media shari
 
 --generic-workspaces [-show -json] 
 
---services [-start-incron -stop-incron -start-watching -stop-watching -show -json]
+--services [-start-incron -stop-incron -start-watching -stop-watching -import <arg> -workspace <arg> -refresh-share-definitions -show -json]
 
 --help
 
@@ -182,6 +182,15 @@ Start indiestor-pro Avid workspace watching.
 .B -stop-watching
 Stop indiestor-pro Avid workspace watching.
 
+.B -stop-watching
+Stop indiestor-pro Avid workspace watching.
+
+.B -imoport-workspace <arg> -workspace <arg>
+Imports an indiestor-pro workspace using the path <arg> and then the workspace name <arg>. 
+
+.B -refresh-share-definitions
+Refreshes the share defnition indexs for SMB and AFP.
+
 .B -show
 Show an overview of service status.
 
@@ -235,13 +244,9 @@ This init.d script starts/stops all watches. It is deployed on installation and 
 .RS
 This file must have an entry for the indiestor-pro and indiestor-pro-inotify command ensuring that the indiewheel group can operate the indiestor command as root and the indienotify user to operate the indiestor-pro-inotify command as root.
 .RE
-.I /etc/afp.conf
-.RS
-Indiestor-pro will deploy an 'include' path in /etc/afp.conf, which points at /etc/indiestor-pro/indie.afp.conf. This assumes you are using the netatalk 3.1.7 package avialble from the free.indiestor.com repository.
-.RE
 .I /etc/samba/smb.conf
 .RS
-Indiestor-pro will deploy its include line in /etc/samba/smb.conf, which points at /etc/indiestor-pro/indie.smb.conf.
+Indiestor-pro will deploy its include line in /etc/samba/smb.conf, which points at individual user configurations in /etc/indiestor-pro/samba/smb.%U.conf.
 .RE
 .I /etc/indiestor-pro/avid-workspaces.conf
 .RS
@@ -264,11 +269,11 @@ The system stores the user passwords in this file.
 .SH MISCELLANEOUS NOTES
 
 .B Connecting Mac clients to indiestor:
-Users should switch to Finder and use Command + K or click Go > connect to server:
+Mac users should use Command + K or click Go > connect to server to see a workspace list:
 
-afp://<IP-ADDRESS-or-HOST-NAME>/
+smb://<IP-ADDRESS-or-HOST-NAME>/
 
-Mac users should install the "indiestor Avid AFP tuner" from our website, which resoleves the well known "project settings not saved" error.
+Mac users should also install the "indiestor Avid tuner" from our website, which resoleves the well known "project settings not saved" error.
 
 .B Connecting Windows clients to indiestor:
 Right click on "Computer" then choose "Map Network Drive".
