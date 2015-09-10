@@ -273,7 +273,7 @@ Mac users should use Command + K or click Go > connect to server to see a worksp
 
 smb://<IP-ADDRESS-or-HOST-NAME>/
 
-Mac users should also install the "indiestor Avid tuner" from our website, which resoleves the well known "project settings not saved" error.
+Mac users should also install the "Indiestor Avid tuner" from our website, which resoleves the well known "project settings not saved" error.
 
 .B Connecting Windows clients to indiestor:
 Right click on "Computer" then choose "Map Network Drive".
