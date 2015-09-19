@@ -171,3 +171,46 @@ class ShellCommand
 	}
 }
 
+class ShellCommandCached
+{
+	const CACHE_FOLDER="/var/cache/indiestor-pro";
+
+	static function execute($command,$hashFile) {
+		$result=ShellCommand::query_fail_if_error($command);
+		file_put_contents($hashFile,$result);
+		return $result;
+	}
+
+	static function query_fail_if_error($command)
+	{
+		
+		//make sure the cache folder exists
+		ShellCommand::exec("mkdir -p ".self::CACHE_FOLDER);
+
+		//commands are represented by their hash
+		$hash=hash('sha256',$command);
+		$hashFile=self::CACHE_FOLDER."/$hash";
+
+		if(file_exists($hashFile)) {
+			//hash file exists
+			if(filemtime($hashFile)<time()-4*60*60) {
+
+				//the hash file is stale, delete it
+				unlink($hashFile); 
+				//execute command
+				return self::execute($command,$hashFile);
+
+			} else {
+
+				//the hash file is not yet stale, use its result
+				return file_get_contents($hashFile);
+
+			}
+		} else {
+			//hash file does not exist
+			return self::execute($command,$hashFile);
+		}
+	}
+
+}
+
