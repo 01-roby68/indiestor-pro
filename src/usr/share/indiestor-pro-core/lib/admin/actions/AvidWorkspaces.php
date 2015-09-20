@@ -36,7 +36,7 @@ class AvidWorkspaces extends EntityType
                         if(substr($path,0,1)!=='/')
                                 $pathAbs="/$path";
                         else $pathAbs=$path;
-                        $row['space-used']=trim(ShellCommandCached::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
+                        $row['space-used']=trim(ShellCommandCached::query_fail_if_error("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
 
                         $row['avail']=trim(ShellCommandCached::query_fail_if_error(
 				"df -h $pathAbs | tail -n +2 | awk '{ print  $2 }' "));	
