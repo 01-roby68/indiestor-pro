@@ -155,7 +155,7 @@ class AvidWorkspace extends Workspace
 
                 //remove the user's folder
 
-                ShellCommand::exec_fail_if_error("rm -rf $pathAbs/$userName");
+                ShellCommand::exec_fail_if_error("rm -rf '$pathAbs/$userName'");
 
                 //remove the user
         	ShellCommand::exec("deluser $userName $groupName");                
