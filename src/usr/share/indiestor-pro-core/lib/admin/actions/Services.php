@@ -263,6 +263,11 @@ class Services extends EntityType
                 }
         }
 
+        static function refreshUsageStats($commandAction)
+        {
+                ActionEngine::manualUsageStatRefresh();
+        }
+
         static function workspace($commandAction)
         {
                 //handled by import

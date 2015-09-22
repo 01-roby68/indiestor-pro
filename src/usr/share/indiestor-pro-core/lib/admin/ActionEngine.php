@@ -193,5 +193,9 @@ class ActionEngine
 		Incrontab::generate();
 		InotifyWait::startWatchingAll();
 	}
+
+         static function manualUsageStatRefresh() {
+                 ShellCommand::exec("rm /var/cache/indiestor-pro/*");  
+         }
 }
 
