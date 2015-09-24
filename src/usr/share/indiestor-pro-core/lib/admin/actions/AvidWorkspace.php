@@ -154,8 +154,18 @@ class AvidWorkspace extends Workspace
                 else $pathAbs=$path;
 
                 //remove the user's folder
-
-                ShellCommand::exec_fail_if_error("rm -rf '$pathAbs/$userName'");
+                $attempt=0;
+                clearstatcache(true);
+                while(is_dir("$pathAbs/$userName") && $attempt<10 ) { 
+                        ShellCommand::exec_fail_if_error("rm -rf '$pathAbs/$userName' ; sync");
+                        clearstatcache(true);
+                        if(is_dir("$pathAbs/$userName")) {
+                                if($attempt==0)
+                                        echo "Please wait for complete removal of folder $pathAbs/$userName ...\n";
+                                sleep(0.5);
+                        }
+                        $attempt++;
+                }
 
                 //remove the user
         	ShellCommand::exec("deluser $userName $groupName");                
