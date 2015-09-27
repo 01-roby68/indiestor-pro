@@ -20,7 +20,7 @@ indiestor-pro - An Open Source storage platform for Avid project and media shari
 
 --generic-workspaces [-show -json] 
 
---services [-start-incron -stop-incron -start-watching -stop-watching -import <arg> -workspace <arg> -refresh-share-definitions -show -json]
+--services [-start-incron -stop-incron -start-watching -stop-watching -import <arg> -workspace <arg> -refresh-usage-stats -refresh-share-definitions -show -json]
 
 --help
 
@@ -187,6 +187,9 @@ Stop indiestor-pro Avid workspace watching.
 
 .B -imoport-workspace <arg> -workspace <arg>
 Imports an indiestor-pro workspace using the path <arg> and then the workspace name <arg>. 
+
+.B -refresh-usage-stats
+Manually refresh the usage statistic cache. To see results use --avid/generic-workspaces -show. As an aside, the usage statistics cache becomes stale after 4 hours, at which point the command line/graphical user interface may hang while new stats are calcualted. On large/full volumes this can take some time.
 
 .B -refresh-share-definitions
 Refreshes the share defnition indexs for SMB and AFP.
