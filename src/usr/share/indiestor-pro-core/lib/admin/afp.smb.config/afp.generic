@@ -1,7 +1,6 @@
 [{workspace}]
 path = {path}/
-file perm = 0666
-directory perm = 0777
+umask = 0000
 rolist = {rolist}
 rwlist = {rwlist}
 valid users = {rwgroup}
