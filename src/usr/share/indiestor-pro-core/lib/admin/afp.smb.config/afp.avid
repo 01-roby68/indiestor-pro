@@ -2,6 +2,7 @@
 path = {path}/$u
 follow symlinks = yes
 umask = 0022
+chmod request = ignore
 valid users = {group}
 dircachesize = 131072
 cnid scheme = tdb

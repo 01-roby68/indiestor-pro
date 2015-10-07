@@ -1,6 +1,6 @@
 [{workspace}]
 path = {path}/
-umask = 0000
+chmod request = ignore
 rolist = {rolist}
 rwlist = {rwlist}
 valid users = {rwgroup}
