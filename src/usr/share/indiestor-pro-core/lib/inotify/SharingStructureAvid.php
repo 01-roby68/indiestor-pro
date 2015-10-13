@@ -86,7 +86,6 @@ class SharingStructureAvid
                 if(file_exists($projectFolder))
         		chmodBase($projectFolder,0755,$user,$user);
 
-		self::verifyProjectFiles($pathAbs,$user,$project);
 		self::verifyProjectSharedFolder($pathAbs,$user,$project,$users,$group);
 	}
 
@@ -120,7 +119,7 @@ class SharingStructureAvid
                         mkdir($sharedUnprotected);
 	        }
 
-                chmodRecursive($sharedUnprotected, 0664,0775,$user,$group);
+                chmodRecursive($sharedUnprotected, 0666,0777,$user,$group);
 
 		#avid copy 
 		$projectCopy=self::folderAvidToCopy($project);
@@ -135,28 +134,6 @@ class SharingStructureAvid
                                         "/$projectCopy/Shared/$sharingUser";
 				SharingOperations::verifySymLink($linkName,$target,$user);		
 			}
-		}
-	}
-
-	static function verifyProjectFiles($pathAbs,$user,$project)
-	{
-		if ($handle = opendir("$pathAbs/$user/$project"))
-		{
-			while(false !== ($entry = readdir($handle)))
-			{
-				if(is_file("$pathAbs/$user/$project/$entry"))
-				{
-					if(SharingFolders::endsWith($entry,'.avs'))
-						SharingOperations::renameAvsProjectFile($user,"$pathAbs/$user",$project,$entry);
-					if(SharingFolders::endsWith($entry,'.xml'))
-						SharingOperations::renameXmlProjectFile($user,"$pathAbs/$user",$project,$entry);
-				}
-			}
-			closedir($handle);
-		}
-		else
-		{
-			syslog_notice("Cannot open folder '$pathAbs/$user/$project' for renaming .avp, .avs and .xml files");
 		}
 	}
 
@@ -425,7 +402,6 @@ class SharingStructureAvid
                         syslog_notice('purge: discovered old project folders:'.join(',',$oldProjectFolders));
 		foreach($oldProjectFolders as $oldProjectFolder)
 		{
-			self::verifyProjectFiles($pathAbs,$user,$oldProjectFolder);
                         $archiveFolder=self::createOldProjectArchiveFolder($pathAbs,$user,$oldProjectFolder);
                         $oldProjectName=self::detectOldProjectName($pathAbs,$user,$oldProjectFolder);
 			self::purgeOldProjectSharedFolderForUser($pathAbs,$user,$oldProjectFolder,$archiveFolder);
