@@ -189,7 +189,7 @@ Stop indiestor-pro Avid workspace watching.
 Imports an indiestor-pro workspace using the path <arg> and then the workspace name <arg>. 
 
 .B -refresh-usage-stats
-Manually refresh the usage statistic cache. To see results simply show the avid/generic-workspaces list. The cache becomes stale after 4 hours, at which point the command line/graphical user interface will hang while new stats are calculated. On large/full volumes this can take a long time.
+Manually refresh the usage statistic cache. To see results simply show the avid/generic-workspaces list. The cache becomes stale after 12 hours, at which point the command line/graphical user interface will hang while new stats are calculated. On large/full volumes this can take a long time.
 
 .B -refresh-share-definitions
 Refreshes the share defnition indexs for SMB and AFP.
