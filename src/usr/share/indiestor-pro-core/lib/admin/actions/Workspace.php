@@ -183,7 +183,10 @@ class Workspace extends EntityType
                                 }
                                 sleep(2);
                         }
-                }                
+                }          
+
+		//stop watching
+		InotifyWait::stopWatching($workspace);      
 
                 //delete folder
                 $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
