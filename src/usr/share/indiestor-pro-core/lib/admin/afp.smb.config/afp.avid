@@ -1,9 +1,9 @@
 [{workspace}_avid]
 path = {path}/$u
 follow symlinks = yes
-file perm = 0644
-directory perm = 0755
+umask = 0022
+chmod request = ignore
 valid users = {group}
 dircachesize = 131072
-vol dbpath = {path}/CNID/$u
+cnid scheme = tdb
 

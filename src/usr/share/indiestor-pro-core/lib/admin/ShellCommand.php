@@ -193,7 +193,7 @@ class ShellCommandCached
 
 		if(file_exists($hashFile)) {
 			//hash file exists
-			if(filemtime($hashFile)<time()-4*60*60) {
+			if(filemtime($hashFile)<time()-12*60*60) {
 
 				//the hash file is stale, delete it
 				unlink($hashFile); 
