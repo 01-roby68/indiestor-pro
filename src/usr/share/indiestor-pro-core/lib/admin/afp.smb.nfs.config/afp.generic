@@ -1,6 +1,7 @@
 [{workspace}]
 path = {path}/
-chmod request = ignore
+file perm = 0666
+directory perm = 0777
 rolist = {rolist}
 rwlist = {rwlist}
 valid users = {rwgroup}

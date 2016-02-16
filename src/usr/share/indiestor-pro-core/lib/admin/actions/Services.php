@@ -35,7 +35,7 @@ class Services extends EntityType
         }
 
  
-        /* evaluate running services based on a process running from /usr/sbin*/
+        /* evaluate running services based on a process running from /usr/sbin */
         
         static function upstartServiceStatus($serviceName)
         {
@@ -107,7 +107,9 @@ class Services extends EntityType
 
         static function refreshShareDefinitions($commandAction)
         {
-                ActionEngine::generateAfpSmbConfig();
+                ActionEngine::generateAfpSmbNfsConfig();
+                ActionEngine::refreshSMBClients();
+                ActionEngine::refreshNFSExports();
         }
 
         static function import($commandAction)
@@ -171,6 +173,7 @@ class Services extends EntityType
 
                 //regenerate config afp/smb files
                 ActionEngine::generateAfpSmbConfig();
+                
                 //startwatching
                 InotifyWait::startWatching($workspace);
         }

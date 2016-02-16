@@ -16,15 +16,21 @@ requireLibFile('admin/action-engine/ActionNamingConvention.php');
 requireLibFile('admin/action-engine/InotifyWatchFolders.php');
 requireLibFile('admin/action-engine/InotifyWait.php');
 requireLibFile('admin/action-engine/json_encode_legacy.php');
-requireLibFile('admin/afp.smb.config/AfpAvidConfigGenerator.php');
-requireLibFile('admin/afp.smb.config/AfpGenericConfigGenerator.php');
-requireLibFile('admin/afp.smb.config/SmbConfigGenerator.php');
+requireLibFile('admin/afp.smb.nfs.config/AfpAvidConfigGenerator.php');
+requireLibFile('admin/afp.smb.nfs.config/AfpGenericConfigGenerator.php');
+requireLibFile('admin/afp.smb.nfs.config/NfsGenericConfigGenerator.php');
+requireLibFile('admin/afp.smb.nfs.config/SmbConfigGenerator.php');
 
 class ActionEngine
 {
 	const indiestorGroupPrefix='pro_';
 	const indiestorUserGroup='indiestor-pro-users';
 	const indiestorSysUserName='indiestor-pro';
+
+    //allow share definition refresh to run in background
+    static function forkRefreshChildProgram() {
+            shell_exec("nohup flock -n /var/lock/indiestor-share-refresh.lock indiestor-pro --services -refresh-share-definitions > /dev/null 2>/dev/null &");
+    }
 
 	static function error($messageCode,$parameters=array())
 	{
@@ -107,6 +113,10 @@ class ActionEngine
         	}
 	}
 
+        static function refreshNFSExports() {
+                 ShellCommand::exec("exportfs -r");  
+         }
+
         static function generateImportSpecFiles() {
                 self::generateImportSpecFilesAvid();
                 self::generateImportSpecFilesGeneric();
@@ -157,10 +167,11 @@ class ActionEngine
                 file_put_contents("$pathAbs/indiestor.workspace.conf",json_encode($specs));
         }
 
-        static function generateAfpSmbConfig()
+        static function generateAfpSmbNfsConfig()
         {
                 self::generateAfpConfig();
                 self::generateSmbConfig();
+                self::generateNfsConfig();
                 self::generateImportSpecFiles();
         }
 
@@ -184,6 +195,12 @@ class ActionEngine
         static function generateSmbConfig()
         {
                 SmbConfigGenerator::generate();
+        }
+
+        static function generateNfsConfig()
+        {
+                $buffer=NfsGenericConfigGenerator::generate() . "\n";
+                file_put_contents('/etc/exports',$buffer);
         }
 
 	static function restartWatching()

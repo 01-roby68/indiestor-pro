@@ -12,11 +12,11 @@ indiestor-pro - An Open Source storage platform for Avid project and media shari
 
 --user [<arg> -add -delete -pkill -set-passwd <arg>]
 
---avid-workspace [<arg> -add <arg> -delete -show-members -json -add-user <arg> -remove-user <arg> -set-zfs-quota <arg> -remove-zfs-quota -reshare -show-watches <arg> -show-watch-processes]
+--avid-workspace [<arg> -add <arg> -delete -force -show-members -json -add-user <arg> -remove-user <arg> -set-zfs-quota <arg> -remove-zfs-quota -show-watches <arg> -show-watch-processes -reshare]
 
 --avid-workspaces [-show -json] 
 
---generic-workspace [<arg> -add <arg> -delete -show-members -json -add-write-user <arg> -remove-write-user <arg> -add-read-only-user <arg> -remove-read-only-user <arg> -set-zfs-quota <arg> -remove-zfs-quota]
+--generic-workspace [<arg> -add <arg> -delete -force -show-members -json -add-write-user <arg> -remove-write-user <arg> -add-read-only-user <arg> -remove-read-only-user <arg> -set-zfs-quota <arg> -remove-zfs-quota -reshare]
 
 --generic-workspaces [-show -json] 
 
@@ -90,6 +90,9 @@ argument is the name of the workspace you wish to create, followed by the path. 
 .B -delete
 deletes a specified avid-workspace.
 
+.B -force
+force switch for the deletion of a busy workspace. Delete is required for usage.
+
 .B -add-user <arg>
 Adds an existing user to the specified avid-workspace.
 
@@ -136,6 +139,9 @@ argument is the name of the workspace you wish to create, followed by the path. 
 .B -delete
 deletes the specified workspace.
 
+.B -force
+force switch for the deletion of a busy workspace. Delete is required for usage.
+
 .B -add-write-user
 add a write user to the workspace.
 
@@ -153,6 +159,9 @@ Set a per ZFS quota (applies to workspace dataset as a whole)
 
 .B -remove-zfs-quota
 Removes ZFS quota.
+
+.B -reshare
+forcibly refresh all permissions and sharing across the specified workspace.
 
 .B -show-members
 shows the memebers of the specified generic-workspace.

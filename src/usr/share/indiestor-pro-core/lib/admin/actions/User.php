@@ -216,19 +216,19 @@ class User extends EntityType
                 }
 
                 //remove system user
-        	ShellCommand::exec_fail_if_error("deluser $userName");
-		EtcPasswd::reset();
-		EtcGroup::reset();
+        		ShellCommand::exec_fail_if_error("deluser $userName");
+				EtcPasswd::reset();
+				EtcGroup::reset();
 
                 //remove samba user
-	        if(sysquery_which('pdbedit'))
-	        {
+	        	if(sysquery_which('pdbedit'))
+	        	{
 		        if(sysquery_pdbedit_user($userName)!=null)
 			        ShellCommand::exec_fail_if_error("pdbedit --delete --user $userName");
-	        }
+	        	}
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
 
                 //reshare
                 $etcGroup=EtcGroup::instance();                

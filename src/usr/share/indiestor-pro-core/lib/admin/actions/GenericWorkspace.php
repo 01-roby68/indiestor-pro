@@ -54,11 +54,9 @@ class GenericWorkspace extends Workspace
                 $oppGroupName='generic_ro_'.$workspace;
                 self::addUser($userName,$groupName,$oppGroupName);
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
 
-                //refresh SMB clients
-                ActionEngine::refreshSMBClients();
         }
 
         static function addReadOnlyUser($commandAction)
@@ -82,11 +80,9 @@ class GenericWorkspace extends Workspace
 
                 self::addUser($userName,$groupName,$oppGroupName);
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
 
-                //refresh SMB clients
-                ActionEngine::refreshSMBClients();
         }
 
 
@@ -144,10 +140,8 @@ class GenericWorkspace extends Workspace
                 $groupName='generic_rw_'.$workspace;
                 self::removeUser($userName,$groupName);
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
-                //refresh SMB clients
-                ActionEngine::refreshSMBClients();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
 
         }
 
@@ -158,10 +152,9 @@ class GenericWorkspace extends Workspace
                 $groupName='generic_ro_'.$workspace;
                 self::removeUser($userName,$groupName);
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
-                //refresh SMB clients
-                ActionEngine::refreshSMBClients();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
+
         }
 
         static function removeUser($userName,$groupName)

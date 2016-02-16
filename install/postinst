@@ -30,12 +30,15 @@ case "$1" in
 		adduser --system --group indienotify-pro
 	fi
 
-	/etc/init.d/incron restart
 	nmbd restart
 	smbd restart
+	service incron restart
+	service netatalk restart
     mkdir -p /var/spool/indiestor-pro
     chown -R indienotify-pro /var/spool/indiestor-pro
+    echo "updating share defintions and usage stats. Please wait... "
 	indiestor-pro --services -refresh-share-definitions
+	indiestor-pro --services -refresh-usage-stats
 	indiestor-pro --services -start-watching
 	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
 	if [ "$release" = "wheezy" ] ; then

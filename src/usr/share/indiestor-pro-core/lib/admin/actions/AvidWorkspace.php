@@ -36,7 +36,7 @@ class AvidWorkspace extends Workspace
                 self::addUserWithParms($workspace,$userName);
         }
 
-        static function addUserWithParms($workspace,$userName,$reshare=true)
+        static function addUserWithParms($workspace,$userName)
         {
                 $groupName='avid_'.$workspace;
 
@@ -99,17 +99,13 @@ class AvidWorkspace extends Workspace
                         chgrp("$pathAbs/$userName",$groupName);
                 }
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
 
-                //refresh SMB clients
-                ActionEngine::refreshSMBClients();
-
-                if($reshare) {
-                        //reshare+startwatching
-                        self::reshareWithParms($workspace);
-                        InotifyWait::startWatching($workspace);
-                }
+                //reshare+startwatching
+                //no direct reshare; touch workspace spool file
+                ShellCommand::exec("indiestor-pro-touch $workspace"); 
+                InotifyWait::startWatching($workspace);
         }
 
         static function removeUser($commandAction)
@@ -170,11 +166,8 @@ class AvidWorkspace extends Workspace
                 //remove the user
         	ShellCommand::exec("deluser $userName $groupName");                
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
-
-                //refresh SMB clients
-                ActionEngine::refreshSMBClients();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
 
                 //reshare+startwatching
                 //no direct reshare; touch workspace spool file
@@ -275,37 +268,6 @@ class AvidWorkspace extends Workspace
 		foreach($pids as $pid)
 			echo "$pid\n";
 
-	}
-
-        static function reshare($commandAction)
-        {
-		$workspace=ProgramActions::$entityName;
-                self::reshareWithParms($workspace);
-        }
-
-        static function reshareWithParms($workspace)
-        {
-                $conf=new EtcWorkspaces('avid');
-                if(!array_key_exists($workspace,$conf->workspaces))
-                {
-                        ActionEngine::error('ERR_AVID_WORKSPACE_MUST_EXIST');
-                        return;
-                }
-                $groupName='avid_'.$workspace;
-
-                //the group must exist
-                $etcGroup=EtcGroup::instance();
-                $group=$etcGroup->findGroup($groupName);                
-                if($group===null) {
-                        ActionEngine::error('ERR_AVID_GROUP_MUST_EXIST');
-                        return;
-                }
-
-                //members
-                $members=$group->members;
-
-	        SharingStructureAvid::reshare($workspace,$members);
-	        SharingStructureMXF::reshare($workspace,$members,true);
         }
 }
 

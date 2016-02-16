@@ -137,14 +137,15 @@ class Workspace extends EntityType
                 $conf->add($workspace,$path);
                 $conf->save();
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
+
         }
 
         static function delete($commandAction)
         {
                 $conf=new EtcWorkspaces(static::WORKSPACETYPE);
-		$workspace=ProgramActions::$entityName;
+                $workspace=ProgramActions::$entityName;
 
                 if(!array_key_exists($workspace,$conf->workspaces)) {
                         ActionEngine::error('ERR_WORKSPACE_DOES_NOT_EXISTS');
@@ -156,12 +157,18 @@ class Workspace extends EntityType
                         $pathAbs="/$path";
                 else $pathAbs=$path;
 
+                // if force option is specified then delete the workspace even if it is busy
+                if (ProgramActions::actionExists('force')) {
+                goto force;
+                }
+
                 //do not delete if busy
                 //check if any command uses the folder
                 $firstCheck=trim(ShellCommand::query("lsof +D $pathAbs"));
 
                 //if there is lsof output, there are commands using the folder
                 if(strlen($firstCheck)>0) {
+
                         //check which commands are using the folder
                         $busyCommands=split("\n",trim(ShellCommand::query("lsof +D $pathAbs | tail -n+2 | awk '{print $1}' | sort | uniq")));
                         //more than one command, then the workspace is certainly busy
@@ -182,19 +189,22 @@ class Workspace extends EntityType
                                         ShellCommand::exec("kill -9 $cnidPid");
                                 }
                                 sleep(2);
+                                goto force;
                         }
                 }          
 
-		//stop watching
-		InotifyWait::stopWatching($workspace);      
+                force:
+
+                //stop watching
+                InotifyWait::stopWatching($workspace);      
 
                 //delete folder
                 $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
 
-		if($fileSystem=='zfs') {
-                        ShellCommand::exec("zfs destroy $path");
+                if($fileSystem=='zfs') {
+                        ShellCommand::exec("zfs destroy -f $path > /dev/null 2>/dev/null &");
                 } else {
-                        ShellCommand::exec("rm -rf $path"); 
+                        ShellCommand::exec("rm -rf $path > /dev/null 2>/dev/null &"); 
                 }
 
                 //delete group
@@ -204,8 +214,14 @@ class Workspace extends EntityType
                 $conf->remove($workspace);
                 $conf->save();
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
+
+        }
+
+        static function force($commandAction)
+        {
+        /* handled in the delete action already */
         }
 
         static function setZfsQuota($commandAction)
@@ -263,5 +279,44 @@ class Workspace extends EntityType
                 }
         }
 
-}
+       static function reshare($commandAction)
+        {
+                $conf=new EtcWorkspaces(static::WORKSPACETYPE);
+                $workspace=ProgramActions::$entityName;
 
+                if(!array_key_exists($workspace,$conf->workspaces)) {
+                        ActionEngine::error('ERR_WORKSPACE_DOES_NOT_EXISTS');
+                        return;
+                }
+
+                $path=$conf->workspaces[$workspace];
+
+                // fix permissions for generic workspace
+                if (static::WORKSPACETYPE==='generic') {
+                    ShellCommand::exec("chmod -R 777 $path > /dev/null 2>/dev/null &");
+                }
+                else 
+                {
+
+                // fix sharing and permissions on avid workspace
+                if (static::WORKSPACETYPE==='avid')
+
+                    $groupName='avid_'.$workspace;
+
+                    //the group must exist
+                    $etcGroup=EtcGroup::instance();
+                    $group=$etcGroup->findGroup($groupName);                
+                    if($group===null) {
+                    ActionEngine::error('ERR_AVID_GROUP_MUST_EXIST');
+                    return;
+                }
+
+                    //members
+                    $members=$group->members;
+
+                    SharingStructureAvid::reshare($workspace,$members);
+                    SharingStructureMXF::reshare($workspace,$members,true);
+                }
+        }
+
+}
