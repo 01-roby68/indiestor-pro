@@ -30,10 +30,17 @@ class AvidWorkspaces extends EntityType
                         // trigger background stat refresh
                         ActionEngine::forkStatsChildProgram();
 
-                        //quota
-                        $row['zfs-quota']='-';
+                        // quota eval
+                        $row['zfs-quota']='n/a';
                         if(substr($path,0,1)!=='/') {
-                                $row['zfs-quota']=trim(ShellCommand::query("zfs get quota -H  -o value $path"));
+                        $getZQuota=trim(ShellCommand::query("zfs get quota -Hp  -o value $path "));
+                        
+                                if ($getZQuota > 0){
+                                $quota=($getZQuota / 1073741824);
+                                }else{
+                                $quota='none';
+                                }
+                                $row['zfs-quota']=$quota;
                         }
 
                         // get space used from record cache
@@ -55,7 +62,7 @@ class AvidWorkspaces extends EntityType
                         $spaceAvail="-";
                         }
 
-                        // show space avail
+                        // show space used
                         $row['avail']=$spaceAvail;
 
                         //group members
