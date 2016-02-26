@@ -218,6 +218,9 @@ class ActionEngine
 
     static function generateWorkspaceStats() {
 
+    // trigger background stats refresh on show
+    ActionEngine::forkStatsChildProgram();
+
     //define the cache path
     $cachePath="/var/cache/indiestor-pro/";
 

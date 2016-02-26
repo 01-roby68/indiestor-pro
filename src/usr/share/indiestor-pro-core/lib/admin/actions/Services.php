@@ -268,7 +268,7 @@ class Services extends EntityType
 
         static function refreshUsageStats($commandAction)
         {
-                ActionEngine::forkStatsChildProgram();
+                ActionEngine::generateWorkspaceStats();
         }
 
         static function workspace($commandAction)
