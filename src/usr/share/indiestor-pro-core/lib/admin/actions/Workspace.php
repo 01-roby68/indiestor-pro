@@ -11,7 +11,7 @@
 if(!function_exists('sysquery_df_filesystem_for_folder')) {
         function sysquery_df_filesystem_for_folder($folder)
         {
-	        return trim(ShellCommandCached::query_fail_if_error("df -T $folder | tail -n1 | awk '{print $2}'"));
+	        return trim(ShellCommand::query("df -T $folder | tail -n1 | awk '{print $2}'"));
         }
 }
 
@@ -164,47 +164,30 @@ class Workspace extends EntityType
 
                 //do not delete if busy
                 //check if any command uses the folder
-                $firstCheck=trim(ShellCommand::query("lsof +D $pathAbs"));
+                $isActiveCheck=trim(ShellCommand::query("lsof $pathAbs"));
 
-                //if there is lsof output, there are commands using the folder
-                if(strlen($firstCheck)>0) {
-
-                        //check which commands are using the folder
-                        $busyCommands=split("\n",trim(ShellCommand::query("lsof +D $pathAbs | tail -n+2 | awk '{print $1}' | sort | uniq")));
-                        //more than one command, then the workspace is certainly busy
-                        if(count($busyCommands)>1) {
+                //if there is lsof output warn that the workspace is busy
+                if(strlen($isActiveCheck)>0) {
                                 ActionEngine::error('ERR_DELETE_WORKSPACE_BUSY');
                                 return;
-                        }
-                        //if only command is not cnid_dbd, then the workspace is busy
-                        if(count($busyCommands)==1 && $busyCommands[0]!=='cnid_dbd') {
-                                ActionEngine::error('ERR_DELETE_WORKSPACE_BUSY');
-                                return;
-                        }
+                } else {
+                goto force;
+                }
 
-                        //if only command is cnid_dbd, then kill the processes
-                        if(count($busyCommands)==1 && $busyCommands[0]==='cnid_dbd') {
-                                $cnidPids=split("\n",trim(ShellCommand::query("lsof +D $pathAbs | tail -n+2 | awk '{print $2}' | sort | uniq")));
-                                foreach($cnidPids as $cnidPid) {
-                                        ShellCommand::exec("kill -9 $cnidPid");
-                                }
-                                sleep(2);
-                                goto force;
-                        }
-                }          
-
+                // beyond here run the delete process
                 force:
 
                 //stop watching
                 InotifyWait::stopWatching($workspace);      
 
-                //delete folder
+                // eval filesystem type
                 $fileSystem=sysquery_df_filesystem_for_folder(dirname($pathAbs));
 
+                // destory zpool is zfs, or simply delete if regular filesystem
                 if($fileSystem=='zfs') {
-                        ShellCommand::exec("zfs destroy -f $path > /dev/null 2>/dev/null &");
+                        ShellCommand::exec("fuser -k $pathAbs; umount -l $path; zfs destroy -f $path  > /dev/null 2>/dev/null &");
                 } else {
-                        ShellCommand::exec("rm -rf $path > /dev/null 2>/dev/null &"); 
+                        ShellCommand::exec("fuser -k $pathAbs; rm -rf $pathAbs > /dev/null 2>/dev/null &"); 
                 }
 
                 //delete group
@@ -291,9 +274,13 @@ class Workspace extends EntityType
 
                 $path=$conf->workspaces[$workspace];
 
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+
                 // fix permissions for generic workspace
                 if (static::WORKSPACETYPE==='generic') {
-                    ShellCommand::exec("chmod -R 777 $path > /dev/null 2>/dev/null &");
+                    ShellCommand::exec("chmod -R 777 $pathAbs > /dev/null 2>/dev/null &");
                 }
                 else 
                 {

@@ -240,7 +240,7 @@ class Services extends EntityType
 
 
                 //add rw users
-	        $etcPasswd=EtcPasswd::instance();
+	            $etcPasswd=EtcPasswd::instance();
                 foreach($rwUsers as $user) {
 		        if(!$etcPasswd->exists($user)) {
                                 if($result=User::validateUserName($user)!='OK') {
@@ -253,7 +253,7 @@ class Services extends EntityType
                 }
 
                 //add ro users
-	        $etcPasswd=EtcPasswd::instance();
+	            $etcPasswd=EtcPasswd::instance();
                 foreach($roUsers as $user) {
 		        if(!$etcPasswd->exists($user)) {
                                 if($result=User::validateUserName($user)!='OK') {
@@ -268,7 +268,7 @@ class Services extends EntityType
 
         static function refreshUsageStats($commandAction)
         {
-                ActionEngine::manualUsageStatRefresh();
+                ActionEngine::forkStatsChildProgram();
         }
 
         static function workspace($commandAction)

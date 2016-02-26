@@ -27,9 +27,14 @@ class ActionEngine
 	const indiestorUserGroup='indiestor-pro-users';
 	const indiestorSysUserName='indiestor-pro';
 
-    //allow share definition refresh to run in background
+    //allow share definition's to internally run in background
     static function forkRefreshChildProgram() {
             shell_exec("nohup flock -n /var/lock/indiestor-share-refresh.lock indiestor-pro --services -refresh-share-definitions > /dev/null 2>/dev/null &");
+    }
+
+    //allow stat refresh to internally run in background
+    static function forkStatsChildProgram() {
+            shell_exec("nohup flock -n /var/lock/indiestor-stat-refresh.lock indiestor-pro --services -refresh-usage-stats > /dev/null 2>/dev/null &");
     }
 
 	static function error($messageCode,$parameters=array())
@@ -97,7 +102,7 @@ class ActionEngine
         }
 
         static function refreshSMBClients() {
-                $etcGroup=EtcGroup::instance();
+        $etcGroup=EtcGroup::instance();
 		$indiestorGroupMembers=$etcGroup->indiestorGroup->members;
 		$smbdUsers=Users::getProcessData('smbd');
 		$sambaUsers=Users::getProcessData('samba');
@@ -135,7 +140,7 @@ class ActionEngine
 
         static function generateImportSpecFileAvid($workspace,$pathAbs) {
                 $specs=[ 'type' => 'avid' ];
-                file_put_contents("$pathAbs/indiestor.workspace.conf",json_encode($specs));
+                file_put_contents("$pathAbs/.indiestor.workspace.conf",json_encode($specs));
         }
 
         static function generateImportSpecFilesGeneric() {
@@ -164,7 +169,7 @@ class ActionEngine
                 else $roList=join(',',$roGroup->members);           
 
                 $specs=[ 'type' => 'generic', 'rw'=>$rwList, 'ro'=>$roList ];
-                file_put_contents("$pathAbs/indiestor.workspace.conf",json_encode($specs));
+                file_put_contents("$pathAbs/.indiestor.workspace.conf",json_encode($specs));
         }
 
         static function generateAfpSmbNfsConfig()
@@ -211,8 +216,49 @@ class ActionEngine
 		InotifyWait::startWatchingAll();
 	}
 
-         static function manualUsageStatRefresh() {
-                 ShellCommand::exec("rm /var/cache/indiestor-pro/*");  
+    static function generateWorkspaceStats() {
+
+    //define the cache path
+    $cachePath="/var/cache/indiestor-pro/";
+
+                //recreate the cache folder
+                ShellCommand::exec("mkdir -p $cachePath");
+
+                // generate new generic usage stats
+                $genericGen=new EtcWorkspaces('generic');
+                foreach($genericGen->workspaces as $workspace=>$path) {
+
+
+                    if(substr($path,0,1)!=='/')
+                    $pathAbs="/$path";
+                    else $pathAbs=$path;
+
+                    // used record
+                    $genUsed=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
+                    file_put_contents($cachePath.$workspace."-used", $genUsed);
+
+                    // avail record
+                    $genAvail=trim(ShellCommand::query("df -h $pathAbs | tail -n +2 | awk '{ print  $2 }'"));
+                    file_put_contents($cachePath.$workspace."-avail", $genAvail);
+                    }
+
+                // generate new avid usage stats
+                $avidGen=new EtcWorkspaces('avid');
+                foreach($avidGen->workspaces as $workspace=>$path) {
+
+                    if(substr($path,0,1)!=='/')
+                    $pathAbs="/$path";
+                    else $pathAbs=$path;
+
+                    // used record
+                    $avidUsed=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
+                    file_put_contents($cachePath.$workspace."-used", $avidUsed);
+
+                    // avail record
+                    $avidAvail=trim(ShellCommand::query("df -h $pathAbs | tail -n +2 | awk '{ print  $2 }'"));
+                    file_put_contents($cachePath.$workspace."-avail", $avidAvail);
+
          }
+    }
 }
 

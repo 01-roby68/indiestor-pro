@@ -24,22 +24,45 @@ class GenericWorkspaces extends EntityType
                         $row=[];
                         $row['workspace']=$workspace;
                         $row['path']=$path;
+                        $cachePath="/var/cache/indiestor-pro/".$workspace;
 
-                        //quota
-                        $row['zfs-quota']='-';
+                        // trigger background stat refresh
+                        ActionEngine::forkStatsChildProgram();
+
+                        // quota eval
+                        $row['zfs-quota']='n/a';
                         if(substr($path,0,1)!=='/') {
-                                $row['zfs-quota']=trim(ShellCommand::query("zfs get quota -H  -o value $path"));
+                        $getZQuota=trim(ShellCommand::query("zfs get quota -Hp  -o value $path "));
+                        
+                                if ($getZQuota > 0){
+                                $quota=($getZQuota / 1073741824);
+                                }else{
+                                $quota='none';
+                                }
+                                $row['zfs-quota']=$quota;
                         }
 
-                        //space used
-                        if(substr($path,0,1)!=='/')
-                                $pathAbs="/$path";
-                        else $pathAbs=$path;
+                        // get space used from record cache
+                        if (file_exists($cachePath."-used")) {
+                        $spaceUsed=trim(file_get_contents($cachePath."-used"));
+                        }
+                        else{
+                        $spaceUsed="-";
+                        }
 
-                        $row['space-used']=trim(ShellCommandCached::query_fail_if_error("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
+                        // show space used
+                        $row['space-used']=$spaceUsed;
 
-	                $row['avail']=trim(ShellCommandCached::query_fail_if_error(
-				"df -h $pathAbs | tail -n +2 | awk '{ print  $2 }' "));	
+                        // get space avail from record cache
+                        if (file_exists($cachePath."-avail")) {
+                        $spaceAvail=trim(file_get_contents($cachePath."-avail"));
+                        }
+                        else{
+                        $spaceAvail="-";
+                        }
+
+                        // show space used
+                        $row['avail']=$spaceAvail;
 
                         //read/write group members
                         $rwGroupName='generic_rw_'.$workspace;

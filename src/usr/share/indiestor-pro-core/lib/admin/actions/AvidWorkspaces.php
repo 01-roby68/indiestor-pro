@@ -25,6 +25,10 @@ class AvidWorkspaces extends EntityType
                         $row=[];
                         $row['workspace']=$workspace;
                         $row['path']=$path;
+                        $cachePath="/var/cache/indiestor-pro/".$workspace;
+
+                        // trigger background stat refresh
+                        ActionEngine::forkStatsChildProgram();
 
                         //quota
                         $row['zfs-quota']='-';
@@ -32,14 +36,27 @@ class AvidWorkspaces extends EntityType
                                 $row['zfs-quota']=trim(ShellCommand::query("zfs get quota -H  -o value $path"));
                         }
 
-                        //space used
-                        if(substr($path,0,1)!=='/')
-                                $pathAbs="/$path";
-                        else $pathAbs=$path;
-                        $row['space-used']=trim(ShellCommandCached::query_fail_if_error("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
+                        // get space used from record cache
+                        if (file_exists($cachePath."-used")) {
+                        $spaceUsed=trim(file_get_contents($cachePath."-used"));
+                        }
+                        else{
+                        $spaceUsed="-";
+                        }
 
-                        $row['avail']=trim(ShellCommandCached::query_fail_if_error(
-				"df -h $pathAbs | tail -n +2 | awk '{ print  $2 }' "));	
+                        // show space used
+                        $row['space-used']=$spaceUsed;
+
+                        // get space avail from record cache
+                        if (file_exists($cachePath."-avail")) {
+                        $spaceAvail=trim(file_get_contents($cachePath."-avail"));
+                        }
+                        else{
+                        $spaceAvail="-";
+                        }
+
+                        // show space avail
+                        $row['avail']=$spaceAvail;
 
                         //group members
                         $groupName='avid_'.$workspace;                        

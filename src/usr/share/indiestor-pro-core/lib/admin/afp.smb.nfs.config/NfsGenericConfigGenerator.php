@@ -31,7 +31,7 @@ class NfsGenericConfigGenerator
                         $patterns[]='/\{path\}/';
                         $patterns[]='/\{range\}/';
                         $replacements=[];
-                        $replacements[]=$path;
+                        $replacements[]=$pathAbs;
                         $replacements[]=$range;
                         $detailedConfig=preg_replace($patterns,$replacements,$template);
                         $buffer.=$detailedConfig;
@@ -39,4 +39,3 @@ class NfsGenericConfigGenerator
                 return $buffer;
         }
 }
-
