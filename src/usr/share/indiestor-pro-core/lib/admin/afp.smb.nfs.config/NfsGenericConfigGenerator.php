@@ -18,7 +18,7 @@ class NfsGenericConfigGenerator
                 foreach($wsconf->workspaces as $workspace=>$path) {
 
                         //get nfs range and trim whitespace
-                        $range=file_get_contents('/etc/indiestor-pro/nfsrange');
+                        $range=file_get_contents('/etc/indiestor-pro/nfsrange.conf');
                         $range=trim($range);
 
                         //absolute path
