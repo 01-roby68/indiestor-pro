@@ -171,9 +171,9 @@ class Services extends EntityType
                         default: ActionEngine::err("Invalid workspace type '$type' in '$configFile'");
                 }
 
-                //regenerate config afp/smb files
-                ActionEngine::generateAfpSmbConfig();
-                
+                // regen shares and refresh filers
+                ActionEngine::forkRefreshChildProgram();
+
                 //startwatching
                 InotifyWait::startWatching($workspace);
         }
