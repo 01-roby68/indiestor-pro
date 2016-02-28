@@ -132,7 +132,7 @@ class Services extends EntityType
                        ActionEngine::err("'$folder' not a valid folder");
                 }
 
-                $configFile="$folder/indiestor.workspace.conf";
+                $configFile="$folder/.indiestor.workspace.conf";
 
                 //config file must exist
                 if(!file_exists($configFile)) {
