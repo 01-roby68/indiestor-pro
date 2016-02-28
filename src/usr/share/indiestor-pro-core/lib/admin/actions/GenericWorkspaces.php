@@ -29,7 +29,7 @@ class GenericWorkspaces extends EntityType
                         // trigger background stat refresh
                         ActionEngine::forkStatsChildProgram();
 
-                        // quota eval
+                       // quota eval
                         $row['zfs-quota']='n/a';
                         if(substr($path,0,1)!=='/') {
                         $getZQuota=trim(ShellCommand::query("zfs get quota -Hp  -o value $path "));
@@ -42,7 +42,7 @@ class GenericWorkspaces extends EntityType
                                 $row['zfs-quota']=$quota;
                         }
 
-                        // get space used from record cache
+                        // get used space from record cache
                         if (file_exists($cachePath."-used")) {
                         $spaceUsed=trim(file_get_contents($cachePath."-used"));
                         }
@@ -50,19 +50,30 @@ class GenericWorkspaces extends EntityType
                         $spaceUsed="-";
                         }
 
-                        // show space used
                         $row['space-used']=$spaceUsed;
 
-                        // get space avail from record cache
-                        if (file_exists($cachePath."-avail")) {
-                        $spaceAvail=trim(file_get_contents($cachePath."-avail"));
+
+                        // get free space from record cache
+                        if (file_exists($cachePath."-free")) {
+                        $spaceFree=trim(file_get_contents($cachePath."-free"));
                         }
                         else{
-                        $spaceAvail="-";
+                        $spaceFree="-";
                         }
 
-                        // show space used
-                        $row['avail']=$spaceAvail;
+                        $row['free']=$spaceFree;
+
+
+                        // get total space from record cache
+                        if (file_exists($cachePath."-total")) {
+                        $spaceTotal=trim(file_get_contents($cachePath."-total"));
+                        }
+                        else{
+                        $spaceTotal="-";
+                        }
+
+                        $row['total']=$spaceTotal;
+
 
                         //read/write group members
                         $rwGroupName='generic_rw_'.$workspace;
@@ -97,12 +108,12 @@ class GenericWorkspaces extends EntityType
                         if(count($conf->workspaces)===0) {
                                 echo "no generic workspaces.\n";
                         } else {
-                                $format1="%-20s %-30s %10s %10s %10s %-30s %30s\n";
-                                $format2="%-20s %-30s %10s %10s %10s %-30s %30s\n";
-                                printf($format1,'workspace','path','zfs-quota','space','avail','write-members','read-members');
+                                $format1="%-20s %-30s %10s %10s %10s %10s %-30s %30s\n";
+                                $format2="%-20s %-30s %10s %10s %10s %10s %-30s %30s\n";
+                                printf($format1,'workspace','path','zfs-quota','used','free', 'total','write-members','read-members');
                                 foreach(self::genericWorkspaceData() as $row) {
                                         printf($format2,$row['workspace'],$row['path'],$row['zfs-quota'],
-                                                $row['space-used'],$row['avail'],$row['write-members'],$row['read-members']);
+                                                $row['space-used'],$row['free'],$row['total'],$row['write-members'],$row['read-members']);
                                 }
                         }
                 }                        

@@ -32,13 +32,11 @@
 #
 :define OfficeHours {8:00-17:30}/{mon,tue,wed,thu,fri}
 
-indiestor-free /usr/share/indiestor-free-core/prg/indiestor-free.php uid=root env=PATH :indiewheel
-indiestor-free-inotify /usr/share/indiestor-free-core/prg/indiestor-free-inotify.php uid=root env=PATH :indienotify-free
-indiestor-free-auth /usr/share/indiestor-free-gui-core/indiestor-free-auth uid=root env=PATH :indiewheel	
-
 indiestor-pro /usr/share/indiestor-pro-core/prg/indiestor-pro.php uid=root env=PATH :indiewheel
 indiestor-pro-inotify /usr/share/indiestor-pro-core/prg/indiestor-pro-inotify.php uid=root env=PATH :indienotify-pro
 indiestor-pro-auth /usr/share/indiestor-pro-gui-core/indiestor-pro-auth uid=root env=PATH :indiewheel
 indiestor-pro-list-volumes /usr/share/indiestor-pro-gui-core/indiestor-pro-list-volumes uid=root env=PATH :indiewheel
 indiestor-pro-zfs-status /usr/share/indiestor-pro-gui-core/indiestor-pro-zfs-status uid=root env=PATH :indiewheel
+indiestor-pro-megaraid-status /usr/share/indiestor-pro-gui-core/indiestor-pro-megaraid-status uid=root env=PATH :indiewheel
+
 

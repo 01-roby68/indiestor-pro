@@ -240,9 +240,13 @@ class ActionEngine
                     $genUsed=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
                     file_put_contents($cachePath.$workspace."-used", $genUsed);
 
-                    // avail record
-                    $genAvail=trim(ShellCommand::query("df -h $pathAbs | tail -n +2 | awk '{ print  $2 }'"));
-                    file_put_contents($cachePath.$workspace."-avail", $genAvail);
+                    // free space record
+                    $genFree=trim(ShellCommand::query("df -h $pathAbs | tail -n +2 | awk '{ print  $4 }'"));
+                    file_put_contents($cachePath.$workspace."-free", $genFree);
+
+                    // total space record
+                    $genTotal=trim(ShellCommand::query("df -h $pathAbs | tail -n +2 | awk '{ print  $2 }'"));
+                    file_put_contents($cachePath.$workspace."-total", $genTotal);
                     }
 
                 // generate new avid usage stats
@@ -257,10 +261,13 @@ class ActionEngine
                     $avidUsed=trim(ShellCommand::query("du -h --max-depth=0 $pathAbs | awk '{print $1}'"));
                     file_put_contents($cachePath.$workspace."-used", $avidUsed);
 
-                    // avail record
-                    $avidAvail=trim(ShellCommand::query("df -h $pathAbs | tail -n +2 | awk '{ print  $2 }'"));
-                    file_put_contents($cachePath.$workspace."-avail", $avidAvail);
+                    // free space record
+                    $genFree=trim(ShellCommand::query("df -h $pathAbs | tail -n +2 | awk '{ print  $4 }'"));
+                    file_put_contents($cachePath.$workspace."-free", $genFree);
 
+                    // total space record
+                    $genTotal=trim(ShellCommand::query("df -h $pathAbs | tail -n +2 | awk '{ print  $2 }'"));
+                    file_put_contents($cachePath.$workspace."-total", $genTotal);
          }
     }
 }
