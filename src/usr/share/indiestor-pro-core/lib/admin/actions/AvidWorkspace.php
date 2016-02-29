@@ -36,7 +36,7 @@ class AvidWorkspace extends Workspace
                 self::addUserWithParms($workspace,$userName);
         }
 
-        static function addUserWithParms($workspace,$userName)
+        static function addUserWithParms($workspace,$userName,$reshare=true)
         {
                 $groupName='avid_'.$workspace;
 
@@ -102,10 +102,11 @@ class AvidWorkspace extends Workspace
                 // regen shares and refresh filers
                 ActionEngine::forkRefreshChildProgram();
 
-                //reshare+startwatching
-                //no direct reshare; touch workspace spool file
-                ShellCommand::exec("indiestor-pro-touch $workspace"); 
-                InotifyWait::startWatching($workspace);
+                if($reshare) {
+                        //reshare+startwatching
+                        self::reshareWithParms($workspace);
+                        InotifyWait::startWatching($workspace);
+                }
         }
 
         static function removeUser($commandAction)
@@ -268,6 +269,37 @@ class AvidWorkspace extends Workspace
 		foreach($pids as $pid)
 			echo "$pid\n";
 
+	}
+
+        static function reshare($commandAction)
+        {
+		$workspace=ProgramActions::$entityName;
+                self::reshareWithParms($workspace);
+        }
+
+        static function reshareWithParms($workspace)
+        {
+                $conf=new EtcWorkspaces('avid');
+                if(!array_key_exists($workspace,$conf->workspaces))
+                {
+                        ActionEngine::error('ERR_AVID_WORKSPACE_MUST_EXIST');
+                        return;
+                }
+                $groupName='avid_'.$workspace;
+
+                //the group must exist
+                $etcGroup=EtcGroup::instance();
+                $group=$etcGroup->findGroup($groupName);                
+                if($group===null) {
+                        ActionEngine::error('ERR_AVID_GROUP_MUST_EXIST');
+                        return;
+                }
+
+                //members
+                $members=$group->members;
+
+	        SharingStructureAvid::reshare($workspace,$members);
+	        SharingStructureMXF::reshare($workspace,$members,true);
         }
 }
 

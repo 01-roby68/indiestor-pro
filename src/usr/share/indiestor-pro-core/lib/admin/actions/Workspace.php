@@ -262,48 +262,4 @@ class Workspace extends EntityType
                 }
         }
 
-       static function reshare($commandAction)
-        {
-                $conf=new EtcWorkspaces(static::WORKSPACETYPE);
-                $workspace=ProgramActions::$entityName;
-
-                if(!array_key_exists($workspace,$conf->workspaces)) {
-                        ActionEngine::error('ERR_WORKSPACE_DOES_NOT_EXISTS');
-                        return;
-                }
-
-                $path=$conf->workspaces[$workspace];
-
-                if(substr($path,0,1)!=='/')
-                        $pathAbs="/$path";
-                else $pathAbs=$path;
-
-                // fix permissions for generic workspace
-                if (static::WORKSPACETYPE==='generic') {
-                    ShellCommand::exec("chmod -R 777 $pathAbs > /dev/null 2>/dev/null &");
-                }
-                else 
-                {
-
-                // fix sharing and permissions on avid workspace
-                if (static::WORKSPACETYPE==='avid')
-
-                    $groupName='avid_'.$workspace;
-
-                    //the group must exist
-                    $etcGroup=EtcGroup::instance();
-                    $group=$etcGroup->findGroup($groupName);                
-                    if($group===null) {
-                    ActionEngine::error('ERR_AVID_GROUP_MUST_EXIST');
-                    return;
-                }
-
-                    //members
-                    $members=$group->members;
-
-                    SharingStructureAvid::reshare($workspace,$members);
-                    SharingStructureMXF::reshare($workspace,$members,true);
-                }
-        }
-
 }

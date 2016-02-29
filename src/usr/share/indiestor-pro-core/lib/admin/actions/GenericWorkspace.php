@@ -233,5 +233,24 @@ class GenericWorkspace extends Workspace
 
         }
 
-}
+        static function reshare($workspace)
+        {
+                $conf=new EtcWorkspaces('generic');
+                $workspace=ProgramActions::$entityName;
 
+                if(!array_key_exists($workspace,$conf->workspaces)) {
+                        ActionEngine::error('ERR_WORKSPACE_DOES_NOT_EXISTS');
+                        return;
+                }
+
+                $path=$conf->workspaces[$workspace];
+
+                if(substr($path,0,1)!=='/')
+                        $pathAbs="/$path";
+                else $pathAbs=$path;
+
+                // fix permissions for generic workspace
+                ShellCommand::exec("chmod -R 777 $pathAbs > /dev/null 2>/dev/null &");
+
+        }
+}
