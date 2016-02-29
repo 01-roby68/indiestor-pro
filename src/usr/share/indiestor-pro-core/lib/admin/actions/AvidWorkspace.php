@@ -102,11 +102,10 @@ class AvidWorkspace extends Workspace
                 // regen shares and refresh filers
                 ActionEngine::forkRefreshChildProgram();
 
-                if($reshare) {
-                        //reshare+startwatching
-                        self::reshareWithParms($workspace);
-                        InotifyWait::startWatching($workspace);
-                }
+                //startwatching again and reshare indirectly
+                //by touching the workspace spool file
+                InotifyWait::startWatching($workspace);
+                ShellCommand::exec("indiestor-pro-touch $workspace"); 
         }
 
         static function removeUser($commandAction)
@@ -170,10 +169,10 @@ class AvidWorkspace extends Workspace
                 // regen shares and refresh filers
                 ActionEngine::forkRefreshChildProgram();
 
-                //reshare+startwatching
-                //no direct reshare; touch workspace spool file
-        	ShellCommand::exec("indiestor-pro-touch $workspace"); 
+                //startwatching again and reshare indirectly
+                //by touching the workspace spool file
                 InotifyWait::startWatching($workspace);
+                ShellCommand::exec("indiestor-pro-touch $workspace"); 
         }
 
         static function json($commandAction)
