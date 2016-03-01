@@ -35,7 +35,7 @@ class GenericWorkspaces extends EntityType
                         $getZQuota=trim(ShellCommand::query("zfs get quota -Hp  -o value $path "));
                         
                                 if ($getZQuota > 0){
-                                $quota=($getZQuota / 1073741824);
+                                $quota=($getZQuota / 1073741824)."G";
                                 }else{
                                 $quota='none';
                                 }
