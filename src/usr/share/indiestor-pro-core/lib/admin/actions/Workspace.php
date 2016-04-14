@@ -193,6 +193,9 @@ class Workspace extends EntityType
                 //delete group
                 static::deleteGroup($workspace);
 
+                //delete old workspace cache record
+                ShellCommand::exec("rm /var/cache/indiestor-pro/*".$workspace."*");
+
                 //save config file                
                 $conf->remove($workspace);
                 $conf->save();

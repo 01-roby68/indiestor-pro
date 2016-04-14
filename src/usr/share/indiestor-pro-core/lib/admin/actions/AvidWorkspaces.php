@@ -48,32 +48,10 @@ class AvidWorkspaces extends EntityType
                         $spaceUsed=trim(file_get_contents($cachePath."-used"));
                         }
                         else{
-                        $spaceUsed="-";
+                        $spaceUsed="calculating..";
                         }
 
                         $row['space-used']=$spaceUsed;
-
-
-                        // get free space from record cache
-                        if (file_exists($cachePath."-free")) {
-                        $spaceFree=trim(file_get_contents($cachePath."-free"));
-                        }
-                        else{
-                        $spaceFree="-";
-                        }
-
-                        $row['free']=$spaceFree;
-
-
-                        // get total space from record cache
-                        if (file_exists($cachePath."-total")) {
-                        $spaceTotal=trim(file_get_contents($cachePath."-total"));
-                        }
-                        else{
-                        $spaceTotal="-";
-                        }
-
-                        $row['total']=$spaceTotal;
 
                         //group members
                         $groupName='avid_'.$workspace;                        
@@ -103,12 +81,11 @@ class AvidWorkspaces extends EntityType
                         if(count($conf->workspaces)===0) {
                                 echo "no avid workspaces.\n";
                         } else {
-                                $format1="%-20s %-30s %10s %10s %10s %10s %-30s %10s\n";
-                                $format2="%-20s %-30s %10s %10s %10s %10s %-30s %10s\n";
-                                printf($format1,'workspace','path','zfs-quota','used','free','total','members','watching');
+                                $format1="%-20s %-30s %-20s %-15s %-30s %-10s\n";
+                                $format2="%-20s %-30s %-20s %-15s %-30s %-10s\n";
+                                printf($format1,'workspace','path','used','zfs-quota','members','watching');
                                 foreach(self::avidWorkspaceData() as $row) {
-                                        printf($format2,$row['workspace'],$row['path'],$row['zfs-quota'],
-                                                $row['space-used'],$row['free'],$row['total'],$row['members'],$row['watching']);
+                                        printf($format2,$row['workspace'],$row['path'],$row['space-used'],$row['zfs-quota'],$row['members'],$row['watching']);
                                 }
                         }
                 }                        
