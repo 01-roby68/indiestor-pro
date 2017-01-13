@@ -13,7 +13,7 @@ class Users extends EntityType
 
         static function getProcessData($executable)
         {
-                return explode("\n",trim(ShellCommand::query('ps aux | awk \'{print $1,$11}\' | grep '.
+                return explode("\n",trim(ShellCommand::query('ps axo user:50,comm | awk \'{print $1,$2}\' | grep '.
                                         $executable.' | awk \'{print $1}\' | uniq')));
         }
 
