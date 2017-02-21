@@ -107,9 +107,8 @@ class Services extends EntityType
 
         static function refreshShareDefinitions($commandAction)
         {
-                ActionEngine::generateAfpSmbNfsConfig();
+                ActionEngine::generateAfpSmbConfig();
                 ActionEngine::refreshSMBClients();
-                ActionEngine::refreshNFSExports();
         }
 
         static function import($commandAction)
@@ -138,10 +137,6 @@ class Services extends EntityType
                 if(!file_exists($configFile)) {
                        ActionEngine::err("config file '$configFile' not found");
                 }
-
-                //config file must be valid json & valid structure
-                //avid: {"type":"avid"}
-                //generic: {"type":"generic","rw":"kk1,kk2,kk3,kk4","ro":"kk5"}
 
                 $importConfig=json_decode(file_get_contents($configFile),true);
                 if($importConfig==null) {
