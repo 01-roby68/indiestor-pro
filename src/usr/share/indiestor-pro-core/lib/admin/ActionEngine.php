@@ -16,9 +16,10 @@ requireLibFile('admin/action-engine/ActionNamingConvention.php');
 requireLibFile('admin/action-engine/InotifyWatchFolders.php');
 requireLibFile('admin/action-engine/InotifyWait.php');
 requireLibFile('admin/action-engine/json_encode_legacy.php');
-requireLibFile('admin/afp.smb.config/AfpAvidConfigGenerator.php');
-requireLibFile('admin/afp.smb.config/AfpGenericConfigGenerator.php');
-requireLibFile('admin/afp.smb.config/SmbConfigGenerator.php');
+requireLibFile('admin/afp.smb.nfs.config/AfpAvidConfigGenerator.php');
+requireLibFile('admin/afp.smb.nfs.config/AfpGenericConfigGenerator.php');
+requireLibFile('admin/afp.smb.nfs.config/NfsGenericConfigGenerator.php');
+requireLibFile('admin/afp.smb.nfs.config/SmbConfigGenerator.php');
 
 class ActionEngine
 {
@@ -117,6 +118,10 @@ class ActionEngine
         	}
 	}
 
+        static function refreshNFSExports() {
+                 ShellCommand::exec("exportfs -r");  
+         }
+
         static function generateImportSpecFiles() {
                 self::generateImportSpecFilesAvid();
                 self::generateImportSpecFilesGeneric();
@@ -167,10 +172,11 @@ class ActionEngine
                 file_put_contents("$pathAbs/.indiestor.workspace.conf",json_encode($specs));
         }
 
-        static function generateAfpSmbConfig()
+        static function generateAfpSmbNfsConfig()
         {
                 self::generateAfpConfig();
                 self::generateSmbConfig();
+                self::generateNfsConfig();
                 self::generateImportSpecFiles();
         }
 
@@ -196,6 +202,11 @@ class ActionEngine
                 SmbConfigGenerator::generate();
         }
 
+        static function generateNfsConfig()
+        {
+                $buffer=NfsGenericConfigGenerator::generate() . "\n";
+                file_put_contents('/etc/exports',$buffer);
+        }
 
 	static function restartWatching()
 	{
