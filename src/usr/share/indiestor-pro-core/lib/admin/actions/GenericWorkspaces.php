@@ -47,7 +47,7 @@ class GenericWorkspaces extends EntityType
                         $spaceUsed=trim(file_get_contents($cachePath."-used"));
                         }
                         else{
-                        $spaceUsed="calculating..";
+                        $spaceUsed="-";
                         }
 
                         $row['space-used']=$spaceUsed;
