@@ -8,7 +8,7 @@ class Volumes extends EntityType
 	{
 		return ShellCommand::query("
 		((
-			df -hT | grep -v zfs | grep -v tmpfs | grep -v rootfs | grep -v Filesystem | awk '{ print $7, $4, $6, $5, toupper($2); }'
+			df -hT | grep -v zfs | grep -v tmpfs | grep -v Filesystem | awk '{ print $7, $4, $6, $3, toupper($2); }'
 			zpool list -H | awk '{ print $1, $3, $7, $4, \"ZFS\"; }'
 		) | sort | uniq )");
 	}
@@ -28,14 +28,14 @@ class Volumes extends EntityType
 					'volume'=>$cols[0],
 					'used'=>$cols[1],
 					'ratio'=>$cols[2],
-					'available'=>$cols[3],
+					'size'=>$cols[3],
 					'filesystem'=>$cols[4]
 				);
 			}
 			$output = json_encode_legacy($data)."\n";
 		} else {
-			$output = "Volume\t\tUsed\t%\tAvailable\tFilesystem\n";
-			$format = "%-10s\t%-6s\t%-6s\t%-6s\t\t%-4s\n";
+			$output = "Volume\t\tUsed\t%\tVolumeSize\tFilesystem\n";
+			$format = "%-10s\t%-6s\t%-6s\t%-6s\t\t%-6s\n";
 			$rows = explode("\n", $raw);
 			foreach ($rows as $row) {
 				if(empty($row[0]))
