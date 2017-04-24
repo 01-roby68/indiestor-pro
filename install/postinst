@@ -31,6 +31,7 @@ case "$1" in
 	fi
 
 	mkdir -p /etc/indiestor-pro/res
+    chmod -R 777 /etc/indiestor-pro/res
     mkdir -p /var/spool/indiestor-pro
     chown -R indienotify-pro /var/spool/indiestor-pro
     echo "updating share defintions and usage stats. Please wait... "
