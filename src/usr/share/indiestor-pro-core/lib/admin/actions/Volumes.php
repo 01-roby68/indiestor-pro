@@ -8,7 +8,7 @@ class Volumes extends EntityType
 	{
 		return ShellCommand::query("
 		((
-			df -hT | grep -v zfs | grep -v tmpfs | grep -v Filesystem | awk '{ print $7, $4, $6, $3, toupper($2); }'
+			df -hT | grep -v zfs | grep -v tmpfs | grep -v rootfs | grep -v Filesystem | awk '{ print $7, $4, $6, $3, toupper($2); }'
 			zpool list -H | awk '{ print $1, $3, $7, $4, \"ZFS\"; }'
 		) | sort | uniq )");
 	}
