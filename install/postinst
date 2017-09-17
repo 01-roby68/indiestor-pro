@@ -30,10 +30,13 @@ case "$1" in
 		adduser --system --group indienotify-pro
 	fi
 
+	# Create IPC share for connector
 	mkdir -p /etc/indiestor-pro/res
-    chmod -R 777 /etc/indiestor-pro/res
+    chmod -R 0555 /etc/indiestor-pro/res
+
     mkdir -p /var/spool/indiestor-pro
     chown -R indienotify-pro /var/spool/indiestor-pro
+
     echo "updating share defintions and usage stats. Please wait... "
 	indiestor-pro --services -refresh-share-definitions
 	indiestor-pro --services -refresh-usage-stats
