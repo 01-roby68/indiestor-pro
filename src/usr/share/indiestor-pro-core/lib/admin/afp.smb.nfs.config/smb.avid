@@ -7,5 +7,6 @@ directory mask = 0755
 map read only = permissions
 inherit permissions = no
 wide links = yes
-vfs objects = netatalk
-
+vfs objects = catia fruit streams_xattr
+fruit:metadata = streams
+fruit:veto_appledouble = no
