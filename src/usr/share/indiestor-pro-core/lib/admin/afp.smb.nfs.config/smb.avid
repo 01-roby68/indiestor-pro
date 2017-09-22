@@ -8,5 +8,6 @@ map read only = permissions
 inherit permissions = no
 wide links = yes
 vfs objects = catia fruit streams_xattr
-fruit:metadata = streams
+fruit:encoding = native
 fruit:veto_appledouble = no
+

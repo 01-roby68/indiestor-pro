@@ -7,6 +7,6 @@ read list = {rolist}
 write list = {rwlist}
 veto files = /*indiestor.workspace.conf*/
 vfs objects = catia fruit streams_xattr
-fruit:metadata = streams
+fruit:encoding = native
 fruit:veto_appledouble = no
 
