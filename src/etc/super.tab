@@ -38,5 +38,4 @@ indiestor-pro-auth /usr/share/indiestor-pro-gui-core/indiestor-pro-auth uid=root
 indiestor-pro-list-volumes /usr/share/indiestor-pro-gui-core/indiestor-pro-list-volumes uid=root env=PATH :indiewheel
 indiestor-pro-zfs-status /usr/share/indiestor-pro-gui-core/indiestor-pro-zfs-status uid=root env=PATH :indiewheel
 indiestor-pro-megaraid-status /usr/share/indiestor-pro-gui-core/indiestor-pro-megaraid-status uid=root env=PATH :indiewheel
-
-
+indiestor-pro-3ware-status /usr/share/indiestor-pro-gui-core/indiestor-pro-3ware-status uid=root env=PATH :indiewheel
