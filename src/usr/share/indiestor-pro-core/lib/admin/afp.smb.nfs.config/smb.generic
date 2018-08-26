@@ -6,7 +6,4 @@ create mask = 0666
 read list = {rolist}
 write list = {rwlist}
 veto files = /*indiestor.workspace.conf*/
-vfs objects = catia fruit streams_xattr
-fruit:encoding = native
-fruit:veto_appledouble = no
 
