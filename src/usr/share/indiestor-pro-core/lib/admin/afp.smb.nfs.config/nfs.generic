@@ -1,1 +1,1 @@
-{path} {range}(rw,insecure,all_squash,no_subtree_check,async)
+{path} *(rw,insecure,all_squash,no_subtree_check,async)

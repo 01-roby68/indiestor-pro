@@ -17,10 +17,6 @@ class NfsGenericConfigGenerator
                 $wsconf=new EtcWorkspaces('generic');
                 foreach($wsconf->workspaces as $workspace=>$path) {
 
-                        //get nfs range and trim whitespace
-                        $range=file_get_contents('/etc/indiestor-pro/nfsrange.conf');
-                        $range=trim($range);
-
                         //absolute path
                         if(substr($path,0,1)!=='/')
                                 $pathAbs="/$path";
@@ -29,10 +25,8 @@ class NfsGenericConfigGenerator
                         //replace data in template
                         $patterns=[];
                         $patterns[]='/\{path\}/';
-                        $patterns[]='/\{range\}/';
                         $replacements=[];
                         $replacements[]=$pathAbs;
-                        $replacements[]=$range;
                         $detailedConfig=preg_replace($patterns,$replacements,$template);
                         $buffer.=$detailedConfig;
                 }
