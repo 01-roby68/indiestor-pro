@@ -30,19 +30,20 @@ case "$1" in
 		adduser --system --group indienotify-pro
 	fi
 
-	# setup directories
-	rm -r/etc/indiestor-pro/res
     mkdir -p /var/spool/indiestor-pro
     chown -R indienotify-pro /var/spool/indiestor-pro
 
-    # update share definitions & refresh stats
     echo "updating share defintions and usage stats. Please wait... "
 	indiestor-pro --services -refresh-share-definitions
 	indiestor-pro --services -refresh-usage-stats
 	indiestor-pro --services -start-watching
-
-    # start watching
-	update-rc.d indiestor-pro-watch-avid-workspace defaults
+	release=$(lsb_release -a | grep Codename | sed 's/Codename:\t\(.*\)/\1/')
+	if [ "$release" = "wheezy" ] ; then
+		insserv indiestor-pro-watch-avid-workspace
+	else
+		update-rc.d indiestor-pro-watch-avid-workspace defaults
+	fi
+    ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
     ;;
@@ -54,4 +55,3 @@ case "$1" in
 esac
 
 exit 0
-
