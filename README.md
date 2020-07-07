@@ -1,5 +1,3 @@
-Indiestor Pro.
+An open source collaboration system for AMC users.
 
-A non-free workspace oriented version of indiestor native.
-
-Builds with msb-make.
+Build with msb-make for deployment on Debian Stretch or Buster.
